@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Happy Plants</title>
+    <link rel="icon" type="image/png" href="static/images/bibble.png">
+
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/styledestination.css" rel="stylesheet" type="text/css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div id="content-box">
+    <img src="/static/images/new_logo1.png" id="logo" alt="head-logo">
+    <h1>Insert flight number</h1>
+    <p>Choose your preferred genre and press search!</p>
+    <hr>
+
+    <div class="search-container">
+        <form id="search-form">
+            <div class="textbox-button-field">
+                <input type="text" placeholder="(eg. AA2730)" name="flightNumber" id="flightNumber">
+                <button id="search-btn" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+
+            <p id="empty-p"></p>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="pop" name="genre" value="pop">
+                <label class="checkbox-labels" for="pop">Pop</label>
+
+                <input type="checkbox" id="hip-hop" name="genre" value="hip hop">
+                <label class="checkbox-labels" for="hip-hop">Hip-Hop</label>
+
+                <input type="checkbox" id="rock" name="genre" value="rock">
+                <label class="checkbox-labels" for="rock">Rock</label>
+
+                <input type="checkbox" id="country" name="genre" value="country">
+                <label class="checkbox-labels" for="country">Country</label>
+
+                <input type="checkbox" id="electronic" name="genre" value="electronic">
+                <label class="checkbox-labels" for="electronic">Electronic</label>
+
+                <input type="checkbox" id="classical" name="genre" value="classical">
+                <label class="checkbox-labels" for="classical">Classical</label>
+
+                <input type="checkbox" id="r&b" name="genre" value="r&b">
+                <label class="checkbox-labels" for="r&b">R&B</label>
+
+                <input type="checkbox" id="folk" name="genre" value="folk">
+                <label class="checkbox-labels" for="folk">Folk</label>
+            </div>
+        </form>
+
+        <h3>Take your experience<br>to the next level</h3>
+    </div>
+</div>
+
+<div id="loading-spinner">
+    <i class="fa fa-spinner fa-spin"></i>
+    <p>Creating your playlist...</p>
+</div>
+
+<!-- Destination result -->
+<div id="destination-container" style="display:none; margin-top: 50px; padding-bottom: 50px;">
+
+    <div class="location-section">
+        <h2 class="location-title" id="location-title"></h2>
+        <div class="title-underline"></div>
+    </div>
+
+    <div class="destination-image-wrapper">
+        <img id="city-image" src="" alt="City view">
+    </div>
+
+    <div class="button-group">
+        <a id="spotify-btn" class="btn-pill" href="#" target="_blank">
+            <i class="fa fa-spotify"></i> Flight Playlist
+        </a>
+
+        <button
+                id="sights-btn"
+                class="btn-pill"
+                type="button"
+                aria-expanded="false"
+                aria-controls="sights-panel">
+            <i class="fa fa-camera"></i> Sights
+        </button>
+
+        <button
+                id="facts-btn"
+                class="btn-pill"
+                type="button"
+                aria-expanded="false"
+                aria-controls="facts-panel">
+            <i class="fa fa-info-circle"></i> Facts
+        </button>
+    </div>
+
+    <!-- Accordion panels -->
+    <div id="sights-panel" class="accordion-panel is-hidden" role="region" aria-labelledby="sights-btn"></div>
+    <div id="facts-panel" class="accordion-panel is-hidden" role="region" aria-labelledby="facts-btn"></div>
+</div>
+
+<footer>
+    <a class="footer-text" href="/about-us">About espotiFly</a>
+    <a class="footer-text" href="/">Home</a>
+</footer>
+
+<script type="module" src="/static/js/actionListener.js"></script>
+</body>
+</html>
