@@ -130,13 +130,15 @@ chmod +x delete_all_issues.sh
 If you prefer a simpler one-liner (your original approach with improvements):
 
 ```bash
-gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 1000 --state all --json number --jq '.[].number' | xargs -I {} gh issue delete {} --repo HappyPlantsDA489A/HappyPlants --yes
+gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 10000 --state all --json number --jq '.[].number' | xargs -I {} gh issue delete {} --repo HappyPlantsDA489A/HappyPlants --yes
 ```
 
 **Note:** This one-liner:
+- Uses `--limit 10000` to handle large repositories (should cover most cases)
 - Won't show progress or confirmation prompts
 - May not handle errors as gracefully
 - Could hit rate limits with many issues
+- If you have more than 10,000 issues, you'll need to run it multiple times
 
 The provided script is recommended for better control and feedback.
 
@@ -145,12 +147,14 @@ The provided script is recommended for better control and feedback.
 If you want to keep a record of your issues before deleting them:
 
 ```bash
-# Export all issues to JSON
-gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 1000 --state all --json number,title,body,state,author,createdAt,updatedAt,labels > issues_backup.json
+# Export all issues to JSON (using high limit to get all issues)
+gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 10000 --state all --json number,title,body,state,author,createdAt,updatedAt,labels > issues_backup.json
 
 # Export to CSV format (basic info)
-gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 1000 --state all --json number,title,state,author --template '{{range .}}{{.number}},{{.title}},{{.state}},{{.author.login}}{{"\n"}}{{end}}' > issues_backup.csv
+gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 10000 --state all --json number,title,state,author --template '{{range .}}{{.number}},{{.title}},{{.state}},{{.author.login}}{{"\n"}}{{end}}' > issues_backup.csv
 ```
+
+**Note:** If you have more than 10,000 issues, you'll need to export in batches or use the GitHub API directly.
 
 ## Need Help?
 

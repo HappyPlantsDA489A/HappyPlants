@@ -45,9 +45,17 @@ fi
 echo -e "${YELLOW}WARNING: This will delete ALL issues in ${OWNER}/${REPO}${NC}"
 echo ""
 
-# Count total issues
-TOTAL_ISSUES=$(gh issue list --repo "${OWNER}/${REPO}" --limit 1000 --state all --json number --jq 'length')
+# Count total issues (using a high limit to get all issues)
+# Note: GitHub CLI has a limit parameter, we use 10000 which should cover most repositories
+ISSUE_LIMIT=10000
+TOTAL_ISSUES=$(gh issue list --repo "${OWNER}/${REPO}" --limit ${ISSUE_LIMIT} --state all --json number --jq 'length')
 echo "Total issues found: ${TOTAL_ISSUES}"
+
+# Warn if we hit the limit (unlikely but possible for very large repos)
+if [ "$TOTAL_ISSUES" -eq "$ISSUE_LIMIT" ]; then
+    echo -e "${YELLOW}Warning: Hit the limit of ${ISSUE_LIMIT} issues. There may be more issues not shown.${NC}"
+    echo -e "${YELLOW}You may need to run this script multiple times to delete all issues.${NC}"
+fi
 echo ""
 
 if [ "$TOTAL_ISSUES" -eq 0 ]; then
@@ -68,7 +76,7 @@ echo "Starting deletion process..."
 echo ""
 
 # Get all issue numbers (both open and closed)
-ISSUE_NUMBERS=$(gh issue list --repo "${OWNER}/${REPO}" --limit 1000 --state all --json number --jq '.[].number')
+ISSUE_NUMBERS=$(gh issue list --repo "${OWNER}/${REPO}" --limit ${ISSUE_LIMIT} --state all --json number --jq '.[].number')
 
 # Counter for tracking progress
 SUCCESS_COUNT=0

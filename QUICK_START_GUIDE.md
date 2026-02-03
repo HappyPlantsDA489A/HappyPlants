@@ -19,15 +19,17 @@ gh issue list [LIST OPTIONS] --json number -q '.[].number' | xargs -I {} gh issu
 Here's the improved version of your one-liner:
 
 ```bash
-gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 1000 --state all --json number --jq '.[].number' | xargs -I {} gh issue delete {} --repo HappyPlantsDA489A/HappyPlants --yes
+gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 10000 --state all --json number --jq '.[].number' | xargs -I {} gh issue delete {} --repo HappyPlantsDA489A/HappyPlants --yes
 ```
 
 **Changes made:**
 - ✅ Added `--repo` to specify the repository
-- ✅ Added `--limit 1000` to get all issues (default is 30)
+- ✅ Added `--limit 10000` to handle large repositories (covers most cases)
 - ✅ Added `--state all` to include both open and closed issues
 - ✅ Added `--yes` flag to skip confirmation prompts
 - ✅ Removed `[LIST OPTIONS]` placeholder
+
+**Note:** If you have more than 10,000 issues, you'll need to run this multiple times.
 
 ## Better Option: Use the Script
 
@@ -117,10 +119,12 @@ All issues have been successfully deleted!
 Before deleting, you might want to backup your issues:
 
 ```bash
-gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 1000 --state all --json number,title,body,state,author,createdAt,updatedAt,labels > issues_backup.json
+gh issue list --repo HappyPlantsDA489A/HappyPlants --limit 10000 --state all --json number,title,body,state,author,createdAt,updatedAt,labels > issues_backup.json
 ```
 
 This creates a JSON file with all your issues that you can reference later.
+
+**Note:** If you have more than 10,000 issues, you'll need to export in batches.
 
 ## Troubleshooting
 
