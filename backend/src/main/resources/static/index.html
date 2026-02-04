@@ -4,68 +4,41 @@
 <head>
     <meta charset="utf-8">
     <title>Happy Plants</title>
-    <link rel="icon" type="image/png" href="static/images/bibble.png">
+    <link rel="icon" type="" href="">
 
-    <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
     <link href="/static/css/styledestination.css" rel="stylesheet" type="text/css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <div id="content-box">
-    <img src="/static/images/new_logo1.png" id="logo" alt="head-logo">
-    <h1>Insert flight number</h1>
-    <p>Choose your preferred genre and press search!</p>
+    <img src="" id="logo" alt="head-logo">
+    <h1>Happy Plants</h1>
+    <p>Your personal online Plant caregiver</p>
     <hr>
 
     <div class="search-container">
         <form id="search-form">
             <div class="textbox-button-field">
-                <input type="text" placeholder="(eg. AA2730)" name="flightNumber" id="flightNumber">
+                <h2>Search for your plant</h2>
+                <input type="text" placeholder="eg. Philodendron" name="plantName" id="plantID">
                 <button id="search-btn" type="submit"><i class="fa fa-search"></i></button>
             </div>
 
             <p id="empty-p"></p>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="pop" name="genre" value="pop">
-                <label class="checkbox-labels" for="pop">Pop</label>
-
-                <input type="checkbox" id="hip-hop" name="genre" value="hip hop">
-                <label class="checkbox-labels" for="hip-hop">Hip-Hop</label>
-
-                <input type="checkbox" id="rock" name="genre" value="rock">
-                <label class="checkbox-labels" for="rock">Rock</label>
-
-                <input type="checkbox" id="country" name="genre" value="country">
-                <label class="checkbox-labels" for="country">Country</label>
-
-                <input type="checkbox" id="electronic" name="genre" value="electronic">
-                <label class="checkbox-labels" for="electronic">Electronic</label>
-
-                <input type="checkbox" id="classical" name="genre" value="classical">
-                <label class="checkbox-labels" for="classical">Classical</label>
-
-                <input type="checkbox" id="r&b" name="genre" value="r&b">
-                <label class="checkbox-labels" for="r&b">R&B</label>
-
-                <input type="checkbox" id="folk" name="genre" value="folk">
-                <label class="checkbox-labels" for="folk">Folk</label>
-            </div>
         </form>
 
-        <h3>Take your experience<br>to the next level</h3>
+        <h3>Take care of your plants</h3>
     </div>
 </div>
 
 <div id="loading-spinner">
     <i class="fa fa-spinner fa-spin"></i>
-    <p>Creating your playlist...</p>
+    <p>Finding your plant...</p>
 </div>
 
 <!-- Destination result -->
