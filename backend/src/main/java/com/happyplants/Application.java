@@ -1,15 +1,29 @@
 package com.happyplants;
 
-import org.springframework.beans.factory.annotation.Value;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Application {
 
-    @Value("${plant.api.token}")
-
     public static void main(String[] args) {
+        Dotenv dotenv = null;
+        try {
+            dotenv = Dotenv.configure()
+                    .directory("./backend")
+                    .load();
+        } catch (Exception e) {
+            dotenv = Dotenv.configure()
+                    .directory("./")
+                    .ignoreIfMissing()
+                    .load();
+        }
+
+        dotenv.entries().forEach(entry -> {
+            System.setProperty(entry.getKey(), entry.getValue());
+        });
+
         SpringApplication.run(Application.class, args);
     }
 }
