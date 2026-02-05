@@ -5,6 +5,7 @@ body {
     background-position: center;
     font-family: "PT Sans", sans-serif;
     margin: 0;
+    background-color: #c1e68b;
 }
 
 
@@ -18,7 +19,7 @@ body {
 
 
 h1 {
-    color: rgb(255, 195, 230);
+    color: rgb(243,76,174);
     opacity: 0.7;
     text-align: center;
     margin-bottom: 5px;
@@ -26,26 +27,26 @@ h1 {
 
 h2, h3 {
     text-align: center;
-    color: rgb(255, 195, 230);
+    color: rgb(243,76,174);
     opacity: 0.7;
 }
 
 h3 > a {
     text-align: center;
-    color: rgb(255, 195, 230);
+    color: rgb(243,76,174);
     opacity: 0.7;
 }
 
 
 h3 a:visited {
     opacity: 0.7;
-    color: rgb(93, 0, 54);
+    color: rgb(243,76,174);
 }
 
 
 h3 a:hover {
     cursor: pointer;
-    color: rgb(255, 255, 255);
+    color: rgb(243,76,174);
     opacity: 1;
 }
 

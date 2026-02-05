@@ -3,6 +3,7 @@ package com.happyplants.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -24,8 +25,7 @@ public class APIConnection {
     }
 
     @GetMapping("search")
-    public void search() throws IOException, InterruptedException {
-        String plantName = "orchid";
+    public String search(@RequestParam String plantName) throws IOException, InterruptedException {
         String url = String.format("https://perenual.com/api/v2/species-list?q=%s&page=1&hardiness=4-8&key=%s", plantName, plantApiKey);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -37,5 +37,7 @@ public class APIConnection {
         System.out.println(response.body());
         System.out.println(response.statusCode());
         System.out.println(plantApiKey);
+
+        return response.body();
     }
 }
