@@ -17,11 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(data);
         } catch (error) {
             console.error("Kunde inte hämta data:", error);
+            alert("could not reload")
         }
     });
 });
 
 function displayResults(data) {
     // Här kan du senare bygga logik för att visa växterna i HTML:en
-    alert("Hittade " + data.data.length + " växter! Kolla konsolen (F12).");
+    alert("Found " + data.data.length + "plants.");
 }
