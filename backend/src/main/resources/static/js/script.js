@@ -42,25 +42,40 @@ function displayResults(plants) {
     if (!resultsContainer) return;
 
     resultsContainer.style.display = "block";
-    resultsContainer.innerHTML = "";
+    resultsContainer.innerHTML = ""; // Rensa containern först
 
+    // Om backenden skickar null eller tom lista
     if (!Array.isArray(plants) || plants.length === 0) {
-        console.error("Vi ville ha en lista men det blev: ", plants);
+        const noResults = document.createElement("p");
+        noResults.textContent = "Inga plantor hittades. Kontrollera din ApiResponse-klass i Java.";
+        resultsContainer.appendChild(noResults);
         return;
     }
 
-    plants.forEach(plant=> {
-        const plantDiv = document.createElement("div");
-        const sciName = (plant.scientific_name && plant.scientific_name.length > 0)
-                        ? plant.scientific_name[0]
-                        : "N/A";
+    plants.forEach(plant => {
+        const plantCard = document.createElement("div");
+        plantCard.className = "plant-card"; // Styla denna i din CSS
 
-        plantDiv.innerHTML = `
-            <h3>${plant.common_name}</h3>
-            <p>Scientific name: ${plant.scientific_name [0]}</p>
-            `;
-        resultsContainer.appendChild(plantDiv);
+        const title = document.createElement("h3");
+        title.textContent = plant.common_name || "Okänt namn";
+
+        const sciNamePara = document.createElement("p");
+        sciNamePara.textContent = "Scientific name: ";
+
+        const italicName = document.createElement("i");
+        // Hämta första namnet i listan om den finns
+        italicName.textContent = (plant.scientific_name && plant.scientific_name.length > 0)
+            ? plant.scientific_name[0]
+            : "N/A";
+
+        sciNamePara.appendChild(italicName);
+
+        plantCard.appendChild(title);
+        plantCard.appendChild(sciNamePara);
+
+        resultsContainer.appendChild(plantCard);
     });
 
-    alert("Found " + plants.length + "plants.");
+    console.log("Antal plantor renderade:", plants.length);
+
 }

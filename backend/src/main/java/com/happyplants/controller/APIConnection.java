@@ -38,9 +38,9 @@ public class APIConnection {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//        System.out.println(response.body());
-//        System.out.println(response.statusCode());
-//        System.out.println(plantApiKey);
+        System.out.println(response.body());
+        System.out.println(response.statusCode());
+        System.out.println(plantApiKey);
 
         return getPlantResults(response);
     }
@@ -48,6 +48,6 @@ public class APIConnection {
     public List<PlantDTO> getPlantResults(HttpResponse<String> response) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         ApiResponse apiResponse = mapper.readValue(response.body(), ApiResponse.class);
-        return apiResponse.getResults();
+        return apiResponse.getData();
     }
 }

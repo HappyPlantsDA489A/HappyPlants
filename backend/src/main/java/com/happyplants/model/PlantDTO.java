@@ -9,4 +9,7 @@ public class PlantDTO {
     String scientific_name;
     String genus;
     String family;
+
+    public PlantDTO(){
+    }
 }

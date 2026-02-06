@@ -53,7 +53,7 @@ h3 a:hover {
 hr {
     border: 0;
     height: 2px;
-    background: rgb(255, 195, 230);
+    background: rgb(96, 0, 56);
     width: 30%;
     margin-top: 0px;
     margin-bottom: 10px;
@@ -85,66 +85,6 @@ hr {
 
 }
 
-
-#flightNumber {
-    width: 100%;
-    min-height: 30px;
-    border-radius: 15px;
-    border: 1px rgb(255, 195, 230) solid;
-    box-sizing: border-box;
-    padding: 5px 10px;
-}
-
-
-.checkbox-labels {
-    color: rgb(255, 195, 230);
-    opacity: 0.7;
-}
-
-.checkbox-group {
-    display: flex;
-    flex-wrap: wrap; /* Makes the buttons wrap smoothly into a new row to look better */
-    justify-content: center;
-    gap: 10px; /* space between the buttons */
-    margin-top: 15px;
-    width: 100%;
-}
-
-/* Hide the original checkbox (ugly) */
-.checkbox-group input[type="checkbox"] {
-    display: none;
-}
-
-/* Style the text/lable so it looks more like a button than a checkbox */
-.checkbox-labels {
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: rgba(255, 255, 255, 0.1); /* transparent background */
-    border: 1px solid rgb(255, 195, 230);
-    border-radius: 20px;
-    color: rgb(246, 233, 241);
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease; /* smooth animation */
-    user-select: none; /* makes sure that the user doesn't accidentally mark the text when clicking */
-}
-
-/* Hover-effect */
-.checkbox-labels:hover {
-    background-color: rgba(255, 195, 230, 0.2);
-    border-color: #fff;
-    color: #fff;
-}
-
-/* IMPORTANT: This happens when user clicks and the checkbox is "checked" */
-.checkbox-group input[type="checkbox"]:checked + label {
-    background-color: #484396; /* Making the background a purple colour */
-    border-color: #484396;
-    color: white;
-    transform: scale(1.05); /* button "grows" a little to enhance that is has been chosen */
-    box-shadow: 0 0 10px rgba(72, 67, 150, 0.5); /* Nice glow B) */
-}
-
 .textbox-button-field button[type=submit] {
     position: absolute;
     right: 5px;
@@ -152,7 +92,7 @@ hr {
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: rgb(255, 195, 230);
+    color: rgb(117, 0, 68);
     cursor: pointer;
     font-size: 18px;
 }
@@ -162,7 +102,7 @@ hr {
     display: none; /* Hidden, visible through Javascript */
     text-align: center;
     margin-top: 30px;
-    color: rgb(255, 195, 230);
+    color: rgb(158, 0, 93);
 }
 
 #loading-spinner i {
@@ -179,7 +119,7 @@ footer {
 }
 
 footer > a {
-    color: rgb(255, 195, 230);
+    color: rgb(156, 0, 89);
     opacity: 0.7;
     text-decoration: none;
     margin: 5px 0;
@@ -194,13 +134,13 @@ footer > a:hover {
 #empty-p {
     margin-top: 0px;
     padding: 0px;
-    color: rgb(255, 195, 230);
+    color: rgb(115, 0, 68);
     opacity: 0.7;
 }
 
 
 p {
-    color: rgb(255, 195, 230);
+    color: rgb(69, 0, 39);
     opacity: 0.7;
     text-align: center;
 }

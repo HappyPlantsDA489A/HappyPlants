@@ -9,11 +9,11 @@ import java.util.List;
 public class ApiResponse {
     List<PlantDTO> data;
 
-    public List<PlantDTO> getResults() {
+    public List<PlantDTO> getData() {
         return data;
     }
 
-    public void setResults(List<PlantDTO> data) {
+    public void setData(List<PlantDTO> data) {
         this.data = data;
     }
 }
