@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('plantID');
-
     const spinner = document.getElementById('loading-spinner');
 
 
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (spinner) {
             spinner.style.display = 'block';
-            spinner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            //spinner.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         //if (plantContainer) plantContainer.style.display = 'none';
 
@@ -21,33 +20,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`/api/search?plantName=${encodeURIComponent(query)}`);
-            console.log("JSON-data:", response); // Se exakt vad som kommer in
+            const result = await response.json();
+            console.log("JSON-data:", result); // Se exakt vad som kommer in
 
-            console.log("Data från API:", response);
-            displayResults(response);
+            console.log("Data från API:", result);
+            displayResults(result);
 
 
         } catch (error) {
             console.error("Kunde inte hämta data:", error);
             alert("could not reload")
+        } finally {
+            if (spinner) spinner.style.display = 'none';
         }
     });
 });
 
-function displayResults(response) {
+function displayResults(plants) {
     const resultsContainer = document.getElementById("plant-container");
+
+    if (!resultsContainer) return;
+
     resultsContainer.style.display = "block";
     resultsContainer.innerHTML = "";
 
-    const plants = response.data;
-
-    if (!Array.isArray(plants)) {
+    if (!Array.isArray(plants) || plants.length === 0) {
         console.error("Vi ville ha en lista men det blev: ", plants);
         return;
     }
 
     plants.forEach(plant=> {
         const plantDiv = document.createElement("div");
+        const sciName = (plant.scientific_name && plant.scientific_name.length > 0)
+                        ? plant.scientific_name[0]
+                        : "N/A";
+
         plantDiv.innerHTML = `
             <h3>${plant.common_name}</h3>
             <p>Scientific name: ${plant.scientific_name [0]}</p>
@@ -55,5 +62,5 @@ function displayResults(response) {
         resultsContainer.appendChild(plantDiv);
     });
 
-    alert("Found " + data.data.length + "plants.");
+    alert("Found " + plants.length + "plants.");
 }

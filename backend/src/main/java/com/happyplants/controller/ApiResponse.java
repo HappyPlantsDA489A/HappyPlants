@@ -7,9 +7,13 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
-    List<PlantDTO> results;
+    List<PlantDTO> data;
 
     public List<PlantDTO> getResults() {
-        return results;
+        return data;
+    }
+
+    public void setResults(List<PlantDTO> data) {
+        this.data = data;
     }
 }
