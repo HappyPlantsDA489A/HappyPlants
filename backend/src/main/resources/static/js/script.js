@@ -60,7 +60,7 @@ function displayResults(plants) {
         title.textContent = plant.common_name || "Okänt namn";
 
         const sciNamePara = document.createElement("p");
-        sciNamePara.textContent = "Scientific name: ";
+        sciNamePara.textContent = plant.scientific_name || "unknown";
 
         const italicName = document.createElement("i");
         // Hämta första namnet i listan om den finns
