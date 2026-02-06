@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`/api/search?plantName=${encodeURIComponent(query)}`);
-            const data = await response.json();
+            console.log("JSON-data:", response); // Se exakt vad som kommer in
 
-            console.log("Data från API:", data);
-            displayResults(data);
+            console.log("Data från API:", response);
+            displayResults(response);
 
 
         } catch (error) {
@@ -34,7 +34,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function displayResults(data) {
-    // Här kan du senare bygga logik för att visa växterna i HTML:en
+function displayResults(response) {
+    const resultsContainer = document.getElementById("plant-container");
+    resultsContainer.style.display = "block";
+    resultsContainer.innerHTML = "";
+
+    const plants = response.data;
+
+    if (!Array.isArray(plants)) {
+        console.error("Vi ville ha en lista men det blev: ", plants);
+        return;
+    }
+
+    plants.forEach(plant=> {
+        const plantDiv = document.createElement("div");
+        plantDiv.innerHTML = `
+            <h3>${plant.common_name}</h3>
+            <p>Scientific name: ${plant.scientific_name [0]}</p>
+            `;
+        resultsContainer.appendChild(plantDiv);
+    });
+
     alert("Found " + data.data.length + "plants.");
 }
