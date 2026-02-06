@@ -1,5 +1,8 @@
 package com.happyplants.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.happyplants.model.PlantDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -25,7 +29,7 @@ public class APIConnection {
     }
 
     @GetMapping("search")
-    public String search(@RequestParam String plantName) throws IOException, InterruptedException {
+    public List<PlantDTO> search(@RequestParam String plantName) throws IOException, InterruptedException {
         String url = String.format("https://perenual.com/api/v2/species-list?q=%s&page=1&hardiness=4-8&key=%s", plantName, plantApiKey);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -38,6 +42,12 @@ public class APIConnection {
         System.out.println(response.statusCode());
         System.out.println(plantApiKey);
 
-        return response.body();
+        return getPlantResults(response);
+    }
+
+    public List<PlantDTO> getPlantResults(HttpResponse<String> response) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ApiResponse apiResponse = mapper.readValue(response.body(), ApiResponse.class);
+        return apiResponse.getResults();
     }
 }
