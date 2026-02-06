@@ -1,10 +1,10 @@
 body {
+    background-image: url("../images/pexels-background.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     font-family: "PT Sans", sans-serif;
     margin: 0;
-    background-color: #c1e68b;
 }
 
 
