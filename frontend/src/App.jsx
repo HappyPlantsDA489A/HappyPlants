@@ -49,7 +49,7 @@ function App() {
                                 type="text"
                                 placeholder="eg. Philodendron"
                                 value={query}
-                                onChange={(e) => setQuery(e.target.value)} 
+                                onChange={(e) => setQuery(e.target.value)}
                                 id="plantID"
                             />
                             <button id="search-btn" type="submit">
