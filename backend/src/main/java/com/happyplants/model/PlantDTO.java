@@ -8,6 +8,7 @@ public class PlantDTO {
     int id;
     String genus;
     String family;
+    String imageUrl;
 
     public PlantDTO(){
     }

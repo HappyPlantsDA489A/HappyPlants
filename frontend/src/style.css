@@ -10,6 +10,16 @@ body {
     font-family: sans-serif;
 }
 
+#plant-container {
+    background-color: steelblue;
+}
+
+.plant-card {
+    background-color: hotpink;
+    width: 40px;
+    height: 40px;
+}
+
 #content-box {
     display: flex;
     flex-direction: column;
