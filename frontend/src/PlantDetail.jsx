@@ -8,7 +8,11 @@ function PlantDetail() {
     useEffect(()=> {
         fetch(`/api/plants/${id}`)
             .then(res => res.json())
-            .then(data => setPlant(data))
+            .then(data => {
+                console.log('Received plant detail:', data);
+                console.log('Plant imageUrl:', data.imageUrl);
+                setPlant(data);
+            })
             .catch(err => console.error('Error fetching plant details:', err));
     },[id]);
 

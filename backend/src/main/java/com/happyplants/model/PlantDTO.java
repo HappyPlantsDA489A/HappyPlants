@@ -16,10 +16,47 @@ public class PlantDTO {
     private String[] scientificName;
 
     @JsonProperty("default_image")
-    private String imageURL;
+    private DefaultImage defaultImage;
 
     private String watering;
     private String sunlight;
+
+    // Inner class to handle default_image object
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class DefaultImage {
+        @JsonProperty("regular_url")
+        private String regularUrl;
+
+        @JsonProperty("small_url")
+        private String smallUrl;
+
+        @JsonProperty("thumbnail")
+        private String thumbnail;
+
+        public String getRegularUrl() {
+            return regularUrl;
+        }
+
+        public void setRegularUrl(String regularUrl) {
+            this.regularUrl = regularUrl;
+        }
+
+        public String getSmallUrl() {
+            return smallUrl;
+        }
+
+        public void setSmallUrl(String smallUrl) {
+            this.smallUrl = smallUrl;
+        }
+
+        public String getThumbnail() {
+            return thumbnail;
+        }
+
+        public void setThumbnail(String thumbnail) {
+            this.thumbnail = thumbnail;
+        }
+    }
 
     public PlantDTO() {
     }
@@ -81,12 +118,27 @@ public class PlantDTO {
         this.sunlight = sunlight;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public DefaultImage getDefaultImage() {
+        return defaultImage;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setDefaultImage(DefaultImage defaultImage) {
+        this.defaultImage = defaultImage;
+    }
+
+    // Convenience method for frontend - extracts image URL from default_image object
+    public String getImageUrl() {
+        if (defaultImage != null) {
+            // Prefer small_url for list view, fall back to thumbnail or regular_url
+            if (defaultImage.getSmallUrl() != null) {
+                return defaultImage.getSmallUrl();
+            } else if (defaultImage.getThumbnail() != null) {
+                return defaultImage.getThumbnail();
+            } else if (defaultImage.getRegularUrl() != null) {
+                return defaultImage.getRegularUrl();
+            }
+        }
+        return null;
     }
 
     // Convenience methods for frontend compatibility

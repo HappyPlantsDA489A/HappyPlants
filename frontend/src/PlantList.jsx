@@ -8,7 +8,14 @@ function PlantList() {
     function searchPlants() {
         fetch(`/api/plants/search?name=${query}`)
             .then(res => res.json())
-            .then(data => setPlants(data))
+            .then(data => {
+                console.log('Received plants data:', data);
+                if (data.length > 0) {
+                    console.log('First plant:', data[0]);
+                    console.log('First plant imageUrl:', data[0].imageUrl);
+                }
+                setPlants(data);
+            })
             .catch(err => console.error('Error fetching plants:', err));
     }
 
@@ -27,7 +34,18 @@ function PlantList() {
             <div className="grid">
                 {plants.map(plant=> (
                     <Link to={`/plant/${plant.id}`} key={plant.id} className="card">
-                        <img src={plant.imageUrl} alt={plant.name}/>
+                        {plant.imageUrl ? (
+                            <img
+                                src={plant.imageUrl}
+                                alt={plant.name}
+                                onError={(e) => {
+                                    console.error('Image failed to load:', plant.imageUrl);
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                        ) : (
+                            <div className="no-image">No image available</div>
+                        )}
                         <h3>{plant.name}</h3>
                     </Link>
                 ))}
