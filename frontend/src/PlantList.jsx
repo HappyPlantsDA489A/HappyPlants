@@ -17,11 +17,12 @@ function PlantList() {
             <h1>Search plants</h1>
 
             <input
+                className="search-bar"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="Search for your plant!"
             />
-            <button onClick={searchPlants}>Search</button>
+            <button className="search-button" onClick={searchPlants}>Search</button>
 
             <div className="grid">
                 {plants.map(plant=> (

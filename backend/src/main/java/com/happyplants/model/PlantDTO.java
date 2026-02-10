@@ -15,7 +15,7 @@ public class PlantDTO {
     @JsonProperty("scientific_name")
     private String[] scientificName;
 
-    @JsonProperty("image_url")
+    @JsonProperty("default_image")
     private String imageURL;
 
     private String watering;

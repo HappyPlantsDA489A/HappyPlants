@@ -15,7 +15,7 @@
 :root {
     /* Color Palette */
     --primary-color: #2ecc71;
-    --primary-dark: #27ae60;
+    --primary-dark: #145931;
     --primary-light: #58d68d;
     --secondary-color: #3498db;
     --secondary-dark: #2980b9;
@@ -24,7 +24,7 @@
 
     /* Neutral Colors */
     --background: #f8f9fa;
-    --surface: #ffffff;
+    --surface: #87c185;
     --text-primary: #2c3e50;
     --text-secondary: #7f8c8d;
     --border-color: #e1e8ed;
@@ -57,10 +57,10 @@
 }
 
 body {
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #fff9c4 100%);
+    font-family: "Tulpen One", sans-serif;
+    background-color: #afd1af;
     background-attachment: fixed;
-    color: var(--text-primary);
+    letter-spacing: 2px;
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
@@ -76,14 +76,29 @@ body {
    2. TYPOGRAPHY
    ========================================= */
 
+/* Page title */
 h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 2px;
+    font-size: 300px;
     color: var(--primary-dark);
     margin-bottom: var(--spacing-md);
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    letter-spacing: -0.5px;
+}
+
+.search-button {
+    font-family: "Tulpen One", sans-serif;
+    font-size: 30px;
+    font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+.search-bar {
+    font-family: "Tulpen One", sans-serif;
+    letter-spacing: 2px;
+    font-weight: bolder;' '
 }
 
 h2 {
@@ -92,6 +107,7 @@ h2 {
     color: var(--text-primary);
     margin-bottom: var(--spacing-sm);
 }
+
 
 h3 {
     font-size: 1.25rem;
