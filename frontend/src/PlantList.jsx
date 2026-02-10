@@ -6,9 +6,10 @@ function PlantList() {
     const [plants, setPlants] = useState([]);
 
     function searchPlants() {
-        fetch(`http://localhost:8080/api/plants/search?name=${query}`)
+        fetch(`/api/plants/search?name=${query}`)
             .then(res => res.json())
-            .then(data => setPlants(data));
+            .then(data => setPlants(data))
+            .catch(err => console.error('Error fetching plants:', err));
     }
 
     return(

@@ -6,9 +6,10 @@ function PlantDetail() {
     const [plant, setPlant] =useState(null);
 
     useEffect(()=> {
-        fetch(`http://localhost:8080/api/plants/${id}`)
+        fetch(`/api/plants/${id}`)
             .then(res => res.json())
-            .then(data => setPlant(data));
+            .then(data => setPlant(data))
+            .catch(err => console.error('Error fetching plant details:', err));
     },[id]);
 
     if(!plant) return <p>Loading...</p>;

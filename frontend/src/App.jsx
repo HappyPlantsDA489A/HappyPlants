@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"; //BrowserRouter lyssnar på ändringar i webbläsarens url
 import PlantList from "./PlantList";
-import PlantDetail from ".PlantDetail";
+import PlantDetail from "./PlantDetail";
 import './style.css';
 
 function App() {
