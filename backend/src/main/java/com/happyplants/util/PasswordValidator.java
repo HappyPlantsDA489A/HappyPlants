@@ -4,6 +4,8 @@ import java.util.List;
 
 public class PasswordValidator {
 
+    private static final int MIN_LENGTH = 12;
+
     public boolean isValid(String password) {
         return validate(password).isEmpty();
     }
@@ -16,7 +18,7 @@ public class PasswordValidator {
             return errors;
         }
 
-        if (password.length() < 12) {
+        if (password.length() < MIN_LENGTH) {
             errors.add("Password must be at least 12 characters long.");
         }
 
@@ -28,11 +30,17 @@ public class PasswordValidator {
         for (char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) {
                 hasUppercase = true;
-            } else if (Character.isLowerCase(c)) {
+            }
+
+            if (Character.isLowerCase(c)) {
                 hasLowercase = true;
-            } else if (Character.isDigit(c)) {
+            }
+
+            if (Character.isDigit(c)) {
                 hasDigit = true;
-            } else if (!Character.isLetterOrDigit(c) & !Character.isWhitespace(c)) {
+            }
+
+            if (!Character.isLetterOrDigit(c) && !Character.isWhitespace(c)) {
                 hasSpecial = true;
             }
         }
