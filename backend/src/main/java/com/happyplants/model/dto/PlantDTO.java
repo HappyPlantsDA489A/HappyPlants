@@ -1,4 +1,4 @@
-package com.happyplants.model;
+package com.happyplants.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
