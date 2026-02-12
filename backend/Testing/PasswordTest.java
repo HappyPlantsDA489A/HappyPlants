@@ -21,6 +21,7 @@ public class PasswordTest {
     //All requirements are fulfilled with exact 12 characters
     public void testValidPasswordBoundary() {
         boolean result = passwordValidator.isValid("!12CharPass!");
+        assertTrue(result);
     }
 
     @Test
