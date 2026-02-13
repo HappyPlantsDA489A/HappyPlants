@@ -5,6 +5,7 @@ import java.util.List;
 public class PasswordValidator {
 
     private static final int MIN_LENGTH = 12;
+    private static final int MAX_LENGTH = 100;
 
     public boolean isValid(String password) {
         return validate(password).isEmpty();
@@ -15,6 +16,11 @@ public class PasswordValidator {
 
         if (password == null) {
             errors.add("Password cannot be null.");
+            return errors;
+        }
+
+        if (password.length() > MAX_LENGTH) {
+            errors.add("Password cannot be longer than 100 characters.");
             return errors;
         }
 
