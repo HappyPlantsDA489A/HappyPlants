@@ -1,0 +1,86 @@
+package com.happyplants.controller;
+
+import com.happyplants.model.User;
+import com.happyplants.model.dto.LoginRequest;
+import com.happyplants.model.dto.RegisterRequest;
+import com.happyplants.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/auth")
+@Tag(name = "Auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    // Error handling is in service method and exception/GlobalExceptionHandler.java
+    @PostMapping("/log-in")
+    @Operation(summary = "Log in")
+    @PreAuthorize("isAnonymous()")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        User user = authService.verifyLogin(loginRequest);
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                user.getId(),
+                null,
+                java.util.Collections.emptyList()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+        return ResponseEntity.ok("Login successful");
+    }
+
+    // Error handling is in service method and exception/GlobalExceptionHandler.java
+    @PostMapping("/register")
+    @Operation(summary = "Register")
+    @PreAuthorize("isAnonymous()")
+    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest request) {
+        User savedUser = authService.registerUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+
+    @PostMapping("/log-out")
+    @Operation(summary = "Log out")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        SecurityContextHolder.clearContext();
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return ResponseEntity.ok("Logout successful");
+    }
+
+    @GetMapping("/check-auth")
+    @Operation(summary = "Check auth status")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> testSession(Authentication auth) {
+        return ResponseEntity.ok("Logged in as: " + auth.getName());
+    }
+}
