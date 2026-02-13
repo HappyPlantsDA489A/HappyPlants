@@ -18,4 +18,12 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
+    @ExceptionHandler(WeakPasswordException.class)
+    public ProblemDetail handleWeakPassword(WeakPasswordException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("errors", ex.getErrors());
+        return problemDetail;
+    }
+
 }
