@@ -12,7 +12,7 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, insertable = false)
     private UUID id;
 
     @NotNull
@@ -26,9 +26,8 @@ public class User {
     @Column(name = "password_hash", length = Integer.MAX_VALUE)
     private String passwordHash;
 
-    @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false)
     private OffsetDateTime createdAt;
 
     public UUID getId() {

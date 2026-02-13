@@ -12,7 +12,7 @@ import java.util.UUID;
 public class UsersPlant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, insertable = false)
     private UUID id;
 
     @NotNull
@@ -40,9 +40,8 @@ public class UsersPlant {
     @Column(name = "died_at")
     private OffsetDateTime diedAt;
 
-    @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false)
     private OffsetDateTime createdAt;
 
     public UUID getId() {
