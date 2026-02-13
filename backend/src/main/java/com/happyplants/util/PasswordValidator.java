@@ -1,7 +1,10 @@
 package com.happyplants.util;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
+@Component
 public class PasswordValidator {
 
     private static final int MIN_LENGTH = 12;

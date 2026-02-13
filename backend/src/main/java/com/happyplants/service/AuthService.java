@@ -2,13 +2,16 @@ package com.happyplants.service;
 
 import com.happyplants.exception.EmailAlreadyExistsException;
 import com.happyplants.exception.InvalidLoginCredentialsException;
+import com.happyplants.exception.WeakPasswordException;
 import com.happyplants.model.User;
 import com.happyplants.model.dto.LoginRequest;
 import com.happyplants.model.dto.RegisterRequest;
 import com.happyplants.repository.UserRepository;
+import com.happyplants.util.PasswordValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,10 +19,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordValidator passwordValidator;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, PasswordValidator passwordValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.passwordValidator = passwordValidator;
     }
 
     public Optional<User> findByEmail(String email) {
@@ -33,6 +38,11 @@ public class AuthService {
     public User registerUser(RegisterRequest request)  {
         if (existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException(request.email());
+        }
+
+        List<String> passwordErrors = passwordValidator.validate(request.password());
+        if (!passwordErrors.isEmpty()) {
+            throw new WeakPasswordException(passwordErrors);
         }
 
         User user = new User();
