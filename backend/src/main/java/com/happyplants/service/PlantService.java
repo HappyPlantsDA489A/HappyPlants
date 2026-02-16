@@ -16,7 +16,7 @@ public class PlantService {
 
     public Plant getOrCreatePlant(PlantDTO plantDTO) {
         return plantRepository.findByPerenualId(plantDTO.getId())
-                .orElseGet(() -> plantRepository.save(convertDtoToPlant(plantDTO)))
+                .orElseGet(() -> plantRepository.save(convertDtoToPlant(plantDTO)));
     }
 
     private Plant convertDtoToPlant(PlantDTO plantDto) {
