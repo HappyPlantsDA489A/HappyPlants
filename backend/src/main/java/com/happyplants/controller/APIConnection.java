@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -28,7 +30,8 @@ public class APIConnection {
 
     @GetMapping("plants/search")
     public List<PlantDTO> search(@RequestParam String name) throws IOException, InterruptedException {
-        String url = String.format("https://perenual.com/api/v2/species-list?q=%s&page=1&hardiness=4-8&key=%s", name, plantApiKey);
+        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+        String url = String.format("https://perenual.com/api/v2/species-list?q=%s&page=1&hardiness=4-8&key=%s", encodedName, plantApiKey);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
