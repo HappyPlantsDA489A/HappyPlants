@@ -1,0 +1,58 @@
+package com.happyplants.service;
+
+import com.happyplants.model.Plant;
+import com.happyplants.model.User;
+import com.happyplants.model.UsersPlant;
+import com.happyplants.model.dto.PlantDTO;
+import com.happyplants.model.dto.PlantResponseDTO;
+import com.happyplants.model.dto.UsersPlantResponseDTO;
+import com.happyplants.repository.UsersPlantRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class UsersPlantService {
+    private final UsersPlantRepository usersPlantRepository;
+
+    public UsersPlantService(UsersPlantRepository usersPlantRepository) {
+        this.usersPlantRepository = usersPlantRepository;
+    }
+
+    public UsersPlantResponseDTO convertToDto(UsersPlant usersPlant) {
+        Plant plant = usersPlant.getPlant();
+
+        PlantResponseDTO plantDto = new PlantResponseDTO(
+                plant.getId(),
+                plant.getPerenualId(),
+                plant.getCommonName(),
+                plant.getScientificName(),
+                plant.getWateringDescription(),
+                plant.getSunDescription()
+        );
+
+        return new UsersPlantResponseDTO(
+                usersPlant.getId(),
+                usersPlant.getNickname(),
+                usersPlant.getImageUrl(),
+                usersPlant.getWateringFrequencyDays(),
+                usersPlant.getSunLight(),
+                usersPlant.getCreatedAt(),
+                plantDto
+        );
+    }
+
+    public UsersPlant addPlantToUser(User user, Plant plant, PlantDTO plantDTO) {
+        UsersPlant usersPlant = new UsersPlant();
+        usersPlant.setUser(user);
+        usersPlant.setPlant(plant);
+        usersPlant.setImageUrl(plantDTO.getImageUrl());
+        usersPlant.setSunLight(plantDTO.getSunlight());
+        return usersPlantRepository.save(usersPlant);
+    }
+
+    public List<UsersPlant> getPlantsForUser(UUID userId) {
+        return usersPlantRepository.findAllByUserId(userId);
+    }
+}

@@ -26,4 +26,9 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ProblemDetail handleUserNotFound(UserNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
 }
