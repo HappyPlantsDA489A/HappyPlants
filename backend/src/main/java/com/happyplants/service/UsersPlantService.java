@@ -24,7 +24,6 @@ public class UsersPlantService {
         Plant plant = usersPlant.getPlant();
 
         PlantResponseDTO plantDto = new PlantResponseDTO(
-                plant.getId(),
                 plant.getPerenualId(),
                 plant.getCommonName(),
                 plant.getScientificName(),
