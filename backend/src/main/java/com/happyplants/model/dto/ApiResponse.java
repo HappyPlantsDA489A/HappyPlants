@@ -1,7 +1,6 @@
-package com.happyplants.controller;
+package com.happyplants.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.happyplants.model.dto.PlantDTO;
 
 import java.util.List;
 

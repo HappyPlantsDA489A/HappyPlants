@@ -3,51 +3,64 @@ package com.happyplants.service;
 import com.happyplants.model.Plant;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
+import com.happyplants.model.dto.PerenualPlantDTO;
 import com.happyplants.model.dto.PlantDTO;
-import com.happyplants.model.dto.PlantResponseDTO;
-import com.happyplants.model.dto.UsersPlantResponseDTO;
+import com.happyplants.model.dto.UsersPlantDto;
 import com.happyplants.repository.UsersPlantRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UsersPlantService {
     private final UsersPlantRepository usersPlantRepository;
+    private final PlantService plantService;
+    private final PerenualApiService perenualApiService;
 
-    public UsersPlantService(UsersPlantRepository usersPlantRepository) {
+    public UsersPlantService(UsersPlantRepository usersPlantRepository, PlantService plantService, PerenualApiService perenualApiService) {
         this.usersPlantRepository = usersPlantRepository;
+        this.plantService = plantService;
+        this.perenualApiService = perenualApiService;
     }
 
-    public UsersPlantResponseDTO convertToDto(UsersPlant usersPlant) {
+    public UsersPlantDto convertToDto(UsersPlant usersPlant) {
         Plant plant = usersPlant.getPlant();
 
-        PlantResponseDTO plantDto = new PlantResponseDTO(
+        PlantDTO plantDto = new PlantDTO(
+                plant.getId(),
                 plant.getPerenualId(),
                 plant.getCommonName(),
                 plant.getScientificName(),
+                plant.getFamilyName(),
+                plant.getCultivar(),
+                plant.getSpeciesEpithet(),
+                plant.getGenus(),
                 plant.getWateringDescription(),
                 plant.getSunDescription()
         );
 
-        return new UsersPlantResponseDTO(
+        return new UsersPlantDto(
                 usersPlant.getId(),
                 usersPlant.getNickname(),
                 usersPlant.getImageUrl(),
                 usersPlant.getWateringFrequencyDays(),
-                usersPlant.getSunLight(),
                 usersPlant.getCreatedAt(),
+                usersPlant.getDiedAt(),
                 plantDto
         );
     }
 
-    public UsersPlant addPlantToUser(User user, Plant plant, PlantDTO plantDTO) {
+    public UsersPlant addPlantToUser(User user, int perenualId) {
+
+        Plant plant = plantService.getOrCreatePlant(perenualId);
+        PerenualPlantDTO perenualPlantDTO = perenualApiService.getPlantById(perenualId);
+
         UsersPlant usersPlant = new UsersPlant();
         usersPlant.setUser(user);
         usersPlant.setPlant(plant);
-        usersPlant.setImageUrl(plantDTO.getImageUrl());
-        usersPlant.setSunLight(plantDTO.getSunlight());
+        usersPlant.setImageUrl("placeholder");
         return usersPlantRepository.save(usersPlant);
     }
 

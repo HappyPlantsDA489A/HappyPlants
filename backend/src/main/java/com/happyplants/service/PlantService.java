@@ -1,35 +1,47 @@
 package com.happyplants.service;
 
+import com.happyplants.controller.APIConnection;
 import com.happyplants.model.Plant;
+import com.happyplants.model.dto.PerenualPlantDTO;
 import com.happyplants.model.dto.PlantDTO;
 import com.happyplants.repository.PlantRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 
 @Service
 public class PlantService {
+
     private final PlantRepository plantRepository;
+    private final PerenualApiService perenualApiService;
 
-    public PlantService(PlantRepository plantRepository) {
+    public PlantService(PlantRepository plantRepository, PerenualApiService perenualApiService) {
         this.plantRepository = plantRepository;
+        this.perenualApiService = perenualApiService;
     }
 
-    public Plant getOrCreatePlant(PlantDTO plantDTO) {
-        return plantRepository.findByPerenualId(plantDTO.getId())
-                .orElseGet(() -> plantRepository.save(convertDtoToPlant(plantDTO)));
+    public Plant getOrCreatePlant(int perenualId) {
+        return plantRepository.findByPerenualId(perenualId)
+                .orElseGet(() -> {
+                   PerenualPlantDTO plantDTO = perenualApiService.getPlantById(perenualId);
+                   Plant plant = convertDtoToPlant(plantDTO);
+                   return plantRepository.save(plant);
+                });
     }
 
-    private Plant convertDtoToPlant(PlantDTO plantDto) {
+    private Plant convertDtoToPlant(PerenualPlantDTO plantDto) {
         Plant plant = new Plant();
-        plant.setPerenualId(plantDto.getId());
-        plant.setCommonName(plantDto.getCommonName());
-        plant.setScientificName(plantDto.getScientificName() != null && plantDto.getScientificName().length > 0 ? plantDto.getScientificName()[0] : "Unknown");
-        plant.setFamilyName(plantDto.getFamily());
-        plant.setGenus(plantDto.getGenus());
-        plant.setWateringDescription(plantDto.getWatering());
-        plant.setSunDescription(plantDto.getSunlight());
+        plant.setPerenualId(plantDto.perenualId());
+        plant.setCommonName(plantDto.commonName());
+        plant.setScientificName(plantDto.scientificName().get(0));
+        plant.setFamilyName(plantDto.familyName());
+        plant.setCultivar(plantDto.cultivar());
+        plant.setSpeciesEpithet(plantDto.speciesEpithet());
+        plant.setGenus(plantDto.genus());
+        plant.setWateringDescription(plantDto.wateringDescription());
+        plant.setSunDescription(plantDto.sunDescription());
         return plant;
     }
-
 
 }

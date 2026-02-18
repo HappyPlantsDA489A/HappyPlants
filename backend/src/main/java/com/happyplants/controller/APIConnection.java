@@ -1,18 +1,9 @@
 package com.happyplants.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.happyplants.model.dto.PerenualPlantDTO;
 import com.happyplants.model.dto.PlantDTO;
-import org.springframework.beans.factory.annotation.Value;
+import com.happyplants.service.PerenualApiService;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -20,8 +11,11 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class APIConnection {
 
-    @Value("${plant.api.token}")
-    private String plantApiKey;
+    private final PerenualApiService perenualApiService;
+
+    public APIConnection(PerenualApiService perenualApiService) {
+        this.perenualApiService = perenualApiService;
+    }
 
     @GetMapping("test")
     public String test() {
@@ -29,41 +23,13 @@ public class APIConnection {
     }
 
     @GetMapping("plants/search")
-    public List<PlantDTO> search(@RequestParam String name) throws IOException, InterruptedException {
-        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
-        String url = String.format("https://perenual.com/api/v2/species-list?q=%s&page=1&hardiness=4-8&key=%s", encodedName, plantApiKey);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-        System.out.println(response.statusCode());
-        System.out.println(plantApiKey);
-
-        return getPlantResults(response);
+    public List<PlantDTO> search(@RequestParam String name) {
+        return perenualApiService.search(name);
     }
-
 
     @GetMapping("plants/{id}")
-    public PlantDTO getPlantById(@PathVariable int id) throws IOException, InterruptedException {
-        String url = String.format("https://perenual.com/api/species/details/%d?key=%s", id, plantApiKey);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response.body(), PlantDTO.class);
-    }
-
-    public List<PlantDTO> getPlantResults(HttpResponse<String> response) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        ApiResponse apiResponse = mapper.readValue(response.body(), ApiResponse.class);
-        return apiResponse.getData();
+    public PerenualPlantDTO getPlantById(@PathVariable int id) {
+        return perenualApiService.getPlantById(id);
     }
 }
+
