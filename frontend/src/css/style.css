@@ -1,0 +1,455 @@
+/* =========================================
+   HappyPlants - Modern CSS Stylesheet
+   ========================================= */
+
+/* =========================================
+   1. CSS RESET & BASE STYLES
+   ========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Color Palette */
+    --primary-color: #2ecc71;
+    --primary-dark: #145931;
+    --primary-light: #58d68d;
+    --secondary-color: #3498db;
+    --secondary-dark: #2980b9;
+    --accent-color: #f39c12;
+    --accent-dark: #e67e22;
+
+    /* Neutral Colors */
+    --background: #f8f9fa;
+    --surface: #87c185;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --border-color: #e1e8ed;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.2);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+body {
+    font-family: "Tulpen One", sans-serif;
+    background-color: #afd1af;
+    background-attachment: fixed;
+    letter-spacing: 2px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   2. TYPOGRAPHY
+   ========================================= */
+
+/* Page title */
+h1 {
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 2px;
+    font-size: 300px;
+    color: var(--primary-dark);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-button {
+    font-family: "Tulpen One", sans-serif;
+    font-size: 30px;
+    font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+.search-bar {
+    font-family: "Tulpen One", sans-serif;
+    letter-spacing: 2px;
+  font-weight: bolder;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.8;
+}
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--secondary-dark);
+}
+
+/* =========================================
+   3. LAYOUT & CONTAINERS
+   ========================================= */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    width: 100%;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    padding: var(--spacing-xl) var(--spacing-md);
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   4. HEADER & SEARCH SECTION
+   ========================================= */
+
+.header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg) var(--spacing-md);
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.search-container {
+    max-width: 600px;
+    margin: var(--spacing-lg) auto;
+    padding: var(--spacing-md);
+}
+
+.search-form {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+/* =========================================
+   5. FORM ELEMENTS
+   ========================================= */
+
+input[type="text"],
+input[type="search"] {
+    flex: 1;
+    min-width: 200px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    color: var(--text-primary);
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+}
+
+input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* =========================================
+   6. BUTTONS
+   ========================================= */
+
+button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* =========================================
+   7. GRID LAYOUT FOR PLANTS
+   ========================================= */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) 0;
+    animation: slideUp 0.5s ease-out;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   8. PLANT CARDS
+   ========================================= */
+
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    display: block;
+    cursor: pointer;
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(52, 152, 219, 0.1));
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    z-index: 1;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-slow);
+}
+
+.card:hover img {
+    transform: scale(1.1);
+}
+
+.card h3 {
+    padding: var(--spacing-md);
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    background: var(--surface);
+}
+
+/* =========================================
+   9. PLANT DETAIL PAGE
+   ========================================= */
+
+.plant-detail,
+div > div {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+.plant-detail img,
+div > div > img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.plant-detail h1,
+div > div > h1 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.plant-detail p,
+div > div > p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    background: var(--surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+/* =========================================
+   10. LOADING STATES
+   ========================================= */
+
+.loading {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.loading p {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* =========================================
+   11. MAIN PAGE WRAPPER
+   ========================================= */
+
+div {
+    padding: var(--spacing-lg);
+}
+
+div > h1 {
+    margin-bottom: var(--spacing-lg);
+}
+
+div > input,
+div > button {
+    margin-bottom: var(--spacing-md);
+}
+
+/* =========================================
+   12. RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    input[type="text"],
+    input[type="search"] {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .container {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    div {
+        padding: var(--spacing-md);
+    }
+}
+
+/* =========================================
+   13. ACCESSIBILITY
+   ========================================= */
+
+*:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
