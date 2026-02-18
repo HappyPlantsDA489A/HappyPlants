@@ -10,27 +10,32 @@ public record PerenualPlantDTO(
        @JsonProperty("id")
        Integer perenualId,
 
-        @JsonProperty("common_name")
-        String commonName,
+       @JsonProperty("common_name")
+       String commonName,
 
-        @JsonProperty("scientific_name")
+       @JsonProperty("scientific_name")
        List<String> scientificName,
 
-        @JsonProperty("family")
-        String familyName,
+       @JsonProperty("family")
+       String familyName,
 
-        String cultivar,
+       @JsonProperty("cultivar")
+       String cultivar,
 
-        @JsonProperty("species_epithet")
-        String speciesEpithet,
+       @JsonProperty("species_epithet")
+       String speciesEpithet,
 
-        String genus,
+       @JsonProperty("genus")
+       String genus,
 
-        @JsonProperty("watering")
-        String wateringDescription,
+       @JsonProperty("description")
+       String plantDescription,
 
-        @JsonProperty("sunlight")
-        String sunDescription
+       @JsonProperty("watering")
+       String wateringDescription,
+
+       @JsonProperty("sunlight")
+       List<String> sunDescription
 ){}
 
 

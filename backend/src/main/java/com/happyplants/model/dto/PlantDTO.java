@@ -17,6 +17,7 @@ public record PlantDTO(
         String cultivar,
         String speciesEpithet,
         String genus,
+        String plantDescription,
         String wateringDescription,
         String sunDescription) implements Serializable {
 }

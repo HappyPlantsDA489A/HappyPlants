@@ -34,13 +34,14 @@ public class PlantService {
         Plant plant = new Plant();
         plant.setPerenualId(plantDto.perenualId());
         plant.setCommonName(plantDto.commonName());
-        plant.setScientificName(plantDto.scientificName().get(0));
+        plant.setScientificName(plantDto.scientificName().isEmpty() ? null : plantDto.scientificName().get(0));
         plant.setFamilyName(plantDto.familyName());
         plant.setCultivar(plantDto.cultivar());
         plant.setSpeciesEpithet(plantDto.speciesEpithet());
         plant.setGenus(plantDto.genus());
+        plant.setPlantDescription(plantDto.plantDescription());
         plant.setWateringDescription(plantDto.wateringDescription());
-        plant.setSunDescription(plantDto.sunDescription());
+        plant.setSunDescription(plantDto.sunDescription().isEmpty() ? null : plantDto.sunDescription().get(0));
         return plant;
     }
 

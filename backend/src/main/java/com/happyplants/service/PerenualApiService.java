@@ -49,7 +49,7 @@ public class PerenualApiService {
     public PerenualPlantDTO getPlantById(int id) {
         try {
             String url = String.format(
-                    "https://perenual.com/api/species/details/%d?key=%s",
+                    "https://perenual.com/api/v2/species/details/%d?key=%s",
                     id, plantApiKey
             );
 

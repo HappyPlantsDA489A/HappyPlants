@@ -37,6 +37,7 @@ public class UsersPlantService {
                 plant.getCultivar(),
                 plant.getSpeciesEpithet(),
                 plant.getGenus(),
+                plant.getPlantDescription(), 
                 plant.getWateringDescription(),
                 plant.getSunDescription()
         );
