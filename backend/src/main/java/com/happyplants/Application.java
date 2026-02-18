@@ -21,9 +21,18 @@ public class Application {
                     .load();
         }
 
-        dotenv.entries().forEach(entry -> {
-            System.setProperty(entry.getKey(), entry.getValue());
-        });
+        if (dotenv == null) {
+            dotenv = Dotenv.configure()
+                    .ignoreIfMissing()
+                    .load();
+            System.out.println("⚠ No .env file found, trying using system environment variables");
+        }
+
+        if (dotenv != null) {
+            dotenv.entries().forEach(entry -> {
+                System.setProperty(entry.getKey(), entry.getValue());
+            });
+        }
 
         SpringApplication.run(Application.class, args);
     }

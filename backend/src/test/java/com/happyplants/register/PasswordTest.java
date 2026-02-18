@@ -1,4 +1,8 @@
+package com.happyplants.register;
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.happyplants.util.PasswordValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
