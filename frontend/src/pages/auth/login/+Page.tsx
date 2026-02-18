@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf } from "lucide-react";
 import { navigate, reload } from "vike/client/router";
 import { API_BASE_URL } from "@/config";
+import { toast } from "sonner";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -24,14 +25,19 @@ export default function Page() {
         },
       });
 
+      const json = await response.json();
+
       if (response.ok) {
         await reload();
         navigate("/library");
+      } else if (response.status == 401) {
+        throw new Error(json.detail);
       } else {
         const json = await response.json();
-        throw new Error(json.title);
+        throw new Error(json.message);
       }
     } catch (error: any) {
+      toast.error(error.message);
       console.log(error);
     }
     setIsLoading(false);
@@ -82,8 +88,8 @@ export default function Page() {
             >
               Log in
             </Button>
-            <Button variant="secondary" className="w-full" size="lg">
-              Create account
+            <Button asChild variant="secondary" className="w-full" size="lg">
+              <a href="/auth/register">Create account</a>
             </Button>
           </div>
         </CardContent>
