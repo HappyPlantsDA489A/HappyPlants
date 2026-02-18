@@ -1,12 +1,11 @@
-package com.happyplants.register;
+package com.happyplants.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.happyplants.util.PasswordValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class PasswordTest {
+public class PasswordValidatorTest {
     private PasswordValidator passwordValidator;
 
     @BeforeEach
@@ -30,8 +29,16 @@ public class PasswordTest {
 
     @Test
     //Missing 1 in length
-    public void testInvalidPassLengthBoundary() {
+    public void testInvalidPassLengthBelowBoundary() {
         boolean result = passwordValidator.isValid("NotValid12!");
+        assertFalse(result);
+    }
+
+    @Test
+    //Exceeding 1 in length
+    public void testInvalidPassLengthAboveBoundary() {
+        String password = "A".repeat(101) + "1a!";
+        boolean result = passwordValidator.isValid(password);
         assertFalse(result);
     }
 
@@ -67,6 +74,20 @@ public class PasswordTest {
     //No requirement fulfilled
     public void testInvalidPass() {
         boolean result = passwordValidator.isValid("");
+        assertFalse(result);
+    }
+
+    @Test
+    // Whitespace only
+    public void testInvalidPassWhitespace() {
+        boolean result = passwordValidator.isValid(" ");
+        assertFalse(result);
+    }
+
+    @Test
+    // Null value
+    public void testInvalidPassNull() {
+        boolean result = passwordValidator.isValid(null);
         assertFalse(result);
     }
 

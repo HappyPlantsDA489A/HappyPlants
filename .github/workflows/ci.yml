@@ -32,7 +32,14 @@ jobs:
 
       - name: Build backend
         working-directory: ./backend
-        run: mvn clean package -DskipTests
+        run: mvn clean test
+
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: backend/target/site/jacoco
+
 
       - name: Generate job summary
         if: always()
@@ -77,5 +84,5 @@ jobs:
           echo "## Frontend Build Results 🚀" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Node Version**: 18" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node Version**: 24" >> $GITHUB_STEP_SUMMARY
           echo "- **Runner**: ubuntu-latest" >> $GITHUB_STEP_SUMMARY
