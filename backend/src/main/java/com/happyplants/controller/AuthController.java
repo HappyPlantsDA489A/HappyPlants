@@ -6,7 +6,9 @@ import com.happyplants.model.dto.RegisterRequest;
 import com.happyplants.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -63,16 +65,23 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @PostMapping("/log-out")
+    @DeleteMapping("/log-out")
     @Operation(summary = "Log out")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextHolder.clearContext();
 
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
+
+        Cookie cookie = new Cookie("HAPPY_COOKIE", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
 
         return ResponseEntity.ok("Logout successful");
     }
