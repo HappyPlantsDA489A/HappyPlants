@@ -22,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,7 +41,7 @@ public class AuthController {
     @PostMapping("/log-in")
     @Operation(summary = "Log in")
     @PreAuthorize("isAnonymous()")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         User user = authService.verifyLogin(loginRequest);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
@@ -53,7 +55,10 @@ public class AuthController {
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        return ResponseEntity.ok("Login successful");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Login successful");
+
+        return ResponseEntity.ok(response);
     }
 
     // Error handling is in service method and exception/GlobalExceptionHandler.java
@@ -68,7 +73,7 @@ public class AuthController {
     @DeleteMapping("/log-out")
     @Operation(summary = "Log out")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request, HttpServletResponse httpResponse) {
         SecurityContextHolder.clearContext();
 
         HttpSession session = request.getSession(false);
@@ -81,9 +86,12 @@ public class AuthController {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
 
-        response.addCookie(cookie);
+        httpResponse.addCookie(cookie);
 
-        return ResponseEntity.ok("Logout successful");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logout successful");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/check-auth")
