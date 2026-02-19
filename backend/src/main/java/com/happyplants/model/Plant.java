@@ -36,6 +36,9 @@ public class Plant {
     @Column(name = "genus", length = Integer.MAX_VALUE)
     private String genus;
 
+    @Column(name = "plant_description", length = Integer.MAX_VALUE)
+    private String plantDescription;
+
     @Column(name = "watering_description", length = Integer.MAX_VALUE)
     private String wateringDescription;
 
@@ -105,6 +108,10 @@ public class Plant {
     public void setGenus(String genus) {
         this.genus = genus;
     }
+
+    public String getPlantDescription() {return plantDescription;}
+
+    public void setPlantDescription(String plantDescription) {this.plantDescription = plantDescription;}
 
     public String getWateringDescription() {
         return wateringDescription;

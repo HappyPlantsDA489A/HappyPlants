@@ -34,9 +34,6 @@ public class UsersPlant {
     @Column(name = "watering_frequency_days")
     private Integer wateringFrequencyDays;
 
-    @Column(name = "sun_light", length = Integer.MAX_VALUE)
-    private String sunLight;
-
     @Column(name = "died_at")
     private OffsetDateTime diedAt;
 
@@ -90,14 +87,6 @@ public class UsersPlant {
 
     public void setWateringFrequencyDays(Integer wateringFrequencyDays) {
         this.wateringFrequencyDays = wateringFrequencyDays;
-    }
-
-    public String getSunLight() {
-        return sunLight;
-    }
-
-    public void setSunLight(String sunLight) {
-        this.sunLight = sunLight;
     }
 
     public OffsetDateTime getDiedAt() {
