@@ -5,6 +5,7 @@ import com.happyplants.model.UsersPlant;
 import com.happyplants.model.dto.UsersPlantDTO;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UsersPlantService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class UserPlantsController {
 
 
     @PostMapping("/{perenualId}")
+    @Operation(summary = "Add plant to user library")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UsersPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
@@ -40,6 +42,7 @@ public class UserPlantsController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all plants in a users library")
     @PreAuthorize("isAuthenticated()")
     public List<UsersPlantDTO> getUserPlants(Authentication auth) {
         User user = userService.getCurrentUser(auth);
