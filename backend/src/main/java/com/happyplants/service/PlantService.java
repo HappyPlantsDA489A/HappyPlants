@@ -41,7 +41,12 @@ public class PlantService {
         plant.setGenus(plantDto.genus());
         plant.setPlantDescription(plantDto.plantDescription());
         plant.setWateringDescription(plantDto.wateringDescription());
-        plant.setSunDescription(plantDto.sunDescription().isEmpty() ? null : plantDto.sunDescription().get(0));
+        plant.setSunDescription(
+                plantDto.sunDescription() != null && !plantDto.sunDescription().isEmpty()
+                        ? plantDto.sunDescription().get(0)
+                        : null
+        );
+        plant.setPartialData(plantDto.wateringDescription() == null);
         return plant;
     }
 
