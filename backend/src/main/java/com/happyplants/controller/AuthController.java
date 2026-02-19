@@ -6,7 +6,9 @@ import com.happyplants.model.dto.RegisterRequest;
 import com.happyplants.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @Tag(name = "Auth")
 public class AuthController {
 
@@ -37,7 +41,7 @@ public class AuthController {
     @PostMapping("/log-in")
     @Operation(summary = "Log in")
     @PreAuthorize("isAnonymous()")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         User user = authService.verifyLogin(loginRequest);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
@@ -51,7 +55,10 @@ public class AuthController {
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        return ResponseEntity.ok("Login successful");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Login successful");
+
+        return ResponseEntity.ok(response);
     }
 
     // Error handling is in service method and exception/GlobalExceptionHandler.java
@@ -63,10 +70,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @PostMapping("/log-out")
+    @DeleteMapping("/log-out")
     @Operation(summary = "Log out")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request, HttpServletResponse httpResponse) {
         SecurityContextHolder.clearContext();
 
         HttpSession session = request.getSession(false);
@@ -74,7 +81,17 @@ public class AuthController {
             session.invalidate();
         }
 
-        return ResponseEntity.ok("Logout successful");
+        Cookie cookie = new Cookie("HAPPY_COOKIE", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+
+        httpResponse.addCookie(cookie);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logout successful");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/check-auth")
