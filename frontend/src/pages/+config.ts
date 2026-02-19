@@ -5,4 +5,5 @@ export default {
   extends: [vikeReact],
   title: "Happy Plants",
   ssr: true,
+  passToClient: ["user", "routeParams"],
 } satisfies Config;
