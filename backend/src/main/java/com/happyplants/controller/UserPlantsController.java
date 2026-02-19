@@ -2,7 +2,7 @@ package com.happyplants.controller;
 
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
-import com.happyplants.model.dto.UsersPlantDto;
+import com.happyplants.model.dto.UsersPlantDTO;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UsersPlantService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -33,16 +32,16 @@ public class UserPlantsController {
 
     @PostMapping("/{perenualId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UsersPlantDto> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
+    public ResponseEntity<UsersPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         UsersPlant newUserPlant = usersPlantService.addPlantToUser(user, perenualId);
-        UsersPlantDto plantDto = usersPlantService.convertToDto(newUserPlant);
+        UsersPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDto);
     }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public List<UsersPlantDto> getUserPlants(Authentication auth) {
+    public List<UsersPlantDTO> getUserPlants(Authentication auth) {
         User user = userService.getCurrentUser(auth);
         return usersPlantService.getPlantsForUser(user.getId())
                 .stream()
