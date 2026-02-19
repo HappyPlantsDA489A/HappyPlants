@@ -61,7 +61,7 @@ public class UsersPlantService {
         UsersPlant usersPlant = new UsersPlant();
         usersPlant.setUser(user);
         usersPlant.setPlant(plant);
-        usersPlant.setImageUrl("placeholder");
+        usersPlant.setImageUrl(null);
         return usersPlantRepository.save(usersPlant);
     }
 
