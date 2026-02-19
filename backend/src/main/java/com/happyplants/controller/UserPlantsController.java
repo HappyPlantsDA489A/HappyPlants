@@ -2,7 +2,7 @@ package com.happyplants.controller;
 
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
-import com.happyplants.model.dto.UsersPlantDTO;
+import com.happyplants.model.dto.UserPlantDTO;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UsersPlantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,17 +34,17 @@ public class UserPlantsController {
     @PostMapping("/{perenualId}")
     @Operation(summary = "Add plant to user library")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UsersPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
+    public ResponseEntity<UserPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         UsersPlant newUserPlant = usersPlantService.addPlantToUser(user, perenualId);
-        UsersPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant);
+        UserPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDto);
     }
 
     @GetMapping
     @Operation(summary = "Get all plants in a users library")
     @PreAuthorize("isAuthenticated()")
-    public List<UsersPlantDTO> getUserPlants(Authentication auth) {
+    public List<UserPlantDTO> getUserPlants(Authentication auth) {
         User user = userService.getCurrentUser(auth);
         return usersPlantService.getPlantsForUser(user.getId())
                 .stream()

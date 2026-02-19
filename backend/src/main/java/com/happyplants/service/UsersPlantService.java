@@ -5,7 +5,7 @@ import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
 import com.happyplants.model.dto.PerenualPlantDTO;
 import com.happyplants.model.dto.PlantDTO;
-import com.happyplants.model.dto.UsersPlantDTO;
+import com.happyplants.model.dto.UserPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class UsersPlantService {
         this.perenualApiService = perenualApiService;
     }
 
-    public UsersPlantDTO convertToDto(UsersPlant usersPlant) {
+    public UserPlantDTO convertToDto(UsersPlant usersPlant) {
         Plant plant = usersPlant.getPlant();
 
         PlantDTO plantDto = new PlantDTO(
@@ -41,7 +41,7 @@ public class UsersPlantService {
                 plant.getSunDescription()
         );
 
-        return new UsersPlantDTO(
+        return new UserPlantDTO(
                 usersPlant.getId(),
                 usersPlant.getNickname(),
                 usersPlant.getImageUrl(),
