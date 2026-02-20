@@ -1,7 +1,7 @@
 package com.happyplants.controller;
 
 import com.happyplants.model.dto.PerenualPlantDTO;
-import com.happyplants.model.dto.PlantDTO;
+import com.happyplants.model.dto.PerenualSearchPlantDTO;
 import com.happyplants.service.PerenualApiService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +24,8 @@ public class APIConnection {
     }
 
     @GetMapping("plants/search")
-    @Operation(summary = "Serch for plants")
-    public List<PlantDTO> search(@RequestParam String name) {
+    @Operation(summary = "Search for plants")
+    public List<PerenualSearchPlantDTO> search(@RequestParam String name) {
         return perenualApiService.search(name);
     }
 

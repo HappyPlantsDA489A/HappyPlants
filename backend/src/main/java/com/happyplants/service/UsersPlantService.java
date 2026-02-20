@@ -55,7 +55,6 @@ public class UsersPlantService {
     public UsersPlant addPlantToUser(User user, int perenualId) {
 
         Plant plant = plantService.getOrCreatePlant(perenualId);
-        PerenualPlantDTO perenualPlantDTO = perenualApiService.getPlantById(perenualId);
 
         UsersPlant usersPlant = new UsersPlant();
         usersPlant.setUser(user);
