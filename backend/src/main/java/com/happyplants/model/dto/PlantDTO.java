@@ -19,6 +19,6 @@ public record PlantDTO(
         String genus,
         String plantDescription,
         String wateringDescription,
-        String sunDescription,
-        boolean partialData) implements Serializable {
+        String sunDescription
+        ) implements Serializable {
 }

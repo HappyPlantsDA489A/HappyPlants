@@ -46,7 +46,6 @@ public class PlantService {
                         ? plantDto.sunDescription().get(0)
                         : null
         );
-        plant.setPartialData(plantDto.wateringDescription() == null);
         return plant;
     }
 

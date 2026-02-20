@@ -45,9 +45,6 @@ public class Plant {
     @Column(name = "sun_description", length = Integer.MAX_VALUE)
     private String sunDescription;
 
-    @Column(name = "partial_data")
-    private boolean partialData;
-
     public UUID getId() {
         return id;
     }
@@ -132,8 +129,5 @@ public class Plant {
         this.sunDescription = sunDescription;
     }
 
-    public boolean isPartialData() {return partialData;}
-
-    public void setPartialData(boolean partialData) {this.partialData = partialData;}
 
 }

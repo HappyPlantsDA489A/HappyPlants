@@ -38,8 +38,7 @@ public class UsersPlantService {
                 plant.getGenus(),
                 plant.getPlantDescription(), 
                 plant.getWateringDescription(),
-                plant.getSunDescription(),
-                plant.isPartialData()
+                plant.getSunDescription()
         );
 
         return new UserPlantDTO(
