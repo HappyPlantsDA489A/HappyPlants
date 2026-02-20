@@ -31,4 +31,14 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(UnauthorizedUserPlantAccessException.class)
+    public ProblemDetail handleUnauthorizedUserPlantAccess(UnauthorizedUserPlantAccessException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(UserPlantNotFoundException.class)
+    public ProblemDetail handleUserPlantNotFound(UserPlantNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
 }
