@@ -7,5 +7,7 @@ export interface UserPlantDTO {
   wateringFrequencyDays?: number;
   createdAt?: string;
   diedAt?: string;
+  lastWateredAt?: string;
+  timesWatered: number;
   plant: PlantDTO;
 }
