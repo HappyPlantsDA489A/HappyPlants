@@ -37,7 +37,7 @@ public class UserPlantsController {
     public ResponseEntity<UserPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         UsersPlant newUserPlant = usersPlantService.addPlantToUser(user, perenualId);
-        UserPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant);
+        UserPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant, null, 0);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDto);
     }
 
@@ -46,9 +46,7 @@ public class UserPlantsController {
     @PreAuthorize("isAuthenticated()")
     public List<UserPlantDTO> getUserPlants(Authentication auth) {
         User user = userService.getCurrentUser(auth);
-        return usersPlantService.getPlantsForUser(user.getId())
-                .stream()
-                .map(usersPlantService::convertToDto)
-                .toList();
+
+        return usersPlantService.getPlantsForUser(user.getId());
     }
 }

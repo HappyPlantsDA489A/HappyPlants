@@ -11,6 +11,8 @@ public record UserPlantDTO(
         Integer wateringFrequencyDays,
         OffsetDateTime createdAt,
         OffsetDateTime diedAt,
+        OffsetDateTime lastWateredAt,
+        int timesWatered,
         PlantDTO plant
 ) implements Serializable {
 }

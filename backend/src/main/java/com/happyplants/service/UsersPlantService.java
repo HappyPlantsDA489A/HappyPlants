@@ -9,6 +9,7 @@ import com.happyplants.model.dto.UserPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class UsersPlantService {
         this.perenualApiService = perenualApiService;
     }
 
-    public UserPlantDTO convertToDto(UsersPlant usersPlant) {
+    public UserPlantDTO convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
         Plant plant = usersPlant.getPlant();
 
         PlantDTO plantDto = new PlantDTO(
@@ -48,6 +49,8 @@ public class UsersPlantService {
                 usersPlant.getWateringFrequencyDays(),
                 usersPlant.getCreatedAt(),
                 usersPlant.getDiedAt(),
+                lastWateredAt,
+                timesWatered,
                 plantDto
         );
     }
@@ -55,7 +58,6 @@ public class UsersPlantService {
     public UsersPlant addPlantToUser(User user, int perenualId) {
 
         Plant plant = plantService.getOrCreatePlant(perenualId);
-        PerenualPlantDTO perenualPlantDTO = perenualApiService.getPlantById(perenualId);
 
         UsersPlant usersPlant = new UsersPlant();
         usersPlant.setUser(user);
@@ -64,7 +66,15 @@ public class UsersPlantService {
         return usersPlantRepository.save(usersPlant);
     }
 
-    public List<UsersPlant> getPlantsForUser(UUID userId) {
-        return usersPlantRepository.findAllByUserId(userId);
+    public List<UserPlantDTO> getPlantsForUser(UUID userId) {
+        List<Object[]> results = usersPlantRepository.findAllWithLastWateredByUserId(userId);
+
+        return results.stream().map(result -> {
+            UsersPlant up = (UsersPlant) result[0];
+            OffsetDateTime lastWatered = (OffsetDateTime) result[1];
+            Long count = (Long) result[2];
+            int timesWatered = (count != null) ? count.intValue() : 0;
+            return convertToDto(up, lastWatered, timesWatered);
+        }).toList();
     }
 }
