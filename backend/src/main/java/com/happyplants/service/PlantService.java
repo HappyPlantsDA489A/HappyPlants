@@ -24,9 +24,24 @@ public class PlantService {
     public Plant getOrCreatePlant(int perenualId) {
         return plantRepository.findByPerenualId(perenualId)
                 .orElseGet(() -> {
-                   PerenualPlantDTO plantDTO = perenualApiService.getPlantById(perenualId);
-                   Plant plant = convertDtoToPlant(plantDTO);
-                   return plantRepository.save(plant);
+
+                    PerenualPlantDTO plantDTO;
+
+                    if (perenualId <= 3000) {
+                        plantDTO = perenualApiService.getPlantById(perenualId);
+                    } else {
+                        plantDTO = perenualApiService.getPartialPlantById(perenualId);
+                    }
+
+                    Plant plant = convertDtoToPlant(plantDTO);
+
+                    if (perenualId <= 3000) {
+                        String careGuideWatering = perenualApiService.getWateringDescription(perenualId);
+                        if (careGuideWatering != null) {
+                            plant.setWateringDescription(careGuideWatering);
+                        }
+                    }
+                    return plantRepository.save(plant);
                 });
     }
 

@@ -70,11 +70,9 @@ public class PerenualApiService {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            try {
-                return mapper.readValue(response.body(), PerenualPlantDTO.class);
-            } catch (Exception e) {
-                return getPartialPlantById(id);
-            }
+
+            return mapper.readValue(response.body(), PerenualPlantDTO.class);
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to fetch plant details", e);
         }
@@ -89,7 +87,7 @@ public class PerenualApiService {
         }
     }
 
-    private PerenualPlantDTO getPartialPlantById(int id) {
+    public PerenualPlantDTO getPartialPlantById(int id) {
 
         PerenualSearchPlantDTO pspDTO = searchCache.get(id);
         if (pspDTO == null) { throw new RuntimeException("Plant not found"); }
@@ -105,5 +103,35 @@ public class PerenualApiService {
                 null,
                 null
         );
+    }
+
+    public String getWateringDescription(int id) {
+        try {
+            String url = String.format(
+                    "https://perenual.com/api/species-care-guide-list?species_id=%d&key=%s",
+                    id, plantApiKey
+            );
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            JsonNode root = mapper.readTree(response.body());
+
+            JsonNode sections = root.path("data").get(0).path("section");
+
+            for(JsonNode section : sections) {
+                if (section.path("type").asText().equals("watering")) {
+                    return section.path("description").asText();
+                }
+            }
+            return null;
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
