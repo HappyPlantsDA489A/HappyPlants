@@ -12,6 +12,7 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordRules, setPasswordRules] = useState(getPasswordRules(""));
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleRegister() {
@@ -46,6 +47,26 @@ export default function Page() {
     }
     setIsLoading(false);
   }
+
+  function PasswordRule({label, valid} : {label:string; valid:boolean}) {
+    return (
+        <div className={`flex items-center gap-2 ${valid ? "text-green-600" : "text-red-500"}`}>
+          <span>{valid ? "✔" : "✖"}</span>
+          <span>{label}</span>
+        </div>
+    );
+  }
+
+  function getPasswordRules(password: string) {
+    return {
+      length: password.length >= 12,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      digit: /[0-9]/.test(password),
+      special: /[^A-Za-z0-9\s]/.test(password)
+    };
+  }
+  const allValid = Object.values(passwordRules).every(Boolean);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -90,13 +111,26 @@ export default function Page() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setPassword(value);
+                  setPasswordRules(getPasswordRules(value));
+                }}
                 required
               />
+
+              <div className={"mt-2 space-y-1 text-sm"}>
+                <PasswordRule label="Minimum 12 characters" valid={passwordRules.length}/>
+                <PasswordRule label="Minimum one uppercase letter" valid={passwordRules.uppercase}/>
+                <PasswordRule label="Minimum one lowercase letter" valid={passwordRules.lowercase}/>
+                <PasswordRule label="Minimum one digit" valid={passwordRules.digit}/>
+                <PasswordRule label="Minimum one special character" valid={passwordRules.special}/>
+              </div>
             </div>
+
             <Button
               onClick={handleRegister}
-              disabled={isLoading}
+              disabled={isLoading || !allValid}
               type="submit"
               className="w-full"
               size="lg"
