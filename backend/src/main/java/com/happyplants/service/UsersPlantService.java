@@ -1,5 +1,7 @@
 package com.happyplants.service;
 
+import com.happyplants.exception.UnauthorizedUserPlantAccessException;
+import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.Plant;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
@@ -76,5 +78,31 @@ public class UsersPlantService {
             int timesWatered = (count != null) ? count.intValue() : 0;
             return convertToDto(up, lastWatered, timesWatered);
         }).toList();
+    }
+
+    public void removeUserPlant(UUID userId, UUID userPlantId) {
+        UsersPlant plant = usersPlantRepository.findById(userPlantId)
+                .orElseThrow(UserPlantNotFoundException::new);
+
+        if (!plant.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserPlantAccessException();
+        }
+        usersPlantRepository.delete(plant);
+    }
+
+    public void markPlantAsDead(UUID userId, UUID userPlantId) {
+        UsersPlant plant = usersPlantRepository.findById(userPlantId)
+                .orElseThrow(UserPlantNotFoundException::new);
+
+        if (!plant.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserPlantAccessException();
+        }
+
+        if (plant.getDiedAt() == null) {
+            plant.setDiedAt(OffsetDateTime.now());
+        }
+
+        usersPlantRepository.save(plant);
+
     }
 }
