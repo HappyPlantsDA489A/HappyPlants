@@ -12,10 +12,20 @@ export function UserPlantCard({ userPlant }: UserPlantCardProps) {
   const displayName = userPlant.nickname || userPlant.plant.commonName;
 
   return (
-    <Card className="group overflow-hidden py-0">
+    <Card className="group relative overflow-hidden py-0 transition border hover:bg-primary/5 hover:border-primary/50">
+      <a
+        href={`/library/${userPlant.id}`}
+        className="absolute inset-0 z-10"
+        aria-label={`View details for ${displayName}`}
+      />
+
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         {userPlant.imageUrl ? (
-          <img src={userPlant.imageUrl} alt={displayName} />
+          <img
+            src={userPlant.imageUrl}
+            alt={displayName}
+            className="object-cover transition-transform"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-primary/10">
             <Leaf className="w-8 h-18 text-primary/70" />
