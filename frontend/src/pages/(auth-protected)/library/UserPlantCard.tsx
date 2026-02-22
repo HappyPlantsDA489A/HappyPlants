@@ -24,7 +24,7 @@ export function UserPlantCard({ userPlant }: UserPlantCardProps) {
           <img
             src={userPlant.imageUrl}
             alt={displayName}
-            className="object-cover transition-transform"
+            className="h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-primary/10">
