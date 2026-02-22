@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user/plants")
@@ -42,11 +43,29 @@ public class UserPlantsController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all plants in a users library")
+    @Operation(summary = "Get all plants in a user's library")
     @PreAuthorize("isAuthenticated()")
     public List<UserPlantDTO> getUserPlants(Authentication auth) {
         User user = userService.getCurrentUser(auth);
 
         return usersPlantService.getPlantsForUser(user.getId());
+    }
+
+    @DeleteMapping("/{userPlantId}")
+    @Operation(summary = "Remove a plant from a user's library")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> removeUserPlant(@PathVariable UUID userPlantId, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        usersPlantService.removeUserPlant(user.getId(), userPlantId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{userPlantId}/dead")
+    @Operation(summary = "Mark a users plant as dead")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> markPlantAsDead(@PathVariable UUID userPlantId, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        usersPlantService.markPlantAsDead(user.getId(), userPlantId);
+        return ResponseEntity.noContent().build();
     }
 }

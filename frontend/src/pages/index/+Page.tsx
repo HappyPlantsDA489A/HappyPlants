@@ -46,9 +46,10 @@ export default function Home() {
               </a>
             </Button>
           ) : (
-            <Button className="gap-2" size="lg">
-              <a href="/auth/login">Get started</a>
-              <ArrowRight className="h-4 w-4" />
+            <Button asChild className="gap-2" size="lg">
+              <a href="/auth/login">
+                Get started <ArrowRight className="h-4 w-4" />
+              </a>
             </Button>
           )}
 
