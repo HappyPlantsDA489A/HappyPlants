@@ -12,6 +12,7 @@ public class PasswordValidatorTest {
 
     // Expected error messages
     private static final String ERROR_NULL = "Password cannot be null.";
+    private static final String ERROR_BLANK = "Password cannot be empty or contain only whitespace.";
     private static final String ERROR_TOO_LONG = "Password cannot be longer than 100 characters.";
     private static final String ERROR_TOO_SHORT = "Password must be at least 12 characters long.";
     private static final String ERROR_NO_UPPERCASE = "Password must contain at least one uppercase letter.";
@@ -132,13 +133,46 @@ public class PasswordValidatorTest {
     }
 
     @Test
+    public void testValidateNoLowercaseLetter() {
+        List<String> errors = passwordValidator.validate("ABCDEFG1234!");
+        assertEquals(1, errors.size(), "Password without lowercase letter should return exactly one error");
+        assertTrue(errors.contains(ERROR_NO_LOWERCASE), "Error list should contain missing lowercase message");
+    }
+
+    @Test
     public void testValidateEmptyPassword() {
         List<String> errors = passwordValidator.validate("");
-        assertEquals(5, errors.size(), "Empty password should return multiple errors");
-        assertTrue(errors.contains(ERROR_TOO_SHORT), "Error list should contain too short message");
-        assertTrue(errors.contains(ERROR_NO_UPPERCASE), "Error list should contain missing uppercase message");
-        assertTrue(errors.contains(ERROR_NO_LOWERCASE), "Error list should contain missing lowercase message");
-        assertTrue(errors.contains(ERROR_NO_DIGIT), "Error list should contain missing digit message");
+        assertEquals(1, errors.size(), "Empty password should return exactly one error");
+        assertTrue(errors.contains(ERROR_BLANK), "Error list should contain blank password message");
+    }
+
+    @Test
+    public void testValidateWhitespacePassword() {
+        List<String> errors = passwordValidator.validate("   ");
+        assertEquals(1, errors.size(), "Whitespace-only password should return exactly one error");
+        assertTrue(errors.contains(ERROR_BLANK), "Error list should contain blank password message");
+    }
+
+    @Test
+    public void testValidateWhitespaceAsSpecialCharacter() {
+        List<String> errors = passwordValidator.validate("Abcdefg12345 ");
+        assertEquals(1, errors.size(), "Password with whitespace instead of special character should return exactly one error");
         assertTrue(errors.contains(ERROR_NO_SPECIAL), "Error list should contain missing special character message");
+    }
+
+    @Test
+    public void testValidatePasswordExactlyMinLength() {
+        // Exactly 12 characters with all requirements met - should return no errors
+        String password = "Abcdefg123!@";
+        List<String> errors = passwordValidator.validate(password);
+        assertEquals(0, errors.size(), "Password with exactly 12 characters meeting all requirements should have no errors");
+    }
+
+    @Test
+    public void testValidatePasswordExactlyMaxLength() {
+        // Exactly 100 characters with all requirements met - should return no errors
+        String password = "A1@" + "b".repeat(97);
+        List<String> errors = passwordValidator.validate(password);
+        assertEquals(0, errors.size(), "Password with exactly 100 characters meeting all requirements should have no errors");
     }
 }
