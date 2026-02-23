@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import type { PerenualSearchPlantDTO } from "@/types/PerenualSearchPlantDTO";
 import {
   SearchResultsEmpty,
@@ -63,6 +63,12 @@ export default function SearchPage() {
     <div className="min-h-screen">
       <main className="max-w-3xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
+          <Button asChild variant="ghost" className="gap-2 mb-3" size="lg">
+            <a href="/library">
+              <ArrowLeft className="h-4 w-4" />
+              Back to library
+            </a>
+          </Button>
           <h2 className="text-3xl font-bold text-foreground text-balance">
             Add a new plant to your library
           </h2>
