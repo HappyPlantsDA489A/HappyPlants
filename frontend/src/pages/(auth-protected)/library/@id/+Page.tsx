@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import SpinningLoader from "@/components/SpinningLoader";
-import { Leaf, Droplets, ArrowLeft, Droplet } from "lucide-react";
+import { Leaf, Droplets, ArrowLeft } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
