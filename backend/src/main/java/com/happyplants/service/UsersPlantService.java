@@ -1,6 +1,5 @@
 package com.happyplants.service;
 
-import com.happyplants.exception.InvalidWateringFrequencyException;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.*;
@@ -124,7 +123,7 @@ public class UsersPlantService {
         usersPlantRepository.save(plant);
     }
 
-    public void updateWateringFrequency(UUID userId, UUID userPlantId, Integer wateringFrequencyDays) {
+    public void updateWateringFrequency(UUID userId, UUID userPlantId, Integer frequencyDays) {
         UsersPlant plant = usersPlantRepository.findById(userPlantId)
                 .orElseThrow(UserPlantNotFoundException::new);
 
@@ -132,14 +131,7 @@ public class UsersPlantService {
             throw new UnauthorizedUserPlantAccessException();
         }
 
-        if (wateringFrequencyDays == null || wateringFrequencyDays == 0) {
-            plant.setWateringFrequencyDays(null);
-        }
-        else if (wateringFrequencyDays < 0) {
-            throw new InvalidWateringFrequencyException();
-        }
-        else plant.setWateringFrequencyDays(wateringFrequencyDays);
-
+        plant.setWateringFrequencyDays(frequencyDays);
         usersPlantRepository.save(plant);
     }
 
