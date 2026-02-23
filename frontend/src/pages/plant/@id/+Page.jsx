@@ -29,7 +29,7 @@ export default function Page() {
 
   return (
     <div>
-      <h1>{plant.name}</h1>
+      <h1>{plant.common_name}</h1>
       <img src={plant.imageUrl} alt={plant.name} />
       <p>{plant.description}</p>
     </div>
