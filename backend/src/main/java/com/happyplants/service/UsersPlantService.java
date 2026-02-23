@@ -9,6 +9,7 @@ import com.happyplants.model.dto.PerenualPlantDTO;
 import com.happyplants.model.dto.PlantDTO;
 import com.happyplants.model.dto.UserPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -78,6 +79,21 @@ public class UsersPlantService {
             int timesWatered = (count != null) ? count.intValue() : 0;
             return convertToDto(up, lastWatered, timesWatered);
         }).toList();
+    }
+
+    public UserPlantDTO getPlantForUser(UUID plantId, UUID userId) {
+        return usersPlantRepository.findWithLastWateredByPlantId(plantId, userId)
+                .stream()
+                .findFirst()
+                .map(result -> {
+                    UsersPlant up = (UsersPlant) result[0];
+                    OffsetDateTime lastWatered = (OffsetDateTime) result[1];
+                    Long count = (Long) result[2];
+                    int timesWatered = (count != null) ? count.intValue() : 0;
+
+                    return convertToDto(up, lastWatered, timesWatered);
+                })
+                .orElseThrow(UserPlantNotFoundException::new);
     }
 
     public void removeUserPlant(UUID userId, UUID userPlantId) {

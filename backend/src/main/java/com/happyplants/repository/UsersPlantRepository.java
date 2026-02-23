@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UsersPlantRepository extends JpaRepository<UsersPlant, UUID>, JpaSpecificationExecutor<UsersPlant> {
@@ -21,4 +22,13 @@ public interface UsersPlantRepository extends JpaRepository<UsersPlant, UUID>, J
         ORDER BY up.createdAt DESC
     """)
     List<Object[]> findAllWithLastWateredByUserId(@Param("userId") UUID userId);
+
+    @Query("""
+        SELECT up, MAX(wp.id.occuredAt), COUNT(wp.id.occuredAt)
+        FROM UsersPlant up
+        LEFT JOIN WateredPlant wp ON wp.usersPlants.id = up.id
+        WHERE up.id = :plantId AND up.user.id = :userId
+        GROUP BY up
+    """)
+    List<Object[]> findWithLastWateredByPlantId(@Param("plantId") UUID plantId, @Param("userId") UUID userId);
 }
