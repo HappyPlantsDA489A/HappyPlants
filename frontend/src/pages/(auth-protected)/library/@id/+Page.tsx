@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { usePageContext } from "vike-react/usePageContext";
 import { Button } from "@/components/ui/button";
 import { PlantNotFound } from "./PlantNotFound";
+import WateringBadge from "@/components/WateringBadge";
 
 export default function Page() {
   const pageContext = usePageContext();
@@ -73,7 +74,7 @@ export default function Page() {
         </a>
       </Button>
       <Card className="overflow-hidden py-0">
-        <div className="aspect-[16/9] w-full overflow-hidden bg-muted">
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
           {userPlant.imageUrl ? (
             <img
               src={userPlant.imageUrl}
@@ -85,6 +86,10 @@ export default function Page() {
               <Leaf className="h-16 w-16 text-primary/70" />
             </div>
           )}
+
+          <div className="absolute bottom-3 right-3 z-10">
+            <WateringBadge userPlant={userPlant} />
+          </div>
         </div>
 
         <CardContent className="flex flex-col gap-3 p-6">

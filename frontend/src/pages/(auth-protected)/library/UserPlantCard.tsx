@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { UserPlantDTO } from "@/types/UserPlantDTO";
 import { formatDistanceToNow } from "date-fns";
+import WateringBadge from "@/components/WateringBadge";
 
 interface UserPlantCardProps {
   userPlant: UserPlantDTO;
@@ -28,9 +29,13 @@ export function UserPlantCard({ userPlant }: UserPlantCardProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-primary/10">
-            <Leaf className="w-8 h-18 text-primary/70" />
+            <Leaf className="h-12 w-12 text-primary/40" />
           </div>
         )}
+
+        <div className="absolute top-3 right-3 z-10">
+          <WateringBadge userPlant={userPlant} />
+        </div>
       </div>
 
       <CardContent className="flex flex-col gap-2 p-4">
