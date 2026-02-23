@@ -17,7 +17,7 @@ export default function WateringBadge({
 
   const referenceDate = parseISO(referenceDateString);
 
-  const nextWateringDate = addDays(referenceDate, wateringFrequencyDays - 1);
+  const nextWateringDate = addDays(referenceDate, wateringFrequencyDays);
 
   let label = "";
   let urgency: "none" | "low" | "medium" | "high";

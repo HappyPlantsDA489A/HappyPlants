@@ -20,6 +20,7 @@ export default function Page() {
 
   const [userPlant, setUserPlant] = useState<UserPlantDTO | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isWatering, setIsWatering] = useState<boolean>(false);
 
   async function getPlant() {
     try {
@@ -44,6 +45,48 @@ export default function Page() {
     }
     setIsLoading(false);
   }
+
+  async function markAsWatered() {
+    try {
+      setIsWatering(true);
+      const response = await fetch(
+        `${API_BASE_URL}/user/plants/${userPlant?.id}/water`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.ok) {
+        toast.success("Plant watered");
+        updateLastWatered();
+      } else {
+        const json = await response.json();
+        throw new Error(json.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log(error);
+    }
+    setIsWatering(false);
+  }
+
+  const updateLastWatered = () => {
+    setUserPlant((prev) => {
+      // If the state is currently null, we can't update it
+      if (!prev) return null;
+
+      return {
+        ...prev,
+        lastWateredAt: new Date().toISOString(),
+        // Since you're watering it, you might want to increment this too!
+        timesWatered: prev.timesWatered + 1,
+      };
+    });
+  };
 
   useEffect(() => {
     getPlant();
@@ -77,7 +120,11 @@ export default function Page() {
           </a>
         </Button>
         <div className="flex flex-row gap-2">
-          <MarkAsWateredButton />
+          <MarkAsWateredButton
+            onClick={markAsWatered}
+            userPlant={userPlant}
+            isWatering={isWatering}
+          />
           <ConfigButton />
         </div>
       </div>

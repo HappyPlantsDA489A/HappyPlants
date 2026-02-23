@@ -52,7 +52,7 @@ export default function ConfigButton() {
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem>Change interval</DropdownMenuItem>
-                <DropdownMenuItem>Clear</DropdownMenuItem>
+                <DropdownMenuItem>View history</DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
