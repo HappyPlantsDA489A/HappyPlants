@@ -31,11 +31,12 @@ function PlantResultCard({ plant }: { plant: PerenualSearchPlantDTO }) {
 
         const navigationPromise = navigate(`/library/${json.id}`);
         await navigationPromise;
-        toast.success("Plant added to your library", {
+        toast.success("Plant added to your library");
+        /* toast.success("Plant added to your library", {
           description:
             "You can now proceed to setting a nickname and defining your plant's watering interval",
           duration: 5000,
-        });
+        }); */
       } else {
         throw new Error("Could not get plants for user");
       }
