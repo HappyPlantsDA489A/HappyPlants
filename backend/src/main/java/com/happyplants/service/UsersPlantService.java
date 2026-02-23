@@ -20,11 +20,13 @@ public class UsersPlantService {
     private final UsersPlantRepository usersPlantRepository;
     private final PlantService plantService;
     private final PerenualApiService perenualApiService;
+    private final WikipediaService wikipediaService;
 
-    public UsersPlantService(UsersPlantRepository usersPlantRepository, PlantService plantService, PerenualApiService perenualApiService) {
+    public UsersPlantService(UsersPlantRepository usersPlantRepository, PlantService plantService, PerenualApiService perenualApiService, WikipediaService wikipediaService) {
         this.usersPlantRepository = usersPlantRepository;
         this.plantService = plantService;
         this.perenualApiService = perenualApiService;
+        this.wikipediaService = wikipediaService;
     }
 
     public UserPlantDTO convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
@@ -65,6 +67,16 @@ public class UsersPlantService {
         usersPlant.setUser(user);
         usersPlant.setPlant(plant);
         usersPlant.setImageUrl(null);
+
+        String wikipediaImageUrl = null;
+
+        wikipediaImageUrl = wikipediaService.getPlantImageUrl(plant.getScientificName());
+        if (wikipediaImageUrl == null) {
+            wikipediaImageUrl = wikipediaService.getPlantImageUrl(plant.getCommonName());
+        }
+
+        usersPlant.setImageUrl(wikipediaImageUrl);
+
         return usersPlantRepository.save(usersPlant);
     }
 
