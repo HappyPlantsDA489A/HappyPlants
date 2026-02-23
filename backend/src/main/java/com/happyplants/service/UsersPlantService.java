@@ -4,13 +4,11 @@ import com.happyplants.exception.InvalidWateringFrequencyException;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.*;
-import com.happyplants.model.dto.PerenualPlantDTO;
 import com.happyplants.model.dto.PlantDTO;
 import com.happyplants.model.dto.UserPlantDTO;
 import com.happyplants.model.dto.WateredPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -178,6 +176,38 @@ public class UsersPlantService {
                 .stream()
                 .map(w -> new WateredPlantDTO(w.getId().getOccuredAt()))
                         .toList();
+    }
+
+    public void updateNickname(UUID userId, UUID userPlantId, String nickname) {
+        UsersPlant plant = usersPlantRepository.findById(userPlantId)
+                .orElseThrow(UserPlantNotFoundException::new);
+
+        if (!plant.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserPlantAccessException();
+        }
+
+        if (nickname != null && nickname.isBlank()) {
+            nickname = null;
+        }
+
+        plant.setNickname(nickname);
+        usersPlantRepository.save(plant);
+    }
+
+    public void updateImageUrl(UUID userId,  UUID userPlantId, String imageUrl) {
+        UsersPlant plant = usersPlantRepository.findById(userPlantId)
+                .orElseThrow(UserPlantNotFoundException::new);
+
+        if (!plant.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserPlantAccessException();
+        }
+
+        if (imageUrl != null && imageUrl.isBlank()) {
+            imageUrl = null;
+        }
+
+        plant.setImageUrl(imageUrl);
+        usersPlantRepository.save(plant);
     }
 
 
