@@ -11,6 +11,8 @@ import { usePageContext } from "vike-react/usePageContext";
 import { Button } from "@/components/ui/button";
 import { PlantNotFound } from "./PlantNotFound";
 import WateringBadge from "@/components/WateringBadge";
+import MarkAsWateredButton from "./MarkAsWateredButton";
+import ConfigButton from "./ConfigButton";
 
 export default function Page() {
   const pageContext = usePageContext();
@@ -67,12 +69,19 @@ export default function Page() {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
-      <Button asChild variant="ghost" className="gap-2 mb-3" size="lg">
-        <a href="/library">
-          <ArrowLeft className="h-4 w-4" />
-          Back to library
-        </a>
-      </Button>
+      <div className="flex flex-row justify-between mb-3">
+        <Button asChild variant="ghost" className="gap-2" size="lg">
+          <a href="/library">
+            <ArrowLeft className="h-4 w-4" />
+            Back to library
+          </a>
+        </Button>
+        <div className="flex flex-row gap-2">
+          <MarkAsWateredButton />
+          <ConfigButton />
+        </div>
+      </div>
+
       <Card className="overflow-hidden py-0">
         <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
           {userPlant.imageUrl ? (
@@ -102,11 +111,22 @@ export default function Page() {
             </p>
           </div>
 
-          {userPlant.plant.familyName && (
-            <Badge className="w-fit bg-primary/20 text-black">
-              {userPlant.plant.familyName}
-            </Badge>
-          )}
+          <div className="flex flex-row gap-2">
+            {userPlant.plant.familyName && (
+              <Badge className="w-fit bg-primary/20 text-black p-3 text-md">
+                {userPlant.plant.familyName}
+              </Badge>
+            )}
+
+            {userPlant.wateringFrequencyDays && (
+              <Badge className="w-fit bg-blue-500/20 text-black p-3 text-md">
+                Needs water{" "}
+                {userPlant.wateringFrequencyDays == 1
+                  ? "once per day"
+                  : `every ${userPlant.wateringFrequencyDays} days`}
+              </Badge>
+            )}
+          </div>
 
           <div className="flex flex-col gap-2 border-t pt-4">
             {userPlant.createdAt && (
