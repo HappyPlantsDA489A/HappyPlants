@@ -2,9 +2,7 @@ package com.happyplants.controller;
 
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
-import com.happyplants.model.dto.UpdateWateringFrequencyDTO;
-import com.happyplants.model.dto.UserPlantDTO;
-import com.happyplants.model.dto.WateredPlantDTO;
+import com.happyplants.model.dto.*;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UsersPlantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -108,5 +106,24 @@ public class UserPlantsController {
     public List<WateredPlantDTO> getWateringHistory(@PathVariable UUID userPlantId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         return usersPlantService.getWateringHistory(user.getId(), userPlantId);
+    }
+
+    @PatchMapping("/{userPlantId}/nickname")
+    @Operation(summary = "Update nickname for a user's plant")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> updateNickname(@PathVariable UUID userPlantId, @RequestBody UpdateNicknameDTO updateNicknameDTO, Authentication auth
+    ) {
+        User user = userService.getCurrentUser(auth);
+        usersPlantService.updateNickname(user.getId(), userPlantId, updateNicknameDTO.nickname());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{userPlantId}/image-url")
+    @Operation(summary = "Update image URL for a user's plant")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> updateImageUrl(@PathVariable UUID userPlantId, @RequestBody UpdateImageUrlDTO updateImageUrlDTO, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        usersPlantService.updateImageUrl(user.getId(), userPlantId, updateImageUrlDTO.imageUrl());
+        return ResponseEntity.noContent().build();
     }
 }
