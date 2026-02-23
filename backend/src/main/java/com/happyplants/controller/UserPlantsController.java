@@ -2,7 +2,9 @@ package com.happyplants.controller;
 
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
+import com.happyplants.model.dto.UpdateWateringFrequencyDTO;
 import com.happyplants.model.dto.UserPlantDTO;
+import com.happyplants.model.dto.WateredPlantDTO;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UsersPlantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,5 +82,31 @@ public class UserPlantsController {
         User user = userService.getCurrentUser(auth);
         usersPlantService.markPlantAsDead(user.getId(), userPlantId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{userPlantId}/watering-frequency")
+    @Operation(summary = "Update watering frequency for a user's plant")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> updateWateringFrequency(@PathVariable UUID userPlantId, @RequestBody UpdateWateringFrequencyDTO wateringDTO, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        usersPlantService.updateWateringFrequency(user.getId(), userPlantId, wateringDTO.wateringFrequencyDays());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{userPlantId}/water")
+    @Operation(summary = "Water a user's plant")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<WateredPlantDTO> waterPlant(@PathVariable UUID userPlantId, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        WateredPlantDTO plantDTO = usersPlantService.waterPlant(user.getId(), userPlantId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(plantDTO);
+    }
+
+    @GetMapping("/{userPlantId}/waterings")
+    @Operation(summary = "Get watering history for a user's plant")
+    @PreAuthorize("isAuthenticated()")
+    public List<WateredPlantDTO> getWateringHistory(@PathVariable UUID userPlantId, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        return usersPlantService.getWateringHistory(user.getId(), userPlantId);
     }
 }
