@@ -17,7 +17,7 @@ export default function ConfigButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button disabled variant="outline">
           <Ellipsis /> Options
         </Button>
       </DropdownMenuTrigger>
