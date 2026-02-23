@@ -51,6 +51,19 @@ public class UserPlantsController {
         return usersPlantService.getPlantsForUser(user.getId());
     }
 
+    @GetMapping("/{plantId}")
+    @Operation(summary = "Get a specific plant from the user's library")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserPlantDTO> getUserPlant(
+            @PathVariable UUID plantId,
+            Authentication auth
+    ) {
+        User user = userService.getCurrentUser(auth);
+        UserPlantDTO plant = usersPlantService.getPlantForUser(plantId, user.getId());
+
+        return ResponseEntity.ok(plant);
+    }
+
     @DeleteMapping("/{userPlantId}")
     @Operation(summary = "Remove a plant from a user's library")
     @PreAuthorize("isAuthenticated()")
