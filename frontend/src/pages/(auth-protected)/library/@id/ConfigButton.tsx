@@ -17,6 +17,7 @@ import { useState } from "react";
 import { UpdateNicknameDialog } from "./UpdateNicknameDialog";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
+import { UpdateImageUrlDialog } from "./UpdateImageUrlDialog";
 
 export default function ConfigButton({
   userPlant,
@@ -46,6 +47,37 @@ export default function ConfigButton({
 
       if (response.ok) {
         toast.success("Nickname cleared");
+        onReload();
+      } else {
+        const json = await response.json();
+        throw new Error(json.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log(error);
+    } finally {
+      setIsClearing(false);
+    }
+  }
+
+  async function clearImageUrl() {
+    try {
+      setIsClearing(true);
+      const response = await fetch(
+        `${API_BASE_URL}/user/plants/${userPlant.id}/image-url
+`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ nickname: null }),
+        },
+      );
+
+      if (response.ok) {
+        toast.success("Image cleared");
         onReload();
       } else {
         const json = await response.json();
@@ -92,8 +124,12 @@ export default function ConfigButton({
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem>Modify</DropdownMenuItem>
-                  <DropdownMenuItem>Clear</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setActiveDialog("image")}>
+                    Modify
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={clearImageUrl}>
+                    Clear
+                  </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -120,6 +156,13 @@ export default function ConfigButton({
 
       <UpdateNicknameDialog
         isOpen={activeDialog === "nickname"}
+        onClose={() => setActiveDialog(null)}
+        userPlant={userPlant}
+        onSuccess={onReload}
+      />
+
+      <UpdateImageUrlDialog
+        isOpen={activeDialog === "image"}
         onClose={() => setActiveDialog(null)}
         userPlant={userPlant}
         onSuccess={onReload}
