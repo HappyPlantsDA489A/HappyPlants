@@ -33,7 +33,7 @@ class APIConnectionTest {
     void searchEndpoint_ShouldReturnMatchingPlants() throws Exception {
 
         PerenualSearchPlantDTO mockPlant = new PerenualSearchPlantDTO(
-                1, "Rose", List.of("Rosa"), "Rosaceae", "Cultivar", "Epithet", "Genus"
+                1, "Rose", List.of("Rosa"), "Rosaceae", "Cultivar", "Epithet", "Genus", null
         );
 
         when(perenualApiService.search("Rose")).thenReturn(List.of(mockPlant));

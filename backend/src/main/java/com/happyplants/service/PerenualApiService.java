@@ -81,7 +81,19 @@ public class PerenualApiService {
     public List<PerenualSearchPlantDTO> getPlantResults(HttpResponse<String> response) {
         try {
             ApiResponse apiResponse = mapper.readValue(response.body(), ApiResponse.class);
-            return apiResponse.data();
+            return apiResponse.data().stream()
+                    .map(p -> new PerenualSearchPlantDTO(
+                            p.perenualId(),
+                            p.commonName(),
+                            p.scientificName(),
+                            p.familyName(),
+                            p.cultivar(),
+                            p.speciesEpithet(),
+                            p.genus(),
+                            p.defaultImage() != null ? p.defaultImage().imageUrl() : null
+
+                    ))
+                    .toList();
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse plant results", e);
         }
