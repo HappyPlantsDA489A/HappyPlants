@@ -22,6 +22,11 @@ public class PasswordValidator {
             return errors;
         }
 
+        if (password.isBlank()) {
+            errors.add("Password cannot be empty or contain only whitespace.");
+            return errors;
+        }
+
         if (password.length() > MAX_LENGTH) {
             errors.add("Password cannot be longer than 100 characters.");
             return errors;
