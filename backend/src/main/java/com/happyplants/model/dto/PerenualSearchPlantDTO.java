@@ -26,5 +26,7 @@ public record PerenualSearchPlantDTO(
    String speciesEpithet,
 
    @JsonProperty("genus")
-   String genus
+   String genus,
+
+   String imageUrl
 ) {}
