@@ -19,6 +19,7 @@ import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import { UpdateImageUrlDialog } from "./UpdateImageUrlDialog";
 import { UpdateWateringIntervalDialog } from "./UpdateWateringIntervalDialog";
+import { DeletePlantAlertDialog } from "./DeletePlantAlertDialog";
 
 export default function ConfigButton({
   userPlant,
@@ -152,7 +153,10 @@ export default function ConfigButton({
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem
+              onSelect={() => setActiveDialog("delete")}
+              variant="destructive"
+            >
               Delete plant
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -175,6 +179,13 @@ export default function ConfigButton({
 
       <UpdateWateringIntervalDialog
         isOpen={activeDialog === "watering"}
+        onClose={() => setActiveDialog(null)}
+        userPlant={userPlant}
+        onSuccess={onReload}
+      />
+
+      <DeletePlantAlertDialog
+        isOpen={activeDialog === "delete"}
         onClose={() => setActiveDialog(null)}
         userPlant={userPlant}
         onSuccess={onReload}
