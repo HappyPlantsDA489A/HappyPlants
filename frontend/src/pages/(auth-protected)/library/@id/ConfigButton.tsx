@@ -18,6 +18,7 @@ import { UpdateNicknameDialog } from "./UpdateNicknameDialog";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 import { UpdateImageUrlDialog } from "./UpdateImageUrlDialog";
+import { UpdateWateringIntervalDialog } from "./UpdateWateringIntervalDialog";
 
 export default function ConfigButton({
   userPlant,
@@ -139,8 +140,12 @@ export default function ConfigButton({
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem>Change interval</DropdownMenuItem>
-                  <DropdownMenuItem>View history</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => setActiveDialog("watering")}
+                  >
+                    Modify interval
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled>View history</DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -163,6 +168,13 @@ export default function ConfigButton({
 
       <UpdateImageUrlDialog
         isOpen={activeDialog === "image"}
+        onClose={() => setActiveDialog(null)}
+        userPlant={userPlant}
+        onSuccess={onReload}
+      />
+
+      <UpdateWateringIntervalDialog
+        isOpen={activeDialog === "watering"}
         onClose={() => setActiveDialog(null)}
         userPlant={userPlant}
         onSuccess={onReload}
