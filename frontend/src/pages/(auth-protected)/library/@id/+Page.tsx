@@ -22,9 +22,11 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isWatering, setIsWatering] = useState<boolean>(false);
 
-  async function getPlant() {
+  async function getPlant(silent?: boolean) {
     try {
-      setIsLoading(true);
+      if (!silent) {
+        setIsLoading(true);
+      }
       const response = await fetch(`${API_BASE_URL}/user/plants/${id}`, {
         method: "GET",
         credentials: "include",
@@ -76,13 +78,11 @@ export default function Page() {
 
   const updateLastWatered = () => {
     setUserPlant((prev) => {
-      // If the state is currently null, we can't update it
       if (!prev) return null;
 
       return {
         ...prev,
         lastWateredAt: new Date().toISOString(),
-        // Since you're watering it, you might want to increment this too!
         timesWatered: prev.timesWatered + 1,
       };
     });
@@ -125,10 +125,9 @@ export default function Page() {
             userPlant={userPlant}
             isWatering={isWatering}
           />
-          <ConfigButton />
+          <ConfigButton userPlant={userPlant} onReload={() => getPlant(true)} />
         </div>
       </div>
-
       <Card className="overflow-hidden py-0">
         <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
           {userPlant.imageUrl ? (
