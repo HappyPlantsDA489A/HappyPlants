@@ -38,6 +38,10 @@ public class UserPlantsController {
     public ResponseEntity<UserPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         UsersPlant newUserPlant = usersPlantService.addPlantToUser(user, perenualId);
+
+        if (newUserPlant == null) {
+            return ResponseEntity.notFound().build();
+        }
         UserPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant, null, 0);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDto);
     }
@@ -45,10 +49,15 @@ public class UserPlantsController {
     @GetMapping
     @Operation(summary = "Get all plants in a user's library")
     @PreAuthorize("isAuthenticated()")
-    public List<UserPlantDTO> getUserPlants(Authentication auth) {
+    public ResponseEntity<List<UserPlantDTO>> getUserPlants(Authentication auth) {
         User user = userService.getCurrentUser(auth);
 
-        return usersPlantService.getPlantsForUser(user.getId());
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<UserPlantDTO> userPlants = usersPlantService.getPlantsForUser(user.getId());
+        return ResponseEntity.ok(userPlants);
     }
 
     @GetMapping("/{plantId}")
@@ -59,7 +68,14 @@ public class UserPlantsController {
             Authentication auth
     ) {
         User user = userService.getCurrentUser(auth);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         UserPlantDTO plant = usersPlantService.getPlantForUser(plantId, user.getId());
+        if (plant == null) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.ok(plant);
     }

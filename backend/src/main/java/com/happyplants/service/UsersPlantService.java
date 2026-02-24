@@ -63,6 +63,10 @@ public class UsersPlantService {
 
         Plant plant = plantService.getOrCreatePlant(perenualId);
 
+        if (plant == null) {
+            return null;
+        }
+
         UsersPlant usersPlant = new UsersPlant();
         usersPlant.setUser(user);
         usersPlant.setPlant(plant);

@@ -115,4 +115,89 @@ class UserPlantsControllerTest {
                 .andExpect(jsonPath("$.id").value(plantId.toString()))
                 .andExpect(jsonPath("$.plant.commonName").value("Snake Plant"));
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Get non-existent user plant returns 404")
+    void getUserPlant_NotFound_ShouldReturn404() throws Exception {
+        UUID plantId = UUID.randomUUID();
+        // Telling Mockito to return mockuser
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+        // Simulating that the service cannot find the plant in user's collection
+        when(usersPlantService.getPlantForUser(eq(plantId), any())).thenReturn(null);
+
+        mockMvc.perform(get("/api/user/plants/" + plantId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Add non-existent plant (external ID) returns 404")
+    void addPlantToLibrary_PlantNotFound_ShouldReturn404() throws Exception {
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+        // Simulating that the external plant data cannot be found
+        when(usersPlantService.addPlantToUser(eq(mockUser), eq(999))).thenReturn(null);
+
+        mockMvc.perform(post("/api/user/plants/999")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Empty collection returns 200 and empty list")
+    void getUserListOfPlants_EmptyCollection_ShouldReturnEmptyArray() throws Exception {
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+        // Verifies that the system handles an empty collection gracefully
+        when(usersPlantService.getPlantsForUser(mockUser.getId())).thenReturn(java.util.Collections.emptyList());
+
+        mockMvc.perform(get("/api/user/plants"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Unauthorized access to another user's plant returns 404")
+    void getUserPlant_Unauthorized_ShouldReturn404() throws Exception {
+        UUID otherUsersPlantId = UUID.randomUUID();
+        // Simulating that the service denies access to the plant (returns null) for a different user
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+        when(usersPlantService.getPlantForUser(eq(otherUsersPlantId), eq(mockUser.getId()))).thenReturn(null);
+
+        mockMvc.perform(get("/api/user/plants/" + otherUsersPlantId))
+                .andExpect(status().isNotFound()); // Förhindrar informationsläckage
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Invalid UUID format returns 400")
+    void getUserPlant_InvalidUUID_ShouldReturn400() throws Exception {
+        mockMvc.perform(get("/api/user/plants/inte-ett-uuid"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Get all plants returns 404 if user not found")
+    void getUserPlants_UserNotFound_ShouldReturn404() throws Exception {
+        // Simulating that the user cannot be found in the database
+        when(userService.getCurrentUser(any())).thenReturn(null);
+
+        mockMvc.perform(get("/api/user/plants"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("HPF-COLL-01: Get specific plant returns 401 if user not found")
+    void getUserPlant_UserNotFound_ShouldReturn401() throws Exception {
+        // Simulating that the user cannot be found
+        when(userService.getCurrentUser(any())).thenReturn(null);
+
+        mockMvc.perform(get("/api/user/plants/" + UUID.randomUUID()))
+                .andExpect(status().isUnauthorized());
+    }
+
+
 }
