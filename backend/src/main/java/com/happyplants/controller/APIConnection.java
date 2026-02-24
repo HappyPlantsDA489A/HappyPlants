@@ -20,7 +20,7 @@ public class APIConnection {
 
     @GetMapping("test")
     public String test() {
-        return "Backend svarar svar: Koppling fungerar!";
+        return "Backend replying: Connection successful";
     }
 
     @GetMapping("plants/search")
