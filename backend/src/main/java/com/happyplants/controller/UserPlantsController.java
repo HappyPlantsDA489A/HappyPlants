@@ -85,6 +85,11 @@ public class UserPlantsController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> removeUserPlant(@PathVariable UUID userPlantId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         usersPlantService.removeUserPlant(user.getId(), userPlantId);
         return ResponseEntity.noContent().build();
     }
