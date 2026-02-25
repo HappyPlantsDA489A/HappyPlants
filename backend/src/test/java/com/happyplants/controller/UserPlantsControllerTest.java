@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
 })
 
-public class UserPlantsRemoveControllerTest {
+public class UserPlantsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
