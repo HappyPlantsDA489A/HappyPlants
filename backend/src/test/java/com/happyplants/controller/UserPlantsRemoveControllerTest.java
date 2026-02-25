@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +37,7 @@ public class UserPlantsRemoveControllerTest {
     @Test
     @DisplayName("HPF-COLL-03: Verify that delete returns 204 No Content")
     void removeUserPlant_ShouldReturnNoContent() throws Exception {
-        // Create mock-user and an id for the plant
+        // Create a mock-user and an id for the plant
         UUID userId = UUID.randomUUID();
         UUID userPlantId = UUID.randomUUID();
         User mockUser = new User();
@@ -53,5 +52,30 @@ public class UserPlantsRemoveControllerTest {
         // Call the delete-endpoint and expect a 204 status
         mockMvc.perform(delete("/api/user/plants/" + userPlantId))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("HPF-COLL-03: Should return 401 if user session is invalid")
+    void removeUserPlant_UserNotFound_ShouldReturn401() throws Exception {
+        when(userService.getCurrentUser(any())).thenReturn(null);
+
+        mockMvc.perform(delete("/api/user/plants/" + UUID.randomUUID()))
+                .andExpect(status().isUnauthorized()); // Testar din nya if-sats
+    }
+
+    @Test
+    @DisplayName("HPF-COLL-03: Should return 404 if plant to remove does not exist")
+    void removeUserPlant_PlantNotFound_ShouldReturn404() throws Exception {
+        User mockUser = new User();
+        mockUser.setId(UUID.randomUUID());
+        UUID plantId = UUID.randomUUID();
+
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+
+        doThrow(new com.happyplants.exception.UserPlantNotFoundException())
+                .when(usersPlantService).removeUserPlant(mockUser.getId(), plantId);
+
+        mockMvc.perform(delete("/api/user/plants/" + plantId))
+                .andExpect(status().isNotFound());
     }
 }
