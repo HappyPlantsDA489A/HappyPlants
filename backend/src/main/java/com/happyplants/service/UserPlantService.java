@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UsersPlantService {
+public class UserPlantService {
     private final UsersPlantRepository usersPlantRepository;
     private final PlantService plantService;
     private final PerenualApiService perenualApiService;
     private final WateredPlantRepository wateredPlantRepository;
 
-    public UsersPlantService(UsersPlantRepository usersPlantRepository, PlantService plantService, PerenualApiService perenualApiService, WateredPlantRepository wateredPlantRepository) {
+    public UserPlantService(UsersPlantRepository usersPlantRepository, PlantService plantService, PerenualApiService perenualApiService, WateredPlantRepository wateredPlantRepository) {
         this.usersPlantRepository = usersPlantRepository;
         this.plantService = plantService;
         this.perenualApiService = perenualApiService;

@@ -4,7 +4,7 @@ import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
 import com.happyplants.model.dto.*;
 import com.happyplants.service.UserService;
-import com.happyplants.service.UsersPlantService;
+import com.happyplants.service.UserPlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -20,12 +20,12 @@ import java.util.UUID;
 @RequestMapping("/api/user/plants")
 @CrossOrigin(origins = "*")
 @Tag(name = "User Plants")
-public class UserPlantsController {
+public class UserPlantController {
 
     private final UserService userService;
-    private final UsersPlantService usersPlantService;
+    private final UserPlantService usersPlantService;
 
-    public UserPlantsController(UserService userService, UsersPlantService usersPlantService) {
+    public UserPlantController(UserService userService, UserPlantService usersPlantService) {
         this.userService = userService;
         this.usersPlantService = usersPlantService;
     }
