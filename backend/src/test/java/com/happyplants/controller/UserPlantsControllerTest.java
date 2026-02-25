@@ -1,11 +1,6 @@
 package com.happyplants.controller;
 
-<<<<<<< UnitTest--HPFColl03-RemovePlant
 
-import com.happyplants.model.User;
-import com.happyplants.service.UserService;
-import com.happyplants.service.UsersPlantService;
-=======
 import com.happyplants.model.Plant;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
@@ -14,29 +9,10 @@ import com.happyplants.model.dto.UserPlantDTO;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UsersPlantService;
 import org.junit.jupiter.api.BeforeEach;
->>>>>>> dev
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-<<<<<<< UnitTest--HPFColl03-RemovePlant
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@WebMvcTest(controllers = UserPlantsController.class, excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
-})
-
-public class UserPlantsControllerTest {
-=======
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -46,75 +22,27 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserPlantsController.class)
-class UserPlantsControllerTest {
->>>>>>> dev
+@WebMvcTest(controllers = UserPlantsController.class, excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
+})
+public class UserPlantsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-<<<<<<< UnitTest--HPFColl03-RemovePlant
     @MockitoBean
-=======
-    @MockitoBean // Korrekt annotation för Spring Boot 3.4+
->>>>>>> dev
     private UserService userService;
 
     @MockitoBean
     private UsersPlantService usersPlantService;
 
-<<<<<<< UnitTest--HPFColl03-RemovePlant
-    @Test
-    @DisplayName("HPF-COLL-03: Verify that delete returns 204 No Content")
-    void removeUserPlant_ShouldReturnNoContent() throws Exception {
-        // Create a mock-user and an id for the plant
-        UUID userId = UUID.randomUUID();
-        UUID userPlantId = UUID.randomUUID();
-        User mockUser = new User();
-        mockUser.setId(userId);
-
-        // Simulate that the user is logged in
-        when(userService.getCurrentUser(any())).thenReturn(mockUser);
-
-        // Simulate that the service-method runs without faults
-        doNothing().when(usersPlantService).removeUserPlant(userId, userPlantId);
-
-        // Call the delete-endpoint and expect a 204 status
-        mockMvc.perform(delete("/api/user/plants/" + userPlantId))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("HPF-COLL-03: Should return 401 if user session is invalid")
-    void removeUserPlant_UserNotFound_ShouldReturn401() throws Exception {
-        when(userService.getCurrentUser(any())).thenReturn(null);
-
-        mockMvc.perform(delete("/api/user/plants/" + UUID.randomUUID()))
-                .andExpect(status().isUnauthorized()); // Testar din nya if-sats
-    }
-
-    @Test
-    @DisplayName("HPF-COLL-03: Should return 404 if plant to remove does not exist")
-    void removeUserPlant_PlantNotFound_ShouldReturn404() throws Exception {
-        User mockUser = new User();
-        mockUser.setId(UUID.randomUUID());
-        UUID plantId = UUID.randomUUID();
-
-        when(userService.getCurrentUser(any())).thenReturn(mockUser);
-
-        doThrow(new com.happyplants.exception.UserPlantNotFoundException())
-                .when(usersPlantService).removeUserPlant(mockUser.getId(), plantId);
-
-        mockMvc.perform(delete("/api/user/plants/" + plantId))
-                .andExpect(status().isNotFound());
-    }
-}
-=======
     private User mockUser;
     private Plant mockPlant;
     private UsersPlant mockUsersPlant;
@@ -276,6 +204,48 @@ class UserPlantsControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    @DisplayName("HPF-COLL-03: Verify that delete returns 204 No Content")
+    void removeUserPlant_ShouldReturnNoContent() throws Exception {
+        // Create a mock-user and an id for the plant
+        UUID userId = UUID.randomUUID();
+        UUID userPlantId = UUID.randomUUID();
+        User mockUser = new User();
+        mockUser.setId(userId);
 
+        // Simulate that the user is logged in
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+
+        // Simulate that the service-method runs without faults
+        doNothing().when(usersPlantService).removeUserPlant(userId, userPlantId);
+
+        // Call the delete-endpoint and expect a 204 status
+        mockMvc.perform(delete("/api/user/plants/" + userPlantId))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("HPF-COLL-03: Should return 401 if user session is invalid")
+    void removeUserPlant_UserNotFound_ShouldReturn401() throws Exception {
+        when(userService.getCurrentUser(any())).thenReturn(null);
+
+        mockMvc.perform(delete("/api/user/plants/" + UUID.randomUUID()))
+                .andExpect(status().isUnauthorized()); // Testar din nya if-sats
+    }
+
+    @Test
+    @DisplayName("HPF-COLL-03: Should return 404 if plant to remove does not exist")
+    void removeUserPlant_PlantNotFound_ShouldReturn404() throws Exception {
+        User mockUser = new User();
+        mockUser.setId(UUID.randomUUID());
+        UUID plantId = UUID.randomUUID();
+
+        when(userService.getCurrentUser(any())).thenReturn(mockUser);
+
+        doThrow(new com.happyplants.exception.UserPlantNotFoundException())
+                .when(usersPlantService).removeUserPlant(mockUser.getId(), plantId);
+
+        mockMvc.perform(delete("/api/user/plants/" + plantId))
+                .andExpect(status().isNotFound());
+    }
 }
->>>>>>> dev
