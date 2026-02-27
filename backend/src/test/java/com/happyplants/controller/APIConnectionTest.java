@@ -1,7 +1,7 @@
 package com.happyplants.controller;
 
-import com.happyplants.model.dto.PerenualPlantDTO;
-import com.happyplants.model.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.PerenualPlantDTO;
+import com.happyplants.dto.PerenualSearchPlantDTO;
 import com.happyplants.service.PerenualApiService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.happyplants.model.dto;
+package com.happyplants.dto;
 
 import jakarta.persistence.Column;
 

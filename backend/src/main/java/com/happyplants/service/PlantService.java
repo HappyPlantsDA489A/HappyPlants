@@ -1,13 +1,9 @@
 package com.happyplants.service;
 
-import com.happyplants.controller.APIConnection;
 import com.happyplants.model.Plant;
-import com.happyplants.model.dto.PerenualPlantDTO;
-import com.happyplants.model.dto.PlantDTO;
+import com.happyplants.dto.PerenualPlantDTO;
 import com.happyplants.repository.PlantRepository;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 
 @Service
