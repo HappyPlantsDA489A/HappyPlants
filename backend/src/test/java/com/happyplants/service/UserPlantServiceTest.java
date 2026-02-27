@@ -126,8 +126,79 @@ public class UserPlantServiceTest {
             assertNotNull(result);
             assertTrue(result.isEmpty(), "Result should be an empty list when user has no plants");
         }
-    }
 
+        @Test
+        @DisplayName("Verify that convertToDTO maps all fields correctly")
+        public void shouldMapAllFieldsCorrectly(){
+            Plant basePlant = new Plant();
+            basePlant.setPerenualId(1);
+            basePlant.setCommonName("Snake Plant");
+            basePlant.setCommonName("Snake Plant");
+            basePlant.setWateringDescription("Water when the top inch of soil is dry");
+
+            UsersPlant usersPlant = new UsersPlant();
+            usersPlant.setId(userPlantId);
+            usersPlant.setNickname("My Snake Plant");
+            usersPlant.setPlant(basePlant);
+
+            OffsetDateTime lastWatered = OffsetDateTime.now();
+            int timesWatered = 5;
+
+            UserPlantDTO result = usersPlantService.convertToDto(usersPlant, lastWatered, timesWatered);
+
+            assertNotNull(result);
+            assertEquals("My Snake Plant", result.nickname());
+            assertEquals("Snake Plant", result.plant().commonName());
+            assertEquals("Water when the top inch of soil is dry", result.plant().wateringDescription());
+            assertEquals(lastWatered, result.lastWateredAt());
+
+            assertEquals("Snake Plant", result.plant().commonName());
+            assertEquals("Water when the top inch of soil is dry", result.plant().wateringDescription());
+
+        }
+
+        @Test
+        @DisplayName("Verify that multiple data fields are correctly mapped from Object arrray")
+        public void shouldMapDatabaseResultsToDtoList(){
+            plant.setPlant(new Plant());
+            plant.getPlant().setCommonName("Snake Plant");
+
+            OffsetDateTime lastWatered = OffsetDateTime.now();
+            Long timesWatered = 5L;
+
+            Object[] row = new Object[]{plant, lastWatered, timesWatered };
+            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
+
+            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+
+            assertEquals(1, result.size(), "Should return a list with one DTO");
+            UserPlantDTO dto = result.get(0);
+
+            assertEquals(5, dto.timesWatered(), "Times watered should be correctly mapped");
+            assertEquals("Snake Plant", dto.plant().commonName(), "Plant common name should be correctly mapped");
+
+        }
+
+        @Test
+        @DisplayName("Verify that timesWatered is set to 0 when count is null")
+        public void shouldSetTimesWateredToZeroWhenCountIsNull(){
+            Plant basePlant = new Plant();
+            basePlant.setId(UUID.randomUUID());
+            basePlant.setCommonName("Snake Plant");
+
+            plant.setPlant(basePlant);
+
+            Object[] row = new Object[]{plant, null, null };
+            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
+
+            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+
+            assertEquals(1,result.size());
+            assertEquals(0, result.get(0).timesWatered(),"Times watered should be set to 0 when count is null");
+            assertNull(result.get(0).lastWateredAt(), "Last watered should be null when not provided");
+        }
+
+    }
     @Nested
     @DisplayName("Remove Plant Tests")
     class RemovePlantTests {
