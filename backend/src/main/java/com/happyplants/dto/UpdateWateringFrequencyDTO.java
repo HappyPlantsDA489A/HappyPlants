@@ -1,3 +1,3 @@
-package com.happyplants.model.dto;
+package com.happyplants.dto;
 
 public record UpdateWateringFrequencyDTO(Integer wateringFrequencyDays) {}

@@ -1,8 +1,8 @@
 package com.happyplants.controller;
 
+import com.happyplants.dto.*;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
-import com.happyplants.model.dto.*;
 import com.happyplants.service.UserService;
 import com.happyplants.service.UserPlantService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -2,8 +2,8 @@ package com.happyplants.controller;
 
 import com.happyplants.exception.InvalidLoginCredentialsException;
 import com.happyplants.model.User;
-import com.happyplants.model.dto.LoginRequest;
-import com.happyplants.model.dto.RegisterRequest;
+import com.happyplants.dto.LoginRequest;
+import com.happyplants.dto.RegisterRequest;
 import com.happyplants.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

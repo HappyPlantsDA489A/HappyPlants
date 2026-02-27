@@ -1,4 +1,4 @@
-package com.happyplants.model.dto;
+package com.happyplants.dto;
 
 public record UpdateNicknameDTO(String nickname) {
 }

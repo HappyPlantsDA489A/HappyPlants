@@ -2,9 +2,9 @@ package com.happyplants.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.happyplants.model.dto.ApiResponse;
-import com.happyplants.model.dto.PerenualPlantDTO;
-import com.happyplants.model.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.ApiResponse;
+import com.happyplants.dto.PerenualPlantDTO;
+import com.happyplants.dto.PerenualSearchPlantDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
