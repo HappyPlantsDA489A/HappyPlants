@@ -51,7 +51,8 @@ export default function Page() {
             ) : (
               <div className="no-image">No image available</div>
             )}
-            <h3>{plant.name}</h3>
+            <h3>{plant.common_name}</h3>
+            <p>{plant.scientific_name}</p>
           </a>
         ))}
       </div>

@@ -6,7 +6,7 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Leaf } from "lucide-react";
+import { Leaf, Plus } from "lucide-react";
 
 export function NoPlants() {
   return (
@@ -21,7 +21,11 @@ export function NoPlants() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent className="flex-row justify-center gap-2">
-        <Button disabled>Add your first plant</Button>
+        <Button asChild disabled>
+          <a href="/library/new">
+            <Plus /> Add your first plant
+          </a>
+        </Button>
       </EmptyContent>
     </Empty>
   );

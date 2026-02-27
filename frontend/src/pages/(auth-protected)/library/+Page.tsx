@@ -68,8 +68,10 @@ export default function Page() {
           </p>
         </div>
 
-        <Button disabled className="py-5 px-4">
-          <Plus /> Add new plant
+        <Button asChild disabled className="py-5 px-4">
+          <a href="/library/new">
+            <Plus /> Add new plant
+          </a>
         </Button>
       </div>
 

@@ -41,6 +41,11 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidWateringFrequencyException.class)
+    public ProblemDetail handleInvalidWateringFrequency(InvalidWateringFrequencyException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(WikipediaException.class)
     public ProblemDetail wikipediaSearchFailed(UserPlantNotFoundException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
