@@ -52,8 +52,25 @@ function PlantResultCard({ plant }: { plant: PerenualSearchPlantDTO }) {
     <Card className="border-border/60 bg-card hover:border-primary/30 transition-colors">
       <CardContent className="p-5">
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-            <Leaf className="w-5 h-5 text-primary" />
+          <div className="w-11 h-11 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
+            {plant.imageUrl ? (
+              <img
+                src={plant.imageUrl}
+                alt={plant.common_name ?? "plant"}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const fallback = e.currentTarget.parentElement?.querySelector(".leaf-fallback") as HTMLElement | null;
+                  if (fallback) fallback.style.display = "flex";
+                }}
+              />
+            ) : null}
+            <span
+              className="leaf-fallback w-full h-full items-center justify-center"
+              style={{ display: plant.imageUrl ? "none" : "flex" }}
+            >
+              <Leaf className="w-5 h-5 text-primary" />
+            </span>
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-foreground text-base truncate">

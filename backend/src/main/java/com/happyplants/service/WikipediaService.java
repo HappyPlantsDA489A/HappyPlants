@@ -18,9 +18,24 @@ public class WikipediaService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String baseUrl = "https://en.wikipedia.org/";
 
+    /**
+     * Tries to find a Wikipedia image for a plant.
+     * Strategy: scientific name first, common name as fallback.
+     * Returns null if no image can be found.
+     */
+    public String getPlantImageUrl(String scientificName, String commonName) {
+        String imageUrl = fetchImageUrl(scientificName);
+        if (imageUrl != null) return imageUrl;
+        return fetchImageUrl(commonName);
+    }
 
-
+    /** Kept for backwards-compatibility (e.g. WikipediaController testing endpoint). */
     public String getPlantImageUrl(String plantName) {
+        return fetchImageUrl(plantName);
+    }
+
+    private String fetchImageUrl(String plantName) {
+        if (plantName == null || plantName.isBlank()) return null;
         try {
             String articleTitle = getFirstArticleTitle(plantName);
 
@@ -28,9 +43,7 @@ public class WikipediaService {
                 return null;
             }
 
-            String articleTitleWithUnderscores = articleTitle.replace(' ', '_');
-            String encodedTitle = URLEncoder.encode(articleTitleWithUnderscores, StandardCharsets.UTF_8);
-
+            String encodedTitle = URLEncoder.encode(articleTitle.replace(' ', '_'), StandardCharsets.UTF_8);
             String url = baseUrl + "api/rest_v1/page/summary/" + encodedTitle;
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -43,10 +56,20 @@ public class WikipediaService {
 
             if (response.statusCode() == 200) {
                 JsonNode root = objectMapper.readTree(response.body());
-                JsonNode originalImage = root.path("originalimage");
 
+                // Prefer full-resolution original image
+                JsonNode originalImage = root.path("originalimage");
                 if (!originalImage.isMissingNode()) {
                     JsonNode source = originalImage.path("source");
+                    if (!source.isMissingNode() && !source.isNull()) {
+                        return source.asText();
+                    }
+                }
+
+                // Fall back to thumbnail if originalimage is absent
+                JsonNode thumbnail = root.path("thumbnail");
+                if (!thumbnail.isMissingNode()) {
+                    JsonNode source = thumbnail.path("source");
                     if (!source.isMissingNode() && !source.isNull()) {
                         return source.asText();
                     }
@@ -56,7 +79,8 @@ public class WikipediaService {
             return null;
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch Wikipedia image for plant: " + plantName, e);
+            // Return null rather than crashing plant creation if Wikipedia is unavailable
+            return null;
         }
     }
 
@@ -64,7 +88,8 @@ public class WikipediaService {
         try {
             String trimmedName = plantName;
 
-            int dashPosition = trimmedName.indexOf('-');
+            // Only strip on " - " (space-dash-space) to avoid breaking scientific names like "Rosa canina"
+            int dashPosition = trimmedName.indexOf(" - ");
             if (dashPosition >= 0) {
                 trimmedName = trimmedName.substring(0, dashPosition);
             }

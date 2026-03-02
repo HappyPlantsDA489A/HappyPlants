@@ -45,6 +45,12 @@ public class Plant {
     @Column(name = "sun_description", length = Integer.MAX_VALUE)
     private String sunDescription;
 
+    @Column(name = "wikipedia_image_url", length = Integer.MAX_VALUE)
+    private String wikipediaImageUrl;
+
+    @Column(name = "image_searched", nullable = false, columnDefinition = "boolean not null default false")
+    private boolean imageSearched = false;
+
     public UUID getId() {
         return id;
     }
@@ -129,5 +135,20 @@ public class Plant {
         this.sunDescription = sunDescription;
     }
 
+    public String getWikipediaImageUrl() {
+        return wikipediaImageUrl;
+    }
+
+    public void setWikipediaImageUrl(String wikipediaImageUrl) {
+        this.wikipediaImageUrl = wikipediaImageUrl;
+    }
+
+    public boolean isImageSearched() {
+        return imageSearched;
+    }
+
+    public void setImageSearched(boolean imageSearched) {
+        this.imageSearched = imageSearched;
+    }
 
 }

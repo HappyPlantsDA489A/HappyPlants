@@ -2,23 +2,41 @@ package com.happyplants.service;
 
 import com.happyplants.model.Plant;
 import com.happyplants.dto.PerenualPlantDTO;
+import com.happyplants.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.PlantDTO;
 import com.happyplants.repository.PlantRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Service
 public class PlantService {
 
     private final PlantRepository plantRepository;
     private final PerenualApiService perenualApiService;
+    private final WikipediaService wikipediaService;
+    private final PerenualCacheService perenualCacheService;
 
-    public PlantService(PlantRepository plantRepository, PerenualApiService perenualApiService) {
+    public PlantService(PlantRepository plantRepository, PerenualApiService perenualApiService, WikipediaService wikipediaService, PerenualCacheService perenualCacheService) {
         this.plantRepository = plantRepository;
         this.perenualApiService = perenualApiService;
+        this.wikipediaService = wikipediaService;
+        this.perenualCacheService = perenualCacheService;
     }
 
     public Plant getOrCreatePlant(int perenualId) {
         return plantRepository.findByPerenualId(perenualId)
+                .map(existing -> {
+                    if (!existing.isImageSearched()) {
+                        String wikiUrl = wikipediaService.getPlantImageUrl(
+                                existing.getScientificName(), existing.getCommonName()
+                        );
+                        existing.setWikipediaImageUrl(wikiUrl);
+                        existing.setImageSearched(true);
+                        return plantRepository.save(existing);
+                    }
+                    return existing;
+                })
                 .orElseGet(() -> {
 
                     PerenualPlantDTO plantDTO;
@@ -37,8 +55,70 @@ public class PlantService {
                             plant.setWateringDescription(careGuideWatering);
                         }
                     }
+
+                    String wikiUrl = wikipediaService.getPlantImageUrl(
+                            plant.getScientificName(), plant.getCommonName()
+                    );
+                    plant.setWikipediaImageUrl(wikiUrl);
+                    plant.setImageSearched(true);
+
                     return plantRepository.save(plant);
                 });
+    }
+
+    public PlantDTO convertToDto(Plant plant) {
+        // Perenual fresh image (with Wikipedia fallback) takes priority over stored Wikipedia URL
+        String perenualImageUrl = perenualCacheService.getFreshImageUrl(
+                plant.getPerenualId(),
+                plant.getScientificName(),
+                plant.getCommonName()
+        );
+        String resolvedImageUrl = perenualImageUrl != null
+                ? perenualImageUrl
+                : plant.getWikipediaImageUrl();
+
+        return new PlantDTO(
+                plant.getId(),
+                plant.getPerenualId(),
+                plant.getCommonName(),
+                plant.getScientificName(),
+                plant.getFamilyName(),
+                plant.getCultivar(),
+                plant.getSpeciesEpithet(),
+                plant.getGenus(),
+                plant.getPlantDescription(),
+                plant.getWateringDescription(),
+                plant.getSunDescription(),
+                resolvedImageUrl
+        );
+    }
+
+    /**
+     * Enriches search results with images.
+     * For plants that have no image from the Perenual search response,
+     * resolves via Perenual detail endpoint first, then Wikipedia fallback.
+     * Uses parallelStream to avoid sequential latency for multiple Wikipedia lookups.
+     */
+    public List<PerenualSearchPlantDTO> enrichWithImages(List<PerenualSearchPlantDTO> results) {
+        return results.parallelStream().map(p -> {
+            if (p.imageUrl() != null && !p.imageUrl().isBlank()) return p;
+            String resolved = perenualCacheService.getFreshImageUrl(
+                    p.perenualId(),
+                    p.scientificName(),
+                    p.commonName()
+            );
+            if (resolved == null) return p;
+            return new PerenualSearchPlantDTO(
+                    p.perenualId(),
+                    p.commonName(),
+                    p.scientificName(),
+                    p.familyName(),
+                    p.cultivar(),
+                    p.speciesEpithet(),
+                    p.genus(),
+                    resolved
+            );
+        }).toList();
     }
 
     private Plant convertDtoToPlant(PerenualPlantDTO plantDto) {
@@ -59,5 +139,4 @@ public class PlantService {
         );
         return plant;
     }
-
 }

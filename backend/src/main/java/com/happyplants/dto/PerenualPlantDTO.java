@@ -35,7 +35,10 @@ public record PerenualPlantDTO(
        String wateringDescription,
 
        @JsonProperty("sunlight")
-       List<String> sunDescription
+       List<String> sunDescription,
+
+       @JsonProperty("default_image")
+       PerenualImageDTO defaultImage
 ){}
 
 

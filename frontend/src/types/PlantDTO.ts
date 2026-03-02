@@ -10,4 +10,5 @@ export interface PlantDTO {
   plantDescription?: string;
   wateringDescription?: string;
   sunDescription?: string;
+  imageUrl?: string;
 }

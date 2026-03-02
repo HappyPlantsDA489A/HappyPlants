@@ -159,18 +159,24 @@ export default function Page() {
                 </div>
             </div>
             <Card className="overflow-hidden py-0">
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
-                    {userPlant.imageUrl ? (
-                        <img
-                            src={userPlant.imageUrl}
-                            alt={displayName}
-                            className="h-full w-full object-cover"
-                        />
-                    ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-primary/10">
-                            <Leaf className="h-16 w-16 text-primary/70"/>
-                        </div>
-                    )}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted flex items-center justify-center">
+                    {(() => {
+                        const imageToShow = userPlant.imageUrl ?? userPlant.plant.imageUrl;
+                        return imageToShow ? (
+                            <img
+                                src={imageToShow}
+                                alt={displayName}
+                                className="h-full w-full object-cover"
+                                onError={(e) => {
+                                    e.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-primary/10">
+                                <Leaf className="h-16 w-16 text-primary/70"/>
+                            </div>
+                        );
+                    })()}
 
                     <div className="absolute bottom-3 right-3 z-10">
                         <WateringBadge userPlant={userPlant}/>
