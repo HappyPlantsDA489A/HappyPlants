@@ -199,6 +199,58 @@ public class UserPlantServiceTest {
         }
 
     }
+
+    @Nested
+    @DisplayName("Get Single Plant Tests")
+    class GetSinglePlantTests {
+
+        @Test
+        @DisplayName("Should return UserPlantDTO when plant is found")
+        public void shouldReturnUserPlantDTOWhenPlantIsFound() {
+            plant.setPlant(new Plant());
+            plant.getPlant().setCommonName("Monstera");
+
+            OffsetDateTime lastWatered = OffsetDateTime.now();
+            Long timesWatered = 3L;
+
+            Object[] mockRow = new Object[]{plant, lastWatered, timesWatered};
+            when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
+                    .thenReturn(List.<Object[]>of(mockRow));
+
+            UserPlantDTO result = usersPlantService.getPlantForUser(userPlantId, userId);
+
+            assertNotNull(result);
+            assertEquals("Monstera", result.plant().commonName(), "Common name should match");
+            assertEquals(3, result.timesWatered());
+            assertEquals(lastWatered, result.lastWateredAt());
+        }
+
+        @Test
+        @DisplayName("Should handle null count and set timeWatered to 0")
+        public void shouldHandleNullCountAndSetTimesWateredToZero() {
+            plant.setPlant(new Plant());
+            Object[] mockRow = new Object[]{plant, null, null};
+            when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
+                    .thenReturn(List.<Object[]>of(mockRow));
+
+            UserPlantDTO result = usersPlantService.getPlantForUser(userPlantId, userId);
+
+            assertEquals(0, result.timesWatered(), "Times watered should be set to 0 when count is null");
+            assertNull(result.lastWateredAt());
+        }
+
+        @Test
+        @DisplayName("Should throw UserPlantNotFoundException when plant is not found")
+        public void shouldThrowNotFoundExceptionWhenPlantIsNotFound() {
+            when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
+                    .thenReturn(List.of());
+
+            assertThrows(UserPlantNotFoundException.class, () ->
+                    usersPlantService.getPlantForUser(userPlantId, userId));
+        }
+    }
+
+
     @Nested
     @DisplayName("Remove Plant Tests")
     class RemovePlantTests {
@@ -334,4 +386,65 @@ public class UserPlantServiceTest {
             verify(wateredPlantRepository, never()).findHistory(any());
         }
     }
+
+    @Nested
+    @DisplayName("Update Plant Details Tests")
+    class UpdatePlantDetailsTests {
+        @Test
+        @DisplayName("Should update nickename and save when user is owner")
+        public void shouldUpdateNicknameWhenUserIsOwner() {
+            String newNickname = "Baby Bell";
+            when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
+
+            usersPlantService.updateNickname(userId, userPlantId, newNickname);
+
+            assertEquals(newNickname, plant.getNickname());
+            verify(usersPlantRepository).save(plant);
+        }
+
+        @Test
+        @DisplayName("Should set nickname to null if provided string is blank")
+        public void shouldSetNicknameToNullWhenBlank() {
+            when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
+
+            usersPlantService.updateNickname(userId, userPlantId, "   ");
+
+            assertNull(plant.getNickname());
+            verify(usersPlantRepository).save(plant);
+        }
+
+        @Test
+        @DisplayName("Should update imageUrl and save when user is owner")
+        public void shouldUpdateImageUrlWhenUserIsOwner() {
+            String newImageUrl = "https://example.com/image.jpg";
+            when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
+
+            usersPlantService.updateImageUrl(userId, userPlantId, newImageUrl);
+
+            assertEquals(newImageUrl, plant.getImageUrl());
+            verify(usersPlantRepository).save(plant);
+        }
+
+        @Test
+        @DisplayName("Should throw UnauthorizedException when non-owner tries to update")
+        public void shouldThrowUnauthorizedExceptionWhenNonOwnerTriesToUpdate() {
+            UUID differentUserId = UUID.randomUUID();
+            when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
+
+            assertThrows(UnauthorizedUserPlantAccessException.class, () ->
+                    usersPlantService.updateNickname(differentUserId, userPlantId, "New Nickname"));
+            verify(usersPlantRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("Should throw NotFoundException when plant does not exist")
+        public void shouldThrowNotFoundExceptionWhenPlantDoesNotExist() {
+            when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.empty());
+
+            assertThrows(UserPlantNotFoundException.class, () ->
+                    usersPlantService.updateNickname(userId, userPlantId, "New Nickname"));
+            verify(usersPlantRepository, never()).save(any());
+        }
+    }
+
 }
