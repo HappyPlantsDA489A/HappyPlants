@@ -50,5 +50,12 @@ public class Plant {
 
     @Column(name = "sun_description", length = Integer.MAX_VALUE)
     private String sunDescription;
+  
+    @Column(name = "wikipedia_image_url", length = Integer.MAX_VALUE)
+    private String wikipediaImageUrl;
 
+    @Column(name = "image_searched", nullable = false, columnDefinition = "boolean not null default false")
+    private boolean imageSearched = false;
+
+   
 }

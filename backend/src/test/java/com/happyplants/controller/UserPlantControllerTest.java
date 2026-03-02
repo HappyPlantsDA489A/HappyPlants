@@ -10,6 +10,7 @@ import com.happyplants.dto.UserPlantDTO;
 import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.service.UserPlantService;
 import com.happyplants.service.UserService;
+import com.happyplants.service.PerenualCacheService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +58,9 @@ public class UserPlantControllerTest {
     @MockitoBean
     private UserPlantService usersPlantService;
 
+    @MockitoBean
+    private PerenualCacheService perenualCacheService;
+
     private User mockUser;
     private Plant mockPlant;
     private UsersPlant mockUsersPlant;
@@ -80,7 +84,7 @@ public class UserPlantControllerTest {
 
         PlantDTO plantDto = new PlantDTO(
                 UUID.randomUUID(), 1, "Snake Plant", "Sansevieria",
-                null, null, null, null, null, null, null
+                null, null, null, null, null, null, null, null
         );
 
         mockUserPlantDTO = new UserPlantDTO(

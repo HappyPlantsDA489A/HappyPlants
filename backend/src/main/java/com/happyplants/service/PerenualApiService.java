@@ -82,17 +82,27 @@ public class PerenualApiService {
         try {
             ApiResponse apiResponse = mapper.readValue(response.body(), ApiResponse.class);
             return apiResponse.data().stream()
-                    .map(p -> new PerenualSearchPlantDTO(
-                            p.perenualId(),
-                            p.commonName(),
-                            p.scientificName(),
-                            p.familyName(),
-                            p.cultivar(),
-                            p.speciesEpithet(),
-                            p.genus(),
-                            p.defaultImage() != null ? p.defaultImage().imageUrl() : null
-
-                    ))
+                    .map(p -> {
+                        String imageUrl = null;
+                        if (p.defaultImage() != null) {
+                            imageUrl = p.defaultImage().originalUrl();
+                            if (imageUrl == null || imageUrl.isBlank()) imageUrl = p.defaultImage().regularUrl();
+                            if (imageUrl == null || imageUrl.isBlank()) imageUrl = p.defaultImage().mediumUrl();
+                            if (imageUrl == null || imageUrl.isBlank()) imageUrl = p.defaultImage().smallUrl();
+                            if (imageUrl == null || imageUrl.isBlank()) imageUrl = p.defaultImage().thumbnail();
+                            if (imageUrl != null && imageUrl.isBlank()) imageUrl = null;
+                        }
+                        return new PerenualSearchPlantDTO(
+                                p.perenualId(),
+                                p.commonName(),
+                                p.scientificName(),
+                                p.familyName(),
+                                p.cultivar(),
+                                p.speciesEpithet(),
+                                p.genus(),
+                                imageUrl
+                        );
+                    })
                     .toList();
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse plant results", e);
@@ -111,6 +121,7 @@ public class PerenualApiService {
                 pspDTO.cultivar(),
                 pspDTO.speciesEpithet(),
                 pspDTO.genus(),
+                null,
                 null,
                 null,
                 null
