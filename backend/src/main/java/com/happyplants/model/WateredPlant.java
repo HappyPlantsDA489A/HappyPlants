@@ -1,7 +1,13 @@
 package com.happyplants.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "watered_plants")
 public class WateredPlant {
@@ -12,21 +18,5 @@ public class WateredPlant {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "users_plants_id", nullable = false)
     private UsersPlant usersPlants;
-
-    public WateredPlantId getId() {
-        return id;
-    }
-
-    public void setId(WateredPlantId id) {
-        this.id = id;
-    }
-
-    public UsersPlant getUsersPlants() {
-        return usersPlants;
-    }
-
-    public void setUsersPlants(UsersPlant usersPlants) {
-        this.usersPlants = usersPlants;
-    }
 
 }
