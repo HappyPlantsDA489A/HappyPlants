@@ -20,4 +20,8 @@ public class UserService {
         UUID id = UUID.fromString(auth.getName());
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
 }
