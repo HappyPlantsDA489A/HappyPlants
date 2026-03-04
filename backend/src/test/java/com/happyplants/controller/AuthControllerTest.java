@@ -6,6 +6,7 @@ import com.happyplants.dto.LoginRequest;
 import com.happyplants.dto.RegisterRequest;
 import com.happyplants.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.happyplants.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,9 @@ public class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
