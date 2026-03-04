@@ -7,9 +7,11 @@ export function Navbar() {
       <span className="text-lg font-semibold font-sans">Happy Plants</span>
       <div className="flex flex-row gap-3">
         <Button size="lg" variant="outline">
-          My profile
+         <a href="/profile">Profile</a>
         </Button>
         <LogoutButton />
+
+
       </div>
     </nav>
   );

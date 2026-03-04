@@ -1,9 +1,11 @@
 package com.happyplants.controller;
 
+import com.happyplants.dto.ChangePasswordRequest;
 import com.happyplants.model.User;
 import com.happyplants.dto.LoginRequest;
 import com.happyplants.dto.RegisterRequest;
 import com.happyplants.service.AuthService;
+import com.happyplants.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
@@ -28,9 +30,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     // Error handling is in service method and exception/GlobalExceptionHandler.java
@@ -95,5 +99,20 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> testSession(Authentication auth) {
         return ResponseEntity.ok("Logged in as: " + auth.getName());
+    }
+
+    @PatchMapping("/change-password")
+    @Operation(summary = "Change password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, String>> changePassword(@Valid @RequestBody ChangePasswordRequest request, Authentication auth) {
+
+        User user = userService.getCurrentUser(auth);
+
+        authService.changePassword(user, request);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Password changed successfully");
+
+        return ResponseEntity.ok(response);
     }
 }
