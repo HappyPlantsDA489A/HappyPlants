@@ -101,18 +101,5 @@ public class AuthController {
         return ResponseEntity.ok("Logged in as: " + auth.getName());
     }
 
-    @PatchMapping("/change-password")
-    @Operation(summary = "Change password")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, String>> changePassword(@Valid @RequestBody ChangePasswordRequest request, Authentication auth) {
 
-        User user = userService.getCurrentUser(auth);
-
-        authService.changePassword(user, request);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Password changed successfully");
-
-        return ResponseEntity.ok(response);
-    }
 }

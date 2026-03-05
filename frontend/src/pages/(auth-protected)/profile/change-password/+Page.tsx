@@ -18,7 +18,7 @@ export default function ChangePasswordPage() {
         }
 
         try {
-            const response = await fetch('/api/auth/change-password', {
+            const response = await fetch('/api/user/change-password', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ currentPassword, newPassword }),
