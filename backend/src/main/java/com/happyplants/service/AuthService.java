@@ -66,18 +66,5 @@ public class AuthService {
         }
     }
 
-    public void changePassword(User user, ChangePasswordRequest request) {
 
-        if(!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
-            throw new InvalidLoginCredentialsException();
-        }
-
-        List<String> passwordErrors = passwordValidator.validate(request.newPassword());
-        if (!passwordErrors.isEmpty()) {
-            throw new WeakPasswordException(passwordErrors);
-        }
-
-        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
-        userRepository.save(user);
-    }
 }

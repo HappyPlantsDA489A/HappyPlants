@@ -1,9 +1,8 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.ChangePasswordRequest;
-import com.happyplants.model.User;
 import com.happyplants.dto.LoginRequest;
 import com.happyplants.dto.RegisterRequest;
+import com.happyplants.model.User;
 import com.happyplants.service.AuthService;
 import com.happyplants.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,11 +29,9 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
 
     public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
-        this.userService = userService;
     }
 
     // Error handling is in service method and exception/GlobalExceptionHandler.java

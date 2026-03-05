@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { API_BASE_URL } from "@/config";
-import { reload } from "vike/client/router";
+import {Button} from "@/components/ui/button";
+import {useState} from "react";
+import {API_BASE_URL} from "@/config";
+import {reload} from "vike/client/router";
 
 export default function LogoutButton() {
   const [isLoading, setIsLoading] = useState<boolean>(false);

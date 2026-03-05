@@ -19,11 +19,9 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final AuthService authService;
 
     public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
-        this.authService = authService;
     }
 
     @DeleteMapping
@@ -50,7 +48,7 @@ public class UserController {
 
         User user = userService.getCurrentUser(auth);
 
-        authService.changePassword(user, request);
+        userService.changePassword(user, request);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Password changed successfully");
