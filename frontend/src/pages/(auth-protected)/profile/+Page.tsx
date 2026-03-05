@@ -1,22 +1,35 @@
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {useEffect, useState} from "react";
 
 export default function Page() {
+
+    const [user, setUser] = useState<{email: string} | null>(null);
+
+    useEffect(() => {
+        fetch("/api/user/user-info")
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(err => console.log("Could not fetch user info", err));
+    })
+
     const handleDeleteAccount = async () => {
         const confirmed = window.confirm("Are you sure you? Your account and data will be erased permanently");
 
         if (confirmed) {
             try {
-                const response = await fetch("/api/auth/delete-account", {
+                const response = await fetch("/api/user", {
                     method: "DELETE",
                 });
 
                 if (response.ok) {
                     window.location.href = "/";
                 } else {
-                    alert("Could not delete account");
+                    toast.error("Could not delete account, Please try again later.");
                 }
             } catch (error) {
                 console.log("Error:" + error);
+                toast.error("A network error occurred. Please try again later.");
             }
         }
 
@@ -26,7 +39,7 @@ export default function Page() {
                 <div className="text-center">
                     <h1 className="font-bold text-3xl tracking-tight">Profile</h1>
                     <p className="text-muted-foreground text-lg mt-2">
-                        You will view your profile info here.
+                        Logged in as: {user ? user.email: "loading..."}
                     </p>
                 </div>
 

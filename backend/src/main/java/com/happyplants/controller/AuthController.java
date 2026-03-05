@@ -29,11 +29,9 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
 
     public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
-        this.userService = userService;
     }
 
     // Error handling is in service method and exception/GlobalExceptionHandler.java
@@ -100,15 +98,4 @@ public class AuthController {
         return ResponseEntity.ok("Logged in as: " + auth.getName());
     }
 
-    @DeleteMapping("/delete-account")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, String>> deleteAccount(Authentication auth, HttpServletRequest request, HttpServletResponse httpResponse) {
-
-        User user = userService.getCurrentUser(auth);
-
-        userService.deleteUser(user);
-
-        return logout(request, httpResponse);
-
-    }
 }
