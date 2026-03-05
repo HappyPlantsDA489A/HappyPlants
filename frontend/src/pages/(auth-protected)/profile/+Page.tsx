@@ -52,7 +52,7 @@ export default function Page() {
             <a href="/profile/change-password">Change password</a>
         </Button>
       
-      <Button asChild size="lg" className="w-full" variant="outline">
+      <Button asChild size="lg" className="w-full">
         <a href="/library">Go to library</a>
       </Button>
 
