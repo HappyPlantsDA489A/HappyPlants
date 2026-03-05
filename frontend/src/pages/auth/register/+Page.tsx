@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf } from "lucide-react";
-import { navigate, reload } from "vike/client/router";
+import { navigate } from "vike/client/router";
 import { API_BASE_URL } from "@/config";
 import { toast } from "sonner";
 
@@ -35,7 +35,7 @@ export default function Page() {
 
       if (response.ok) {
         toast.success("Account created", { description: "You may now log in" });
-        navigate("/auth/login");
+        navigate ("/auth/login");
       } else if (response.status == 400 || response.status == 409) {
         throw new Error(json.detail);
       } else {

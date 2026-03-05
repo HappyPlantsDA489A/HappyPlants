@@ -1,11 +1,15 @@
 package com.happyplants.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -35,5 +39,8 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false, insertable = false)
     private OffsetDateTime createdAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UsersPlant> usersPlants = new ArrayList<>();
 
 }

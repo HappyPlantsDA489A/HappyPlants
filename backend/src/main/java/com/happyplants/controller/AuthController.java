@@ -4,6 +4,7 @@ import com.happyplants.model.User;
 import com.happyplants.dto.LoginRequest;
 import com.happyplants.dto.RegisterRequest;
 import com.happyplants.service.AuthService;
+import com.happyplants.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
@@ -28,9 +29,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     // Error handling is in service method and exception/GlobalExceptionHandler.java
@@ -95,5 +98,17 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> testSession(Authentication auth) {
         return ResponseEntity.ok("Logged in as: " + auth.getName());
+    }
+
+    @DeleteMapping("/delete-account")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, String>> deleteAccount(Authentication auth, HttpServletRequest request, HttpServletResponse httpResponse) {
+
+        User user = userService.getCurrentUser(auth);
+
+        userService.deleteUser(user);
+
+        return logout(request, httpResponse);
+
     }
 }
