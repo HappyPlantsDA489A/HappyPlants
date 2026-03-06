@@ -154,7 +154,7 @@ public class PerenualApiService {
             return null;
 
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Failed to fetch watering description", e);
         }
     }
 }
