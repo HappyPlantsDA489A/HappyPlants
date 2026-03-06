@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happyplants.dto.ApiResponse;
 import com.happyplants.dto.PerenualPlantDTO;
 import com.happyplants.dto.PerenualSearchPlantDTO;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 
@@ -25,9 +28,15 @@ public class PerenualApiService {
     @Value("${plant.api.token}")
     private String plantApiKey;
 
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final HttpClient client;
+    private final ObjectMapper mapper;
+    @Getter
     private final Map<Integer, PerenualSearchPlantDTO> searchCache = new ConcurrentHashMap<>();
+
+    public PerenualApiService(HttpClient client, ObjectMapper mapper) {
+        this.client = client;
+        this.mapper = mapper;
+    }
 
     public List<PerenualSearchPlantDTO> search(String name) {
         try {
@@ -143,7 +152,7 @@ public class PerenualApiService {
             return null;
 
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Failed to fetch watering description", e);
         }
     }
 }
