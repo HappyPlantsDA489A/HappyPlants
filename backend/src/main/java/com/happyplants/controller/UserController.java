@@ -1,8 +1,8 @@
 package com.happyplants.controller;
 
 import com.happyplants.dto.ChangePasswordRequest;
+import com.happyplants.dto.UserInfoResponse;
 import com.happyplants.model.User;
-import com.happyplants.service.AuthService;
 import com.happyplants.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService, AuthService authService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -36,9 +36,10 @@ public class UserController {
     @GetMapping("/user-info")
     @Operation(summary = "Get current user info")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> getUserInfo(Authentication auth) {
+    public ResponseEntity<UserInfoResponse> getUserInfo(Authentication auth) {
         User user = userService.getCurrentUser(auth);
-        return ResponseEntity.ok(user);
+        UserInfoResponse response = new UserInfoResponse(user.getEmail(), user.getDisplayName());
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/change-password")
