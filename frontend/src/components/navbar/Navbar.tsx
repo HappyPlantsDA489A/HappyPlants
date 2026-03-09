@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import LogoutButton from "./LogoutButton";
 
 export function Navbar() {
@@ -7,9 +7,11 @@ export function Navbar() {
       <span className="text-lg font-semibold font-sans">Happy Plants</span>
       <div className="flex flex-row gap-3">
         <Button size="lg" variant="outline" asChild>
-          <a href="/profile">My profile</a>
+          <a href="/profile">Profile</a>
         </Button>
         <LogoutButton />
+
+
       </div>
     </nav>
   );

@@ -1,12 +1,12 @@
 package com.happyplants.service;
 
+import com.happyplants.dto.PlantDTO;
+import com.happyplants.dto.UserPlantDTO;
+import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.exception.InvalidWateringFrequencyException;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.*;
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
 import org.springframework.stereotype.Service;
