@@ -1,5 +1,6 @@
 package com.happyplants.service;
 
+import com.happyplants.dto.ChangePasswordRequest;
 import com.happyplants.exception.EmailAlreadyExistsException;
 import com.happyplants.exception.InvalidLoginCredentialsException;
 import com.happyplants.exception.WeakPasswordException;
@@ -64,4 +65,6 @@ public class AuthService {
             throw new InvalidLoginCredentialsException();
         }
     }
+
+
 }
