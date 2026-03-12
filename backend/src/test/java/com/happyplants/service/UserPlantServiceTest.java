@@ -123,7 +123,7 @@ public class UserPlantServiceTest {
         @Test
         @DisplayName("HPF-COLL-01: Verify that an empty list is returned when the user has no plants")
         public void shouldReturnEmptyListWhenUserHasNoPlants() {
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId, any(), any())).thenReturn(List.of());
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), any(), any())).thenReturn(List.of());
 
             List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId, null ,"createdAT", "desc");
 
