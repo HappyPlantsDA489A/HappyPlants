@@ -46,19 +46,6 @@ public class UserPlantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDto);
     }
 
-    @GetMapping
-    @Operation(summary = "Get all plants in a user's library")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<UserPlantDTO>> getUserPlants(Authentication auth) {
-        User user = userService.getCurrentUser(auth);
-
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<UserPlantDTO> userPlants = usersPlantService.getPlantsForUser(user.getId());
-        return ResponseEntity.ok(userPlants);
-    }
 
     @GetMapping("/{plantId}")
     @Operation(summary = "Get a specific plant from the user's library")
@@ -146,5 +133,23 @@ public class UserPlantController {
         User user = userService.getCurrentUser(auth);
         usersPlantService.updateImageUrl(user.getId(), userPlantId, updateImageUrlDTO.imageUrl());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all plants in a user's library with filtering and sorting")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<UserPlantDTO>> getUserPlants(
+            @RequestParam(required = false) String family,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction,
+            Authentication auth) {
+
+        User user = userService.getCurrentUser(auth);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<UserPlantDTO> userPlants = usersPlantService.getPlantsForUser(user.getId(), family, sortBy, direction);
+        return ResponseEntity.ok(userPlants);
     }
 }
