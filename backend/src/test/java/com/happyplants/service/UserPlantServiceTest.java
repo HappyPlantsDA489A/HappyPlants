@@ -128,7 +128,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Verify that convertToDTO maps all fields correctly")
+        @DisplayName("HPF-COLL-02 & HPF-Plant-02: Verify that convertToDTO maps all fields correctly")
         public void shouldMapAllFieldsCorrectly(){
             Plant basePlant = new Plant();
             basePlant.setPerenualId(1);
@@ -158,7 +158,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Verify that multiple data fields are correctly mapped from Object arrray")
+        @DisplayName("HPF-COLL: Verify that multiple data fields are correctly mapped from Object arrray")
         public void shouldMapDatabaseResultsToDtoList(){
             plant.setPlant(new Plant());
             plant.getPlant().setCommonName("Snake Plant");
@@ -180,7 +180,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Verify that timesWatered is set to 0 when count is null")
+        @DisplayName("HPF-CARE-03: Verify that timesWatered is set to 0 when count is null")
         public void shouldSetTimesWateredToZeroWhenCountIsNull(){
             Plant basePlant = new Plant();
             basePlant.setId(UUID.randomUUID());
@@ -205,7 +205,7 @@ public class UserPlantServiceTest {
     class GetSinglePlantTests {
 
         @Test
-        @DisplayName("Should return UserPlantDTO when plant is found")
+        @DisplayName("HPF-PLANT-02: Should return UserPlantDTO when plant is found")
         public void shouldReturnUserPlantDTOWhenPlantIsFound() {
             plant.setPlant(new Plant());
             plant.getPlant().setCommonName("Monstera");
@@ -226,7 +226,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Should handle null count and set timeWatered to 0")
+        @DisplayName("HPF-CARE-03: Should handle null count and set timeWatered to 0")
         public void shouldHandleNullCountAndSetTimesWateredToZero() {
             plant.setPlant(new Plant());
             Object[] mockRow = new Object[]{plant, null, null};
@@ -240,7 +240,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw UserPlantNotFoundException when plant is not found")
+        @DisplayName("HPF-PLANT-02: Should throw UserPlantNotFoundException when plant is not found")
         public void shouldThrowNotFoundExceptionWhenPlantIsNotFound() {
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.of());
@@ -334,7 +334,7 @@ public class UserPlantServiceTest {
     }
 
     @Nested
-    @DisplayName("Watering History Tests")
+    @DisplayName("HPF-COLL-07: Watering History Tests")
     class WateringHistoryTests {
 
         @Test
@@ -391,7 +391,7 @@ public class UserPlantServiceTest {
     @DisplayName("Update Plant Details Tests")
     class UpdatePlantDetailsTests {
         @Test
-        @DisplayName("Should update nickename and save when user is owner")
+        @DisplayName("HPF-COLL-02: Should update nickname and save when user is owner")
         public void shouldUpdateNicknameWhenUserIsOwner() {
             String newNickname = "Baby Bell";
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -403,7 +403,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Should set nickname to null if provided string is blank")
+        @DisplayName("HPF-COLL-02: Should set nickname to null if provided string is blank")
         public void shouldSetNicknameToNullWhenBlank() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
 
@@ -414,7 +414,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Should update imageUrl and save when user is owner")
+        @DisplayName("HPF-PLANT-02.1: Should update imageUrl and save when user is owner")
         public void shouldUpdateImageUrlWhenUserIsOwner() {
             String newImageUrl = "https://example.com/image.jpg";
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -426,7 +426,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw UnauthorizedException when non-owner tries to update")
+        @DisplayName("HPF-USER-04: Should throw UnauthorizedException when non-owner tries to update")
         public void shouldThrowUnauthorizedExceptionWhenNonOwnerTriesToUpdate() {
             UUID differentUserId = UUID.randomUUID();
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -437,7 +437,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw NotFoundException when plant does not exist")
+        @DisplayName("HPF-COLL: Should throw NotFoundException when plant does not exist")
         public void shouldThrowNotFoundExceptionWhenPlantDoesNotExist() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.empty());
 
