@@ -40,7 +40,7 @@ public class PerenualApiServiceTest {
 
     @BeforeEach
     void setup() {
-        mapper = new ObjectMapper();   // viktig rad
+        mapper = new ObjectMapper();
         service = new PerenualApiService(mockClient, mapper);
     }
 
