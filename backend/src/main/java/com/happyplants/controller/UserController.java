@@ -1,7 +1,8 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.ChangePasswordRequest;
-import com.happyplants.dto.UserInfoResponse;
+import com.happyplants.dto.requests.ChangePasswordRequest;
+import com.happyplants.dto.requests.UpdateDisplayNameRequest;
+import com.happyplants.dto.response.UserInfoResponse;
 import com.happyplants.model.User;
 import com.happyplants.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +40,16 @@ public class UserController {
     public ResponseEntity<UserInfoResponse> getUserInfo(Authentication auth) {
         User user = userService.getCurrentUser(auth);
         UserInfoResponse response = new UserInfoResponse(user.getEmail(), user.getDisplayName());
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/display-name")
+    @Operation(summary = "Change display name")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserInfoResponse> updateDisplayName(@Valid @RequestBody UpdateDisplayNameRequest request, Authentication auth) {
+        User user = userService.getCurrentUser(auth);
+        User updatedUser = userService.updateDisplayName(user, request);
+        UserInfoResponse response = new UserInfoResponse(updatedUser.getEmail(), updatedUser.getDisplayName());
         return ResponseEntity.ok(response);
     }
 

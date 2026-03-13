@@ -1,4 +1,4 @@
-package com.happyplants.dto;
+package com.happyplants.dto.response;
 
 public record UserInfoResponse(
         String email,

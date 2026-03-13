@@ -6,7 +6,7 @@ import { SecurityCard } from "../../../components/profile/SecurityCard";
 import { DangerZoneCard } from "../../../components/profile/DangerZoneCard";
 import { ChangePasswordDialog } from "@/components/profile/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
-import { getUserInfo } from "./api";
+import { changeDisplayName, getUserInfo } from "./api";
 import type { UserInfo } from "./types";
 
 export default function Page() {
@@ -34,6 +34,11 @@ export default function Page() {
   useEffect(() => {
     loadUserInfo();
   }, []);
+
+  async function handleDisplayNameChange(displayName: string) {
+    const updatedUserInfo = await changeDisplayName({ displayName });
+    setUserInfo(updatedUserInfo);
+  }
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
@@ -65,6 +70,7 @@ export default function Page() {
           isLoading={isLoading}
           error={error}
           onRetry={loadUserInfo}
+          onDisplayNameChange={handleDisplayNameChange}
         />
 
         <SecurityCard
