@@ -1,7 +1,7 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.response.PlantResponse;
+import com.happyplants.dto.response.PerenualSearchPlantResponse;
 import com.happyplants.model.Plant;
 import com.happyplants.service.PerenualApiService;
 import com.happyplants.service.PlantService;
@@ -30,12 +30,12 @@ public class APIConnection {
 
     @GetMapping("plants/search")
     @Operation(summary = "Search for plants")
-    public ResponseEntity<List<PerenualSearchPlantDTO>> search(@RequestParam String name) {
+    public ResponseEntity<List<PerenualSearchPlantResponse>> search(@RequestParam String name) {
         if (name == null || name.trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         try {
-            List<PerenualSearchPlantDTO> results = perenualApiService.search(name);
+            List<PerenualSearchPlantResponse> results = perenualApiService.search(name);
             results = plantService.enrichWithImages(results);
             return ResponseEntity.ok(results);
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class APIConnection {
 
     @GetMapping("plants/{id}")
     @Operation(summary = "Get plant details by id")
-    public ResponseEntity<PlantDTO> getPlantById(@PathVariable int id) {
+    public ResponseEntity<PlantResponse> getPlantById(@PathVariable int id) {
         try {
             Plant plant = plantService.getOrCreatePlant(id);
             if (plant == null) {

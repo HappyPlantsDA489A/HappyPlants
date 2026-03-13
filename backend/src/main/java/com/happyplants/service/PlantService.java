@@ -1,9 +1,9 @@
 package com.happyplants.service;
 
 import com.happyplants.model.Plant;
-import com.happyplants.dto.PerenualPlantDTO;
-import com.happyplants.dto.PerenualSearchPlantDTO;
-import com.happyplants.dto.PlantDTO;
+import com.happyplants.dto.internal.PerenualPlantData;
+import com.happyplants.dto.response.PerenualSearchPlantResponse;
+import com.happyplants.dto.response.PlantResponse;
 import com.happyplants.repository.PlantRepository;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class PlantService {
                 })
                 .orElseGet(() -> {
 
-                    PerenualPlantDTO plantDTO;
+                    PerenualPlantData plantDTO;
 
                     if (perenualId <= 3000) {
                         plantDTO = perenualApiService.getPlantById(perenualId);
@@ -66,7 +66,7 @@ public class PlantService {
                 });
     }
 
-    public PlantDTO convertToDto(Plant plant) {
+    public PlantResponse convertToDto(Plant plant) {
         // Perenual fresh image (with Wikipedia fallback) takes priority over stored Wikipedia URL
         String perenualImageUrl = perenualCacheService.getFreshImageUrl(
                 plant.getPerenualId(),
@@ -77,7 +77,7 @@ public class PlantService {
                 ? perenualImageUrl
                 : plant.getWikipediaImageUrl();
 
-        return new PlantDTO(
+        return new PlantResponse(
                 plant.getId(),
                 plant.getPerenualId(),
                 plant.getCommonName(),
@@ -99,7 +99,7 @@ public class PlantService {
      * resolves via Perenual detail endpoint first, then Wikipedia fallback.
      * Uses parallelStream to avoid sequential latency for multiple Wikipedia lookups.
      */
-    public List<PerenualSearchPlantDTO> enrichWithImages(List<PerenualSearchPlantDTO> results) {
+    public List<PerenualSearchPlantResponse> enrichWithImages(List<PerenualSearchPlantResponse> results) {
         return results.parallelStream().map(p -> {
             if (p.imageUrl() != null && !p.imageUrl().isBlank()) return p;
             String resolved = perenualCacheService.getFreshImageUrl(
@@ -108,7 +108,7 @@ public class PlantService {
                     p.commonName()
             );
             if (resolved == null) return p;
-            return new PerenualSearchPlantDTO(
+            return new PerenualSearchPlantResponse(
                     p.perenualId(),
                     p.commonName(),
                     p.scientificName(),
@@ -121,7 +121,7 @@ public class PlantService {
         }).toList();
     }
 
-    private Plant convertDtoToPlant(PerenualPlantDTO plantDto) {
+    private Plant convertDtoToPlant(PerenualPlantData plantDto) {
         Plant plant = new Plant();
         plant.setPerenualId(plantDto.perenualId());
         plant.setCommonName(plantDto.commonName());

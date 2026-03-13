@@ -1,8 +1,8 @@
 package com.happyplants.service;
 
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
+import com.happyplants.dto.response.PlantResponse;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
 import com.happyplants.exception.InvalidWateringFrequencyException;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
@@ -35,7 +35,7 @@ public class UserPlantService {
         this.wateredPlantRepository = wateredPlantRepository;
     }
 
-    public UserPlantDTO convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
+    public UserPlantResponse convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
         Plant plant = usersPlant.getPlant();
 
         // Perenual fresh image (cache, TTL 6h, Wikipedia fallback) takes priority over stored Wikipedia URL
@@ -48,7 +48,7 @@ public class UserPlantService {
                 ? perenualImageUrl
                 : plant.getWikipediaImageUrl();
 
-        PlantDTO plantDto = new PlantDTO(
+        PlantResponse plantDto = new PlantResponse(
                 plant.getId(),
                 plant.getPerenualId(),
                 plant.getCommonName(),
@@ -63,7 +63,7 @@ public class UserPlantService {
                 resolvedPlantImageUrl
         );
 
-        return new UserPlantDTO(
+        return new UserPlantResponse(
                 usersPlant.getId(),
                 usersPlant.getNickname(),
                 usersPlant.getImageUrl(),
@@ -91,7 +91,7 @@ public class UserPlantService {
         return usersPlantRepository.save(usersPlant);
     }
 
-    public List<UserPlantDTO> getPlantsForUser(UUID userId) {
+    public List<UserPlantResponse> getPlantsForUser(UUID userId) {
         List<Object[]> results = usersPlantRepository.findAllWithLastWateredByUserId(userId);
 
         return results.stream().map(result -> {
@@ -103,7 +103,7 @@ public class UserPlantService {
         }).toList();
     }
 
-    public UserPlantDTO getPlantForUser(UUID plantId, UUID userId) {
+    public UserPlantResponse getPlantForUser(UUID plantId, UUID userId) {
         return usersPlantRepository.findWithLastWateredByPlantId(plantId, userId)
                 .stream()
                 .findFirst()
@@ -162,7 +162,7 @@ public class UserPlantService {
         usersPlantRepository.save(plant);
     }
 
-    public WateredPlantDTO waterPlant(UUID userId, UUID userPlantId) {
+    public WateredPlantResponse waterPlant(UUID userId, UUID userPlantId) {
         UsersPlant plant = usersPlantRepository.findById(userPlantId)
                 .orElseThrow(UserPlantNotFoundException::new);
 
@@ -182,10 +182,10 @@ public class UserPlantService {
 
         wateredPlantRepository.save(watered);
 
-        return new WateredPlantDTO(now);
+        return new WateredPlantResponse(now);
     }
 
-    public List<WateredPlantDTO> getWateringHistory(UUID userId, UUID userPlantId) {
+    public List<WateredPlantResponse> getWateringHistory(UUID userId, UUID userPlantId) {
         UsersPlant plant = usersPlantRepository.findById(userPlantId)
                 .orElseThrow(UserPlantNotFoundException::new);
 
@@ -195,7 +195,7 @@ public class UserPlantService {
 
         return wateredPlantRepository.findHistory(userPlantId)
                 .stream()
-                .map(w -> new WateredPlantDTO(w.getId().getOccuredAt()))
+                .map(w -> new WateredPlantResponse(w.getId().getOccuredAt()))
                         .toList();
     }
 

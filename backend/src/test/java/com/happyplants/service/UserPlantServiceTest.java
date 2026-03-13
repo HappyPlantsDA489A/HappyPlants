@@ -7,8 +7,8 @@ import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
 import com.happyplants.model.WateredPlant;
 import com.happyplants.model.WateredPlantId;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
 import com.happyplants.service.PerenualCacheService;
@@ -125,7 +125,7 @@ public class UserPlantServiceTest {
         public void shouldReturnEmptyListWhenUserHasNoPlants() {
             when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.of());
 
-            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId);
 
             assertNotNull(result);
             assertTrue(result.isEmpty(), "Result should be an empty list when user has no plants");
@@ -179,7 +179,7 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
             when(wateredPlantRepository.save(any(WateredPlant.class))).thenAnswer(i -> i.getArgument(0));
 
-            WateredPlantDTO result = usersPlantService.waterPlant(userId, userPlantId);
+            WateredPlantResponse result = usersPlantService.waterPlant(userId, userPlantId);
 
             ArgumentCaptor<WateredPlant> captor = ArgumentCaptor.forClass(WateredPlant.class);
             verify(wateredPlantRepository).save(captor.capture());
@@ -187,7 +187,7 @@ public class UserPlantServiceTest {
             WateredPlant saved = captor.getValue();
             assertNotNull(saved.getId(), "WateredPlantId should not be null");
             assertEquals(userPlantId, saved.getId().getUsersPlantsId(), "Saved watering should reference the correct plant");
-            assertNotNull(result.occuredAt(), "Returned DTO should have a non-null timestamp");
+            assertNotNull(result.wateredAt(), "Returned DTO should have a non-null timestamp");
         }
 
         @Test
@@ -237,11 +237,11 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
             when(wateredPlantRepository.findHistory(userPlantId)).thenReturn(List.of(w1, w2));
 
-            List<WateredPlantDTO> result = usersPlantService.getWateringHistory(userId, userPlantId);
+            List<WateredPlantResponse> result = usersPlantService.getWateringHistory(userId, userPlantId);
 
             assertEquals(2, result.size());
-            assertEquals(id1.getOccuredAt(), result.get(0).occuredAt());
-            assertEquals(id2.getOccuredAt(), result.get(1).occuredAt());
+            assertEquals(id1.getOccuredAt(), result.get(0).wateredAt());
+            assertEquals(id2.getOccuredAt(), result.get(1).wateredAt());
         }
 
         @Test

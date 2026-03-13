@@ -2,7 +2,7 @@ package com.happyplants.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.happyplants.dto.PerenualPlantDTO;
+import com.happyplants.dto.internal.PerenualPlantData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class PerenualCacheService {
 
         return imageCache.get(perenualId, id -> {
             try {
-                PerenualPlantDTO dto = perenualApiService.getPlantById(id);
+                PerenualPlantData dto = perenualApiService.getPlantById(id);
                 if (dto != null && dto.defaultImage() != null) {
                     String url = dto.defaultImage().originalUrl();
                     if (url == null || url.isBlank()) url = dto.defaultImage().regularUrl();
