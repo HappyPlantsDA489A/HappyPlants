@@ -2,9 +2,15 @@ package com.happyplants.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "plants")
 public class Plant {
@@ -44,90 +50,12 @@ public class Plant {
 
     @Column(name = "sun_description", length = Integer.MAX_VALUE)
     private String sunDescription;
+  
+    @Column(name = "wikipedia_image_url", length = Integer.MAX_VALUE)
+    private String wikipediaImageUrl;
 
-    public UUID getId() {
-        return id;
-    }
+    @Column(name = "image_searched", nullable = false, columnDefinition = "boolean not null default false")
+    private boolean imageSearched = false;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Integer getPerenualId() {
-        return perenualId;
-    }
-
-    public void setPerenualId(Integer perenualId) {
-        this.perenualId = perenualId;
-    }
-
-    public String getCommonName() {
-        return commonName;
-    }
-
-    public void setCommonName(String commonName) {
-        this.commonName = commonName;
-    }
-
-    public String getScientificName() {
-        return scientificName;
-    }
-
-    public void setScientificName(String scientificName) {
-        this.scientificName = scientificName;
-    }
-
-    public String getFamilyName() {
-        return familyName;
-    }
-
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
-
-    public String getCultivar() {
-        return cultivar;
-    }
-
-    public void setCultivar(String cultivar) {
-        this.cultivar = cultivar;
-    }
-
-    public String getSpeciesEpithet() {
-        return speciesEpithet;
-    }
-
-    public void setSpeciesEpithet(String speciesEpithet) {
-        this.speciesEpithet = speciesEpithet;
-    }
-
-    public String getGenus() {
-        return genus;
-    }
-
-    public void setGenus(String genus) {
-        this.genus = genus;
-    }
-
-    public String getPlantDescription() {return plantDescription;}
-
-    public void setPlantDescription(String plantDescription) {this.plantDescription = plantDescription;}
-
-    public String getWateringDescription() {
-        return wateringDescription;
-    }
-
-    public void setWateringDescription(String wateringDescription) {
-        this.wateringDescription = wateringDescription;
-    }
-
-    public String getSunDescription() {
-        return sunDescription;
-    }
-
-    public void setSunDescription(String sunDescription) {
-        this.sunDescription = sunDescription;
-    }
-
-
+   
 }

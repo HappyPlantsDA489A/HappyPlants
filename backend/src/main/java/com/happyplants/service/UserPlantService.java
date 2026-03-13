@@ -1,12 +1,12 @@
 package com.happyplants.service;
 
+import com.happyplants.dto.PlantDTO;
+import com.happyplants.dto.UserPlantDTO;
+import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.exception.InvalidWateringFrequencyException;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.*;
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
 import org.springframework.stereotype.Service;
@@ -20,17 +20,33 @@ public class UserPlantService {
     private final UsersPlantRepository usersPlantRepository;
     private final PlantService plantService;
     private final PerenualApiService perenualApiService;
+    private final PerenualCacheService perenualCacheService;
     private final WateredPlantRepository wateredPlantRepository;
 
-    public UserPlantService(UsersPlantRepository usersPlantRepository, PlantService plantService, PerenualApiService perenualApiService, WateredPlantRepository wateredPlantRepository) {
+    public UserPlantService(UsersPlantRepository usersPlantRepository,
+                            PlantService plantService,
+                            PerenualApiService perenualApiService,
+                            PerenualCacheService perenualCacheService,
+                            WateredPlantRepository wateredPlantRepository) {
         this.usersPlantRepository = usersPlantRepository;
         this.plantService = plantService;
         this.perenualApiService = perenualApiService;
+        this.perenualCacheService = perenualCacheService;
         this.wateredPlantRepository = wateredPlantRepository;
     }
 
     public UserPlantDTO convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
         Plant plant = usersPlant.getPlant();
+
+        // Perenual fresh image (cache, TTL 6h, Wikipedia fallback) takes priority over stored Wikipedia URL
+        String perenualImageUrl = perenualCacheService.getFreshImageUrl(
+                plant.getPerenualId(),
+                plant.getScientificName(),
+                plant.getCommonName()
+        );
+        String resolvedPlantImageUrl = perenualImageUrl != null
+                ? perenualImageUrl
+                : plant.getWikipediaImageUrl();
 
         PlantDTO plantDto = new PlantDTO(
                 plant.getId(),
@@ -41,9 +57,10 @@ public class UserPlantService {
                 plant.getCultivar(),
                 plant.getSpeciesEpithet(),
                 plant.getGenus(),
-                plant.getPlantDescription(), 
+                plant.getPlantDescription(),
                 plant.getWateringDescription(),
-                plant.getSunDescription()
+                plant.getSunDescription(),
+                resolvedPlantImageUrl
         );
 
         return new UserPlantDTO(

@@ -6,4 +6,5 @@ export interface PerenualSearchPlantDTO {
   cultivar?: string;
   species_epithet?: string;
   genus?: string;
+  imageUrl?: string;
 }

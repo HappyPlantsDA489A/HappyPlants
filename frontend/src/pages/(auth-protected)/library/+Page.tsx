@@ -1,12 +1,12 @@
-import type { UserPlantDTO } from "@/types/UserPlantDTO";
-import { useEffect, useState } from "react";
-import { API_BASE_URL } from "@/config";
-import { toast } from "sonner";
-import { NoPlants } from "./NoPlants";
+import type {UserPlantDTO} from "@/types/UserPlantDTO";
+import {useEffect, useState} from "react";
+import {API_BASE_URL} from "@/config";
+import {toast} from "sonner";
+import {NoPlants} from "./NoPlants";
 import SpinningLoader from "@/components/SpinningLoader";
-import { UserPlantCard } from "./UserPlantCard";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import {UserPlantCard} from "./UserPlantCard";
+import {Button} from "@/components/ui/button";
+import {Plus} from "lucide-react";
 
 export default function Page() {
   const [userPlants, setUserPlants] = useState<UserPlantDTO[]>([]);

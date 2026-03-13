@@ -11,6 +11,7 @@ import com.happyplants.dto.UserPlantDTO;
 import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
+import com.happyplants.service.PerenualCacheService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,6 +43,9 @@ public class UserPlantServiceTest {
 
     @Mock
     private PlantService plantService;
+
+    @Mock
+    private PerenualCacheService perenualCacheService;
 
     @InjectMocks
     private UserPlantService usersPlantService;

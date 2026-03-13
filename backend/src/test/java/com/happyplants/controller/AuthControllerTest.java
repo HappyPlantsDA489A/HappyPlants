@@ -1,11 +1,12 @@
 package com.happyplants.controller;
 
-import com.happyplants.exception.InvalidLoginCredentialsException;
-import com.happyplants.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happyplants.dto.LoginRequest;
 import com.happyplants.dto.RegisterRequest;
+import com.happyplants.exception.InvalidLoginCredentialsException;
+import com.happyplants.model.User;
 import com.happyplants.service.AuthService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.happyplants.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,23 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
 import java.util.UUID;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -46,6 +44,9 @@ public class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
