@@ -43,9 +43,6 @@ public class UserPlantServiceTest {
     @Mock
     private PlantService plantService;
 
-    @Mock
-    private PerenualApiService perenualApiService;
-
     @InjectMocks
     private UserPlantService usersPlantService;
 
@@ -133,7 +130,6 @@ public class UserPlantServiceTest {
             Plant basePlant = new Plant();
             basePlant.setPerenualId(1);
             basePlant.setCommonName("Snake Plant");
-            basePlant.setCommonName("Snake Plant");
             basePlant.setWateringDescription("Water when the top inch of soil is dry");
 
             UsersPlant usersPlant = new UsersPlant();
@@ -152,13 +148,11 @@ public class UserPlantServiceTest {
             assertEquals("Water when the top inch of soil is dry", result.plant().wateringDescription());
             assertEquals(lastWatered, result.lastWateredAt());
 
-            assertEquals("Snake Plant", result.plant().commonName());
-            assertEquals("Water when the top inch of soil is dry", result.plant().wateringDescription());
 
         }
 
         @Test
-        @DisplayName("HPF-COLL: Verify that multiple data fields are correctly mapped from Object arrray")
+        @DisplayName("HPF-COLL: Verify that multiple data fields are correctly mapped from Object array")
         public void shouldMapDatabaseResultsToDtoList(){
             plant.setPlant(new Plant());
             plant.getPlant().setCommonName("Snake Plant");
