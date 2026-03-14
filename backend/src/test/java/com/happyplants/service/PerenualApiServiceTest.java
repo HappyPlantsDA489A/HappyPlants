@@ -48,7 +48,7 @@ public class PerenualApiServiceTest {
     @DisplayName("Search Tests")
     class SearchEndpointTests {
         @Test
-        @DisplayName("HPF-PLANT-01: Verifies that exception can be thrown.")
+        @DisplayName("TC-PLANT-01, TC-SEA-01: Verifies that exception can be thrown.")
         void shouldThrowExceptionSearch() {
             assertThrows(RuntimeException.class, () -> {
                 service.search(null);
@@ -56,7 +56,7 @@ public class PerenualApiServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-PLANT-01: Verifies that the correct data is mapped from API response to PerenualSearchPlantDTO")
+        @DisplayName("TC-PLANT-01, TC-SEA-01, TC-SEA-02: Verifies that the correct data is mapped from API response to PerenualSearchPlantDTO")
         void shouldMapValidApiResponseToPerenualSearchPlantDTO() throws IOException, InterruptedException {
             String json = """
         {
@@ -136,7 +136,7 @@ public class PerenualApiServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-PLANT-01: Verifies that the correct data is mapped from API response to PerenualSearchPlantDTO")
+        @DisplayName("TC-PLANT-01, TC-SEA-01, TC-SEA-02 : Verifies that the correct data is mapped from API response to PerenualSearchPlantDTO")
         void shouldFetchDataFromApiAndMapItCorrectly() {
             String json = """
         {
@@ -215,7 +215,7 @@ public class PerenualApiServiceTest {
     @DisplayName("Get watering description tests")
     class GetWateringDescriptionTests {
         @Test
-        @DisplayName("HPF-PLANT-02: Verifies that the watering description is mapped from the API Response.")
+        @DisplayName("TC-PLANT-02: Verifies that the watering description is mapped from the API Response.")
         void shouldMapDescriptionFromApiResponse() throws IOException, InterruptedException {
             String json = """
         {
@@ -242,7 +242,7 @@ public class PerenualApiServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-PLANT-02: Verifies that exception can be thrown.")
+        @DisplayName("TC-PLANT-02: Verifies that exception can be thrown.")
         void shouldThrowExceptionGetWateringDescription() {
             assertThrows(RuntimeException.class, () -> {
                 service.getWateringDescription(-1);
@@ -250,7 +250,7 @@ public class PerenualApiServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-PLANT-02: Verifies that the watering description is mapped from the API Response.")
+        @DisplayName("TC-PLANT-02: Verifies that the return value is null if there is no watering description in the API Response.")
         void shouldReturnNullGetWateringDescription() throws IOException, InterruptedException {
             String json = """
         {
