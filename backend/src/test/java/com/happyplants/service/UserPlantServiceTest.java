@@ -75,7 +75,7 @@ public class UserPlantServiceTest {
     class AddPlantTests {
 
         @Test
-        @DisplayName("HPF-COLL-01: Verify that plant is correctly associated with user and persisted")
+        @DisplayName("TC-COLL-01: Verify that plant is correctly associated with user and persisted")
         public void shouldAssociateAndSavePlantWhenAddingToUser() {
             Plant mockPlant = new Plant();
             mockPlant.setPerenualId(1);
@@ -93,7 +93,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL-01: Verify that adding a plant with a non-existent Perenual ID returns null")
+        @DisplayName("TC-COLL-01: Verify that adding a plant with a non-existent Perenual ID returns null")
         public void shouldReturnNullWhenPlantServiceCannotFindExternalId() {
             when(plantService.getOrCreatePlant(999)).thenReturn(null);
 
@@ -104,7 +104,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL-01: Verify that an exception is thrown when the database save fails")
+        @DisplayName("TC-COLL-01: Verify that an exception is thrown when the database save fails")
         public void shouldThrowExceptionWhenDatabaseSaveFails() {
             when(plantService.getOrCreatePlant(1)).thenReturn(new Plant());
             when(usersPlantRepository.save(any())).thenThrow(new RuntimeException("Database connection lost"));
@@ -118,7 +118,7 @@ public class UserPlantServiceTest {
     class GetPlantsTests {
 
         @Test
-        @DisplayName("HPF-COLL-01: Verify that an empty list is returned when the user has no plants")
+        @DisplayName("TC-COLL-01: Verify that an empty list is returned when the user has no plants")
         public void shouldReturnEmptyListWhenUserHasNoPlants() {
             when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.of());
 
@@ -129,7 +129,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL-02 & HPF-Plant-02: Verify that convertToDTO maps all fields correctly")
+        @DisplayName("TC-COLL-02 & TC-PLANT-02: Verify that convertToDTO maps all fields correctly")
         public void shouldMapAllFieldsCorrectly(){
             Plant basePlant = new Plant();
             basePlant.setPerenualId(1);
@@ -156,7 +156,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL: Verify that multiple data fields are correctly mapped from Object array")
+        @DisplayName("TC-COLL-07: Verify that multiple data fields are correctly mapped from Object array")
         public void shouldMapDatabaseResultsToDtoList(){
             plant.setPlant(new Plant());
             plant.getPlant().setCommonName("Snake Plant");
@@ -178,7 +178,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that timesWatered is set to 0 when count is null")
+        @DisplayName("TC-CARE-03: Verify that timesWatered is set to 0 when count is null")
         public void shouldSetTimesWateredToZeroWhenCountIsNull(){
             Plant basePlant = new Plant();
             basePlant.setId(UUID.randomUUID());
@@ -203,7 +203,7 @@ public class UserPlantServiceTest {
     class GetSinglePlantTests {
 
         @Test
-        @DisplayName("HPF-PLANT-02: Should return UserPlantDTO when plant is found")
+        @DisplayName("TC-PLANT-02: Should return UserPlantDTO when plant is found")
         public void shouldReturnUserPlantDTOWhenPlantIsFound() {
             plant.setPlant(new Plant());
             plant.getPlant().setCommonName("Monstera");
@@ -224,7 +224,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-CARE-03: Should handle null count and set timeWatered to 0")
+        @DisplayName("TC-CARE-03: Should handle null count and set timeWatered to 0")
         public void shouldHandleNullCountAndSetTimesWateredToZero() {
             plant.setPlant(new Plant());
             Object[] mockRow = new Object[]{plant, null, null};
@@ -238,7 +238,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-PLANT-02: Should throw UserPlantNotFoundException when plant is not found")
+        @DisplayName("TC-PLANT-02: Should throw UserPlantNotFoundException when plant is not found")
         public void shouldThrowNotFoundExceptionWhenPlantIsNotFound() {
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.of());
@@ -254,7 +254,7 @@ public class UserPlantServiceTest {
     class RemovePlantTests {
 
         @Test
-        @DisplayName("HPF-COLL-03: Verify that plant is removed when owner requests it")
+        @DisplayName("TC-COLL-03: Verify that plant is removed when owner requests it")
         public void shouldDeletePlantWhenOwnerRequestsRemoval() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
 
@@ -264,7 +264,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL-03: Verify that an exception is thrown when unauthorized users try to remove another user's plant")
+        @DisplayName("TC-COLL-03: Verify that an exception is thrown when unauthorized users try to remove another user's plant")
         public void shouldThrowUnauthorizedExceptionWhenNonOwnerTriesToRemove() {
             UUID strangerId = UUID.randomUUID();
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -276,7 +276,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL-03: Verify that an exception is thrown when the plant does not exist")
+        @DisplayName("TC-COLL-03: Verify that an exception is thrown when the plant does not exist")
         public void shouldThrowNotFoundExceptionWhenPlantDoesNotExist() {
             UUID nonExistentId = UUID.randomUUID();
             when(usersPlantRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -291,7 +291,7 @@ public class UserPlantServiceTest {
     class WaterPlantTests {
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that watering a plant saves a record and returns a DTO with a timestamp")
+        @DisplayName("TC-CARE-03: Verify that watering a plant saves a record and returns a DTO with a timestamp")
         public void shouldSaveWateredPlantAndReturnDTOWithTimestamp() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
             when(wateredPlantRepository.save(any(WateredPlant.class))).thenAnswer(i -> i.getArgument(0));
@@ -308,7 +308,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that watering a non-existent plant throws UserPlantNotFoundException")
+        @DisplayName("TC-CARE-03: Verify that watering a non-existent plant throws UserPlantNotFoundException")
         public void shouldThrowNotFoundExceptionWhenPlantDoesNotExist() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.empty());
 
@@ -319,7 +319,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that watering a plant that belongs to another user throws UnauthorizedUserPlantAccessException")
+        @DisplayName("TC-CARE-03: Verify that watering a plant that belongs to another user throws UnauthorizedUserPlantAccessException")
         public void shouldThrowUnauthorizedExceptionWhenUserDoesNotOwnThePlant() {
             UUID differentUserId = UUID.randomUUID();
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -332,11 +332,11 @@ public class UserPlantServiceTest {
     }
 
     @Nested
-    @DisplayName("HPF-COLL-07: Watering History Tests")
+    @DisplayName("TC-COLL-07: Watering History Tests")
     class WateringHistoryTests {
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that retrieving watering history returns a list of WateredPlantDTOs")
+        @DisplayName("TC-CARE-03: Verify that retrieving watering history returns a list of WateredPlantDTOs")
         public void shouldReturnWateringHistoryAsDTOList() {
             WateredPlantId id1 = new WateredPlantId();
             id1.setUsersPlantsId(userPlantId);
@@ -362,7 +362,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that retrieving watering history for a non-existent plant throws UserPlantNotFoundException")
+        @DisplayName("TC-CARE-03: Verify that retrieving watering history for a non-existent plant throws UserPlantNotFoundException")
         public void shouldThrowNotFoundExceptionWhenPlantDoesNotExist() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.empty());
 
@@ -373,7 +373,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-CARE-03: Verify that retrieving watering history for another user's plant throws UnauthorizedUserPlantAccessException")
+        @DisplayName("TC-CARE-03: Verify that retrieving watering history for another user's plant throws UnauthorizedUserPlantAccessException")
         public void shouldThrowUnauthorizedExceptionWhenUserDoesNotOwnThePlant() {
             UUID differentUserId = UUID.randomUUID();
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -389,7 +389,7 @@ public class UserPlantServiceTest {
     @DisplayName("Update Plant Details Tests")
     class UpdatePlantDetailsTests {
         @Test
-        @DisplayName("HPF-COLL-02: Should update nickname and save when user is owner")
+        @DisplayName("TC-COLL-02: Should update nickname and save when user is owner")
         public void shouldUpdateNicknameWhenUserIsOwner() {
             String newNickname = "Baby Bell";
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -401,7 +401,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-COLL-02: Should set nickname to null if provided string is blank")
+        @DisplayName("TC-COLL-02: Should set nickname to null if provided string is blank")
         public void shouldSetNicknameToNullWhenBlank() {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
 
@@ -412,7 +412,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-PLANT-02.1: Should update imageUrl and save when user is owner")
+        @DisplayName("TC-PLANT-02.1: Should update imageUrl and save when user is owner")
         public void shouldUpdateImageUrlWhenUserIsOwner() {
             String newImageUrl = "https://example.com/image.jpg";
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
@@ -424,7 +424,7 @@ public class UserPlantServiceTest {
         }
 
         @Test
-        @DisplayName("HPF-USER-04: Should throw UnauthorizedException when non-owner tries to update")
+        @DisplayName("TC-USER-04: Should throw UnauthorizedException when non-owner tries to update")
         public void shouldThrowUnauthorizedExceptionWhenNonOwnerTriesToUpdate() {
             UUID differentUserId = UUID.randomUUID();
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
