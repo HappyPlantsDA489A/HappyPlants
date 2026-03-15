@@ -36,20 +36,21 @@ public class WikipediaServiceTest {
     class GetPlantImageUrlTests {
 
         @Test
-        @DisplayName("Verifies that getPlantImageUrl() returns null if plantname is null.")
+        @DisplayName("TC-PLANT-04: Verifies that getPlantImageUrl() returns null if plantname is null.")
         void shouldReturnNull_getPlantImageUrl() {
             String result = wikipediaService.getPlantImageUrl(null);
             assertNull(result);
         }
 
         @Test
-        @DisplayName("Verifies that getPlantImageUrl() returns null if plantname is blank.")
+        @DisplayName("TC-PLANT-04: Verifies that getPlantImageUrl() returns null if plantname is blank.")
         void shouldReturnNull_getPlantImageUrl_blank() {
             String result = wikipediaService.getPlantImageUrl(" ");
             assertNull(result);
         }
 
         @Test
+        @DisplayName("TC-PLANT-04: Verifies that an image can be fetched based on the plant's scientific name.")
         void shouldReturnImageUrlScientificName_getPlantImageUrl() {
             String scientificName = "Monstera deliciosa";
             String commonName = "Swiss cheese plant";
@@ -63,6 +64,7 @@ public class WikipediaServiceTest {
         }
 
         @Test
+        @DisplayName("TC-PLANT-04: Verifies that an image can be fetched based on the plant's common name.")
         void shouldReturnImageUrlCommonName_getPlantImageUrl() {
             String sciName = "Unknown name";
             String commonName = "Orchid";
@@ -81,7 +83,7 @@ public class WikipediaServiceTest {
     @DisplayName("Fetch Image Url Tests")
     class Fetch {
         @Test
-        @DisplayName("HPF-PLANT-02.1: Verifies that an image url, originalImage, is mapped from the Api Response.")
+        @DisplayName("TC-PLANT-04: Verifies that an image url, originalImage, is mapped from the Api Response.")
         void shouldReturnImageUrl_fetchImageUrl_originalImage() throws IOException, InterruptedException {
             String json = """
                     {
@@ -104,7 +106,7 @@ public class WikipediaServiceTest {
 
 
         @Test
-        @DisplayName("HPF-PLANT-02.1: Verifies that an image url, thumbnail, is mapped from the Api Response.")
+        @DisplayName("TC-PLANT-04: Verifies that an image url, thumbnail, is mapped from the Api Response.")
         void shouldReturnImageUrl_fetchImageUrl_thumbnail() throws IOException, InterruptedException {
             String json = """
                     {
@@ -126,7 +128,7 @@ public class WikipediaServiceTest {
         }
 
         @Test
-        @DisplayName("Should return null if there is no source field in the api response.")
+        @DisplayName("TC-PLANT-04: Should return null if there is no source field in the api response.")
         void shouldReturnNull_whenThumbnailSourceIsMissing() throws IOException, InterruptedException {
             String json = """
                     {
@@ -147,7 +149,7 @@ public class WikipediaServiceTest {
         }
 
         @Test
-        @DisplayName("Should return null if there is no image field in the api response.")
+        @DisplayName("TC-PLANT-04: Should return null if there is no image field in the api response.")
         void shouldReturnNull_whenNoImageFieldsExist() throws IOException, InterruptedException {
             String json = """
                     {
@@ -168,7 +170,7 @@ public class WikipediaServiceTest {
         }
 
         @Test
-        @DisplayName("Verifies that fetchImageUrl() returns null if status code is not 200")
+        @DisplayName("TC-PLANT-04: Verifies that fetchImageUrl() returns null if status code is not 200")
         void fetchImageUrl_statusCodeIsNot200() {
             lenient().doReturn(400).when(mockResponse).statusCode();
             String result = wikipediaService.fetchImageUrl("Monstera deliciosa");
@@ -176,7 +178,7 @@ public class WikipediaServiceTest {
         }
 
         @Test
-        @DisplayName("Verifies that fetchImageUrl() returns null if articleTitle is null.")
+        @DisplayName("TC-PLANT-04: Verifies that fetchImageUrl() returns null if articleTitle is null.")
         void shouldReturnNull_fetchImageUrl_articleTitleNull() throws IOException, InterruptedException {
             doReturn("Monstera deliciosa")
                     .when(wikipediaService)
@@ -191,7 +193,7 @@ public class WikipediaServiceTest {
         }
 
         @Test
-        @DisplayName("Verifies that fetchImageUrl() returns null if there is no article title in the api response.")
+        @DisplayName("TC-PLANT-04: Verifies that fetchImageUrl() returns null if there is no article title in the api response.")
         void shouldReturnNull_articleTitleIsNull_fetchImageUrl() {
             lenient().doReturn(null).when(wikipediaService).getFirstArticleTitle("Monstera deliciosa");
 
