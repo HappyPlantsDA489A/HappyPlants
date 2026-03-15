@@ -38,9 +38,6 @@ public class UserService {
     }
 
     public void changePassword(User user, ChangePasswordRequest request) {
-
-
-
         if(!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
             throw new InvalidLoginCredentialsException();
         }
