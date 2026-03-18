@@ -119,6 +119,20 @@ public class UserPlantController {
         return usersPlantService.getWateringHistory(user.getId(), userPlantId);
     }
 
+    @DeleteMapping("/{userPlantId}/waterings")
+    @Operation(summary = "Ta bort en specifik bevattning från historiken (Ångra)")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteWatering(
+            @PathVariable UUID userPlantId,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.OffsetDateTime occuredAt,
+            Authentication auth
+    ) {
+        User user = userService.getCurrentUser(auth);
+        usersPlantService.deleteWatering(user.getId(), userPlantId, occuredAt);
+        return ResponseEntity.noContent().build();
+    }
+
+
     @PatchMapping("/{userPlantId}/nickname")
     @Operation(summary = "Update nickname for a user's plant")
     @PreAuthorize("isAuthenticated()")

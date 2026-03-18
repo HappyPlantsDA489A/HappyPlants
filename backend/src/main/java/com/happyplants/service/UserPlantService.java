@@ -176,7 +176,24 @@ public class UserPlantService {
             throw new UnauthorizedUserPlantAccessException();
         }
 
+        Integer interval = plant.getWateringFrequencyDays();
         OffsetDateTime now = OffsetDateTime.now();
+
+        if (interval != null && interval > 0) {
+
+            List<WateredPlant> history = wateredPlantRepository.findHistory(userPlantId);
+
+            if (!history.isEmpty()) {
+                OffsetDateTime lastWatered = history.get(0).getId().getOccuredAt();
+
+                if (now.isBefore(lastWatered.plusDays(interval))) {
+                    throw new org.springframework.web.server.ResponseStatusException(
+                            org.springframework.http.HttpStatus.BAD_REQUEST,
+                            "Plantan är fortfarande mätt! Vänta tills intervallet har passerat."
+                    );
+                }
+            }
+        }
 
         WateredPlantId id = new WateredPlantId();
         id.setUsersPlantsId(userPlantId);
@@ -235,6 +252,21 @@ public class UserPlantService {
 
         plant.setImageUrl(imageUrl);
         usersPlantRepository.save(plant);
+    }
+
+    public void deleteWatering(UUID userId, UUID userPlantId, OffsetDateTime occuredAt) {
+        UsersPlant plant = usersPlantRepository.findById(userPlantId)
+                .orElseThrow(UserPlantNotFoundException::new);
+
+        if (!plant.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserPlantAccessException();
+        }
+
+        WateredPlantId id = new WateredPlantId();
+        id.setUsersPlantsId(userPlantId);
+        id.setOccuredAt(occuredAt);
+
+        wateredPlantRepository.findById(id).ifPresent(wateredPlantRepository::delete);
     }
 
 

@@ -7,10 +7,12 @@ export default function MarkAsWateredButton({
   userPlant,
   isWatering,
   onClick,
+  disabled,
 }: {
   userPlant: UserPlantDTO;
   isWatering: boolean;
   onClick: () => void;
+  disabled: boolean;
 }) {
   const lastWateredDate = userPlant.lastWateredAt
     ? parseISO(userPlant.lastWateredAt)
@@ -37,11 +39,11 @@ export default function MarkAsWateredButton({
     <Button
       variant="outline"
       className="bg-primary/10 hover:bg-primary/10 border-primary/50"
-      disabled={isRecentlyWatered}
+      disabled={isRecentlyWatered || disabled  }
       onClick={onClick}
     >
       <Droplet />
-      {isRecentlyWatered ? "Just watered" : "Mark as watered"}
+      {isRecentlyWatered ? "Just watered" : disabled ? "Too soon to water" : "Mark as watered"}
     </Button>
   );
 }
