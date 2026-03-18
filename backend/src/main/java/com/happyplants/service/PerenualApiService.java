@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happyplants.dto.internal.PerenualApiData;
 import com.happyplants.dto.internal.PerenualPlantData;
 import com.happyplants.dto.response.PerenualSearchPlantResponse;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 
@@ -31,6 +34,7 @@ public class PerenualApiService {
     private final Map<Integer, PerenualSearchPlantResponse> searchCache = new ConcurrentHashMap<>();
 
     public List<PerenualSearchPlantResponse> search(String name) {
+
         try {
             String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
             String url = String.format(

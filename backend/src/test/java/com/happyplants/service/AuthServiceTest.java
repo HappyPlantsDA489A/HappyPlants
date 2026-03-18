@@ -48,6 +48,7 @@ public class AuthServiceTest {
     class RegistrationTests {
 
         @Test
+        @DisplayName("TC-USER-02, TC-USER-02.3, TC-USER-03.1, TC-USER-05: Ensures that the password saved in the database is encrypted.")
         public void shouldHashPasswordBeforeSaving() {
 
             RegisterRequest request = new RegisterRequest("secure@test.com", "SafeUser", "ValidPass123!");
@@ -74,6 +75,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-02.3.1, TC-USER-03.1, TC-USER-02: Ensures that an exception is thrown if the user enters a weak password.")
         public void shouldThrowExceptionWhenPasswordIsWeak() {
 
             RegisterRequest request = new RegisterRequest("weak@test.com", "WeakUser", "123");
@@ -93,6 +95,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-02, TC-USER-02.1: Ensures that an exception is thrown when the user tries to register with an email that is already in the database.")
         public void shouldThrowExceptionWhenEmailAlreadyExists() {
             // (HPF-USER-02.1)
             RegisterRequest request = new RegisterRequest("taken@test.com", "NewUser", "ValidPass123!");
@@ -114,6 +117,7 @@ public class AuthServiceTest {
     class LoginVerificationTests {
 
         @Test
+        @DisplayName("TC-USER-01: Verifies that the user is returned when login is successful.")
         public void shouldReturnUserWhenLoginCredentialsAreCorrect() {
             String plainPassword = "MySecretPassword123!";
             String hashedPassword = "hashed_version_of_password";
@@ -135,6 +139,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-01: Ensures that an exception is thrown when a login attempt fails.")
         public void shouldThrowExceptionWhenLoginPasswordIsWrong() {
             LoginRequest loginRequest = new LoginRequest("user@test.com", "WrongPassword!");
             User mockDbUser = new User();
@@ -151,6 +156,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-01: Verifies that an exception is thrown when the entered email does not exist.")
         public void shouldThrowExceptionWhenLoginEmailDoesNotExist() {
             String nonExistentEmail = "nonexistent@test.com";
             LoginRequest loginRequest = new LoginRequest(nonExistentEmail, "SomePassword123!");
@@ -169,6 +175,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-01: Verifies that an exception is thrown when the password field is null.")
         public void shouldThrowExceptionWhenPasswordIsNull() {
             String email = "user@test.com";
             LoginRequest loginRequest = new LoginRequest(email, null);
@@ -188,6 +195,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-01: Verifies that an exception is thrown when the password is empty.")
         public void shouldThrowExceptionWhenPasswordIsEmpty() {
             String email = "user@test.com";
             String emptyPassword = "";
@@ -208,6 +216,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("TC-USER-01: Verifies that password encoder is not called on when the email does not exist.")
         public void shouldNotCallPasswordEncoderWhenEmailDoesNotExist() {
             String nonExistentEmail = "nonexistent@test.com";
             LoginRequest loginRequest = new LoginRequest(nonExistentEmail, "SomePassword123!");
@@ -231,6 +240,7 @@ public class AuthServiceTest {
     class HelperMethodTests {
 
         @Test
+        @DisplayName("Verifies that findByEmail() returns true when an email is found.")
         public void shouldReturnTrueWhenEmailExists() {
             String email = "existing@test.com";
             User mockUser = new User();
@@ -246,6 +256,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("Verifies that findByEmail() returns false when an email is not found.")
         public void shouldReturnFalseWhenEmailDoesNotExist() {
             String nonExistentEmail = "nonexistent@test.com";
             when(userRepository.findByEmail(nonExistentEmail)).thenReturn(Optional.empty());
@@ -258,6 +269,7 @@ public class AuthServiceTest {
         }
 
         @Test
+        @DisplayName("Verifies that findByEmail() returns the user when they are found by email.")
         public void shouldReturnUserWhenFindByEmailFindsUser() {
             String email = "existing@test.com";
             User mockUser = new User();
