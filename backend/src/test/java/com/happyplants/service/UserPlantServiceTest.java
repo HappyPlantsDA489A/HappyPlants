@@ -21,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -120,9 +121,9 @@ public class UserPlantServiceTest {
         @Test
         @DisplayName("TC-COLL-01: Verify that an empty list is returned when the user has no plants")
         public void shouldReturnEmptyListWhenUserHasNoPlants() {
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.of());
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), any(), any())).thenReturn(List.of());
 
-            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId, null ,"createdAT", "desc");
 
             assertNotNull(result);
             assertTrue(result.isEmpty(), "Result should be an empty list when user has no plants");
@@ -166,9 +167,10 @@ public class UserPlantServiceTest {
             Long timesWatered = 5L;
 
             Object[] row = new Object[]{plant, lastWatered, timesWatered };
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), eq(null), any()))
+                    .thenReturn(List.<Object[]>of(row));
 
-            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId, null, "createdAt", "desc");
 
             assertEquals(1, result.size(), "Should return a list with one DTO");
             UserPlantResponse dto = result.get(0);
@@ -189,9 +191,10 @@ public class UserPlantServiceTest {
             plant.setPlant(basePlant);
 
             Object[] row = new Object[]{plant, null, null };
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), eq(null), any()))
+                    .thenReturn(List.<Object[]>of(row));
 
-            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId, null, "createdAt", "desc");
 
             assertEquals(1,result.size());
             assertEquals(0, result.get(0).timesWatered(),"Times watered should be set to 0 when count is null");

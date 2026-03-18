@@ -133,7 +133,7 @@ public class UserPlantControllerTest {
         @DisplayName("HPF-COLL-01: Verify that added plants appear in the personal collection")
         public void shouldReturnListWhenUserHasPlants() throws Exception {
             List<UserPlantResponse> userPlantsList = List.of(mockUserPlantDTO);
-            when(usersPlantService.getPlantsForUser(mockUser.getId())).thenReturn(userPlantsList);
+            when(usersPlantService.getPlantsForUser(eq(mockUser.getId()), any(), anyString(), anyString())).thenReturn(userPlantsList);
 
             mockMvc.perform(get("/api/user/plants")
                             .contentType(MediaType.APPLICATION_JSON))
@@ -146,7 +146,7 @@ public class UserPlantControllerTest {
         @Test
         @DisplayName("HPF-COLL-01: Verify that an empty list is returned when the user's collection has no plants")
         public void shouldReturnEmptyListWhenCollectionIsEmpty() throws Exception {
-            when(usersPlantService.getPlantsForUser(mockUser.getId())).thenReturn(Collections.emptyList());
+            when(usersPlantService.getPlantsForUser(eq(mockUser.getId()), any(), anyString(), anyString())).thenReturn(Collections.emptyList());
 
             mockMvc.perform(get("/api/user/plants"))
                     .andExpect(status().isOk())

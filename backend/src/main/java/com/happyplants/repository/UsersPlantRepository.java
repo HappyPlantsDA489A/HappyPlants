@@ -18,10 +18,14 @@ public interface UsersPlantRepository extends JpaRepository<UsersPlant, UUID>, J
         FROM UsersPlant up
         LEFT JOIN WateredPlant wp ON wp.usersPlants.id = up.id
         WHERE up.user.id = :userId
+        AND (:family IS NULL OR up.plant.familyName = :family)    
         GROUP BY up.id, up.user.id, up.plant.id
-        ORDER BY up.createdAt DESC
     """)
-    List<Object[]> findAllWithLastWateredByUserId(@Param("userId") UUID userId);
+    List<Object[]> findAllWithLastWateredByUserId(
+            @Param("userId") UUID userId,
+            @Param("family") String family,
+            org.springframework.data.domain.Sort sort
+    );
 
     @Query("""
         SELECT up, MAX(wp.id.occuredAt), COUNT(wp.id.occuredAt)

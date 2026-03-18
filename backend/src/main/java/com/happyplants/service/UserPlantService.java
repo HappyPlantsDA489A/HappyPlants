@@ -10,6 +10,7 @@ import com.happyplants.model.*;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -91,8 +92,13 @@ public class UserPlantService {
         return usersPlantRepository.save(usersPlant);
     }
 
-    public List<UserPlantResponse> getPlantsForUser(UUID userId) {
-        List<Object[]> results = usersPlantRepository.findAllWithLastWateredByUserId(userId);
+    public List<UserPlantResponse> getPlantsForUser(UUID userId, String family, String sortBy, String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        List<Object[]> results = usersPlantRepository.findAllWithLastWateredByUserId(userId, family, sort);
 
         return results.stream().map(result -> {
             UsersPlant up = (UsersPlant) result[0];
