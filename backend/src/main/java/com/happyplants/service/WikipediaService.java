@@ -3,7 +3,7 @@ package com.happyplants.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happyplants.exception.WikipediaException;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Configuration;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -12,12 +12,15 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
-@Service
+@Configuration
 public class WikipediaService {
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String baseUrl = "https://en.wikipedia.org/";
 
+    public WikipediaService(HttpClient client) {
+        this.client = client;
+    }
     /**
      * Tries to find a Wikipedia image for a plant.
      * Strategy: scientific name first, common name as fallback.
@@ -34,7 +37,7 @@ public class WikipediaService {
         return fetchImageUrl(plantName);
     }
 
-    private String fetchImageUrl(String plantName) {
+    public String fetchImageUrl(String plantName) {
         if (plantName == null || plantName.isBlank()) return null;
         try {
             String articleTitle = getFirstArticleTitle(plantName);
@@ -84,7 +87,7 @@ public class WikipediaService {
         }
     }
 
-    private String getFirstArticleTitle(String plantName) {
+    public String getFirstArticleTitle(String plantName) {
         try {
             String trimmedName = plantName;
 
