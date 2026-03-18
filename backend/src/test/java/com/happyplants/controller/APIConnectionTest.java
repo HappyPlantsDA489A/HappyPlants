@@ -1,7 +1,7 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.response.PlantResponse;
+import com.happyplants.dto.response.PerenualSearchPlantResponse;
 import com.happyplants.model.Plant;
 import com.happyplants.service.PerenualApiService;
 import com.happyplants.service.PerenualCacheService;
@@ -47,7 +47,7 @@ class APIConnectionTest {
     @DisplayName("HPF-SEARCH-01: Verify that search returns matching plants")
     void searchEndpoint_ShouldReturnMatchingPlants() throws Exception {
 
-        PerenualSearchPlantDTO mockPlant = new PerenualSearchPlantDTO(
+        PerenualSearchPlantResponse mockPlant = new PerenualSearchPlantResponse(
                 1, "Rose", List.of("Rosa"), "Rosaceae", "Cultivar", "Epithet", "Genus", null
         );
 
@@ -57,7 +57,10 @@ class APIConnectionTest {
         mockMvc.perform(get("/api/plants/search")
                         .param("name", "Rose"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].common_name").value("Rose"));
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].common_name").value("Rose"))
+                .andExpect(jsonPath("$[0].scientific_name[0]").value("Rosa"))
+                .andExpect(jsonPath("$[0].family").value("Rosaceae"));
     }
 
 
@@ -101,7 +104,7 @@ class APIConnectionTest {
     @DisplayName("HPF-PLANT-02.1: Plant details include image URL from Wikipedia")
     void getPlantById_ShouldReturnPlantDtoWithImageUrl() throws Exception {
         UUID plantId = UUID.randomUUID();
-        PlantDTO mockDto = new PlantDTO(
+        PlantResponse mockDto = new PlantResponse(
                 plantId,
                 1,
                 "Golden Pothos",

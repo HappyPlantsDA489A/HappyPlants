@@ -1,6 +1,6 @@
 package com.happyplants.service;
 
-import com.happyplants.dto.ChangePasswordRequest;
+import com.happyplants.dto.requests.ChangePasswordRequest;
 import com.happyplants.exception.InvalidLoginCredentialsException;
 import com.happyplants.exception.UserNotFoundException;
 import com.happyplants.exception.WeakPasswordException;

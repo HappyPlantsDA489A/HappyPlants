@@ -1,7 +1,7 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.LoginRequest;
-import com.happyplants.dto.RegisterRequest;
+import com.happyplants.dto.requests.LoginRequest;
+import com.happyplants.dto.requests.RegisterRequest;
 import com.happyplants.model.User;
 import com.happyplants.service.AuthService;
 import com.happyplants.service.UserService;
