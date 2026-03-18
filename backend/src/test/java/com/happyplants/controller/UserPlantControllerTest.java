@@ -1,17 +1,16 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.*;
+import com.happyplants.dto.requests.UpdateImageUrlRequest;
+import com.happyplants.dto.requests.UpdateNicknameRequest;
+import com.happyplants.dto.requests.UpdateWateringFrequencyRequest;
+import com.happyplants.dto.response.PlantResponse;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.Plant;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
-<<<<<<< updateWateringDateTest
-=======
-import com.happyplants.dto.response.PlantResponse;
-import com.happyplants.dto.response.UserPlantResponse;
-import com.happyplants.dto.response.WateredPlantResponse;
->>>>>>> dev
 import com.happyplants.service.UserPlantService;
 import com.happyplants.service.UserService;
 import com.happyplants.service.PerenualCacheService;
@@ -357,7 +356,7 @@ public class UserPlantControllerTest {
         @DisplayName("HPF-COLL-02: Verify that nickname update returns 204 No Content")
         public void shouldReturn204WhenNicknameIsUpdated() throws Exception {
             UUID userPlantId = UUID.randomUUID();
-            UpdateNicknameDTO dto = new UpdateNicknameDTO("New Nickname");
+            UpdateNicknameRequest dto = new UpdateNicknameRequest("New Nickname");
 
             // Vi behöver inte 'when(...).thenReturn(...)' eftersom metoden returnerar void
             doNothing().when(usersPlantService).updateNickname(any(), eq(userPlantId), anyString());
@@ -375,7 +374,7 @@ public class UserPlantControllerTest {
         @DisplayName("HPF-PLANT-02.1: Verify that image URL update returns 204 No Content")
         public void shouldReturn204WhenImageUrlIsUpdated() throws Exception {
             UUID userPlantId = UUID.randomUUID();
-            UpdateImageUrlDTO dto = new UpdateImageUrlDTO("https://example.com/plant.jpg");
+            UpdateImageUrlRequest dto = new UpdateImageUrlRequest("https://example.com/plant.jpg");
 
             mockMvc.perform(patch("/api/user/plants/{userPlantId}/image-url", userPlantId)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -390,7 +389,7 @@ public class UserPlantControllerTest {
         @DisplayName("HPF-CARE-04: Verify that watering frequency update returns 204 No Content")
         public void shouldReturn204WhenWateringFrequencyIsUpdated() throws Exception {
             UUID userPlantId = UUID.randomUUID();
-            UpdateWateringFrequencyDTO dto = new UpdateWateringFrequencyDTO(7);
+            UpdateWateringFrequencyRequest dto = new UpdateWateringFrequencyRequest(7);
 
             mockMvc.perform(patch("/api/user/plants/{userPlantId}/watering-frequency", userPlantId)
                             .contentType(MediaType.APPLICATION_JSON)

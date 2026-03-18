@@ -349,7 +349,7 @@ public class PerenualApiServiceTest {
         """;
             when(mockResponse.body()).thenReturn(json);
 
-            List<PerenualSearchPlantDTO> result = service.getPlantResults(mockResponse);
+            List<PerenualSearchPlantResponse> result = service.getPlantResults(mockResponse);
 
             assertEquals("http://thumbnail.jpg", result.get(0).imageUrl(),
                     "Should have fallen back to thumbnail when others were null/blank");
@@ -363,6 +363,7 @@ public class PerenualApiServiceTest {
             when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
                     .thenReturn(mockResponse);
             when(mockResponse.body()).thenReturn(json);
+            when(mockResponse.statusCode()).thenReturn(200);
 
             service.search("test");
 
