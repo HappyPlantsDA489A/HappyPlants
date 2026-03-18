@@ -29,9 +29,19 @@ public class PerenualApiService {
     @Value("${plant.api.token}")
     private String plantApiKey;
 
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final HttpClient client;
+    private final ObjectMapper mapper;
+    @Getter
     private final Map<Integer, PerenualSearchPlantResponse> searchCache = new ConcurrentHashMap<>();
+
+    PerenualApiService(HttpClient client, ObjectMapper mapper) {
+        this.client = client;
+        this.mapper = mapper;
+    }
+
+    public PerenualApiService() {
+        this(HttpClient.newHttpClient(), new ObjectMapper());
+    }
 
     public List<PerenualSearchPlantResponse> search(String name) {
 

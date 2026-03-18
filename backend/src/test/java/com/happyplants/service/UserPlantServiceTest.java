@@ -144,7 +144,7 @@ public class UserPlantServiceTest {
             OffsetDateTime lastWatered = OffsetDateTime.now();
             int timesWatered = 5;
 
-            UserPlantDTO result = usersPlantService.convertToDto(usersPlant, lastWatered, timesWatered);
+            UserPlantResponse result = usersPlantService.convertToDto(usersPlant, lastWatered, timesWatered);
 
             assertNotNull(result);
             assertEquals("My Snake Plant", result.nickname());
@@ -167,10 +167,10 @@ public class UserPlantServiceTest {
             Object[] row = new Object[]{plant, lastWatered, timesWatered };
             when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
 
-            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId);
 
             assertEquals(1, result.size(), "Should return a list with one DTO");
-            UserPlantDTO dto = result.get(0);
+            UserPlantResponse dto = result.get(0);
 
             assertEquals(5, dto.timesWatered(), "Times watered should be correctly mapped");
             assertEquals("Snake Plant", dto.plant().commonName(), "Plant common name should be correctly mapped");
@@ -189,7 +189,7 @@ public class UserPlantServiceTest {
             Object[] row = new Object[]{plant, null, null };
             when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
 
-            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId);
 
             assertEquals(1,result.size());
             assertEquals(0, result.get(0).timesWatered(),"Times watered should be set to 0 when count is null");
@@ -203,8 +203,8 @@ public class UserPlantServiceTest {
     class GetSinglePlantTests {
 
         @Test
-        @DisplayName("TC-PLANT-02: Should return UserPlantDTO when plant is found")
-        public void shouldReturnUserPlantDTOWhenPlantIsFound() {
+        @DisplayName("TC-PLANT-02: Should return UserPlantResponse when plant is found")
+        public void shouldReturnUserPlantResponseWhenPlantIsFound() {
             plant.setPlant(new Plant());
             plant.getPlant().setCommonName("Monstera");
 
@@ -215,7 +215,7 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.<Object[]>of(mockRow));
 
-            UserPlantDTO result = usersPlantService.getPlantForUser(userPlantId, userId);
+            UserPlantResponse result = usersPlantService.getPlantForUser(userPlantId, userId);
 
             assertNotNull(result);
             assertEquals("Monstera", result.plant().commonName(), "Common name should match");
@@ -231,7 +231,7 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.<Object[]>of(mockRow));
 
-            UserPlantDTO result = usersPlantService.getPlantForUser(userPlantId, userId);
+            UserPlantResponse result = usersPlantService.getPlantForUser(userPlantId, userId);
 
             assertEquals(0, result.timesWatered(), "Times watered should be set to 0 when count is null");
             assertNull(result.lastWateredAt());
