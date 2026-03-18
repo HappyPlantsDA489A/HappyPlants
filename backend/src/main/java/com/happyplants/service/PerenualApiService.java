@@ -2,9 +2,9 @@ package com.happyplants.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.happyplants.dto.ApiResponse;
-import com.happyplants.dto.PerenualPlantDTO;
-import com.happyplants.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.internal.PerenualApiData;
+import com.happyplants.dto.internal.PerenualPlantData;
+import com.happyplants.dto.response.PerenualSearchPlantResponse;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,14 +32,19 @@ public class PerenualApiService {
     private final HttpClient client;
     private final ObjectMapper mapper;
     @Getter
-    private final Map<Integer, PerenualSearchPlantDTO> searchCache = new ConcurrentHashMap<>();
+    private final Map<Integer, PerenualSearchPlantResponse> searchCache = new ConcurrentHashMap<>();
 
-    public PerenualApiService(HttpClient client, ObjectMapper mapper) {
+    PerenualApiService(HttpClient client, ObjectMapper mapper) {
         this.client = client;
         this.mapper = mapper;
     }
 
-    public List<PerenualSearchPlantDTO> search(String name) {
+    public PerenualApiService() {
+        this(HttpClient.newHttpClient(), new ObjectMapper());
+    }
+
+    public List<PerenualSearchPlantResponse> search(String name) {
+
         try {
             String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
             String url = String.format(
@@ -52,10 +58,13 @@ public class PerenualApiService {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            List<PerenualSearchPlantDTO> results = getPlantResults(response);
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new RuntimeException("Search request failed with status " + response.statusCode());
+            }
+            List<PerenualSearchPlantResponse> results = getPlantResults(response);
 
             searchCache.clear();
-            for (PerenualSearchPlantDTO plant : results) {
+            for (PerenualSearchPlantResponse plant : results) {
                 searchCache.put(plant.perenualId(), plant);
             }
 
@@ -66,7 +75,7 @@ public class PerenualApiService {
         }
     }
 
-    public PerenualPlantDTO getPlantById(int id) {
+    public PerenualPlantData getPlantById(int id) {
         try {
             String url = String.format(
                     "https://perenual.com/api/v2/species/details/%d?key=%s",
@@ -80,16 +89,19 @@ public class PerenualApiService {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            return mapper.readValue(response.body(), PerenualPlantDTO.class);
+            return mapper.readValue(response.body(), PerenualPlantData.class);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to fetch plant details", e);
         }
     }
 
-    public List<PerenualSearchPlantDTO> getPlantResults(HttpResponse<String> response) {
+    public List<PerenualSearchPlantResponse> getPlantResults(HttpResponse<String> response) {
         try {
-            ApiResponse apiResponse = mapper.readValue(response.body(), ApiResponse.class);
+            PerenualApiData apiResponse = mapper.readValue(response.body(), PerenualApiData.class);
+            if (apiResponse == null || apiResponse.data() == null) {
+                return Collections.emptyList();
+            }
             return apiResponse.data().stream()
                     .map(p -> {
                         String imageUrl = null;
@@ -101,7 +113,7 @@ public class PerenualApiService {
                             if (imageUrl == null || imageUrl.isBlank()) imageUrl = p.defaultImage().thumbnail();
                             if (imageUrl != null && imageUrl.isBlank()) imageUrl = null;
                         }
-                        return new PerenualSearchPlantDTO(
+                        return new PerenualSearchPlantResponse(
                                 p.perenualId(),
                                 p.commonName(),
                                 p.scientificName(),
@@ -118,11 +130,11 @@ public class PerenualApiService {
         }
     }
 
-    public PerenualPlantDTO getPartialPlantById(int id) {
+    public PerenualPlantData getPartialPlantById(int id) {
 
-        PerenualSearchPlantDTO pspDTO = searchCache.get(id);
+        PerenualSearchPlantResponse pspDTO = searchCache.get(id);
         if (pspDTO == null) { throw new RuntimeException("Plant not found"); }
-        return new PerenualPlantDTO(
+        return new PerenualPlantData(
                 pspDTO.perenualId(),
                 pspDTO.commonName(),
                 pspDTO.scientificName(),

@@ -1,8 +1,8 @@
 package com.happyplants.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.happyplants.dto.PerenualPlantDTO;
-import com.happyplants.dto.PerenualSearchPlantDTO;
+import com.happyplants.dto.internal.PerenualPlantData;
+import com.happyplants.dto.response.PerenualSearchPlantResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -56,8 +56,8 @@ public class PerenualApiServiceTest {
         }
 
         @Test
-        @DisplayName("TC-PLANT-01, TC-SEA-01, TC-SEA-02: Verifies that the correct data is mapped from API response to PerenualSearchPlantDTO")
-        void shouldMapValidApiResponseToPerenualSearchPlantDTO() throws IOException, InterruptedException {
+        @DisplayName("TC-PLANT-01, TC-SEA-01, TC-SEA-02: Verifies that the correct data is mapped from API response to PerenualSearchPlantResponse")
+        void shouldMapValidApiResponseToPerenualSearchPlantResponse() throws IOException, InterruptedException {
             String json = """
         {
           "data": [
@@ -79,7 +79,8 @@ public class PerenualApiServiceTest {
 
             when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
             when(mockResponse.body()).thenReturn(json);
-            List<PerenualSearchPlantDTO> result = service.search("orchid");
+            when(mockResponse.statusCode()).thenReturn(200);
+            List<PerenualSearchPlantResponse> result = service.search("orchid");
             assertEquals(1, result.size());
             assertEquals("orchid", result.get(0).commonName());
             assertEquals("Galearis", result.get(0).genus());
@@ -117,7 +118,7 @@ public class PerenualApiServiceTest {
 
             when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
             when(mockResponse.body()).thenReturn(json);
-            PerenualPlantDTO result = service.getPlantById(67);
+            PerenualPlantData result = service.getPlantById(67);
 
             assertEquals(67, result.perenualId());
             assertEquals("Kagiri Nishiki Japanese Maple", result.commonName());
@@ -136,7 +137,7 @@ public class PerenualApiServiceTest {
         }
 
         @Test
-        @DisplayName("TC-PLANT-01, TC-SEA-01, TC-SEA-02 : Verifies that the correct data is mapped from API response to PerenualSearchPlantDTO")
+        @DisplayName("TC-PLANT-01, TC-SEA-01, TC-SEA-02 : Verifies that the correct data is mapped from API response to PerenualSearchPlantResponse")
         void shouldFetchDataFromApiAndMapItCorrectly() {
             String json = """
         {
@@ -159,12 +160,12 @@ public class PerenualApiServiceTest {
 
             when(mockResponse.body()).thenReturn(json);
 
-            List<PerenualSearchPlantDTO> result =
+            List<PerenualSearchPlantResponse> result =
                     service.getPlantResults(mockResponse);
 
             assertEquals(1, result.size());
 
-            PerenualSearchPlantDTO plant = result.get(0);
+            PerenualSearchPlantResponse plant = result.get(0);
 
             assertEquals(1, plant.perenualId());
             assertEquals("Rose", plant.commonName());
@@ -187,8 +188,8 @@ public class PerenualApiServiceTest {
         @Test
         @DisplayName("Verifies that a valid ID returns an instance of PerenualSearchPlantDto with corresponding data.")
         void shouldReturnCorrectSearchDtoWhenIdIsValid() {
-            PerenualSearchPlantDTO searchDto =
-                    new PerenualSearchPlantDTO(
+            PerenualSearchPlantResponse searchDto =
+                    new PerenualSearchPlantResponse(
                             1,
                             "Orchid",
                             List.of("Orchidaceae"),
@@ -201,7 +202,7 @@ public class PerenualApiServiceTest {
 
             service.getSearchCache().put(1, searchDto);
 
-            PerenualPlantDTO result = service.getPartialPlantById(1);
+            PerenualPlantData result = service.getPartialPlantById(1);
             assertEquals(1, result.perenualId());
             assertEquals("Orchid", result.commonName());
 

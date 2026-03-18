@@ -4,7 +4,7 @@ import {API_BASE_URL} from "@/config";
 import {toast} from "sonner";
 import SpinningLoader from "@/components/SpinningLoader";
 import {Leaf, Droplets, ArrowLeft} from "lucide-react";
-import {formatDistanceToNow} from "date-fns";
+import {formatDistanceToNow, addDays} from "date-fns";
 import {Badge} from "@/components/ui/badge";
 import {Card, CardContent} from "@/components/ui/card";
 import {usePageContext} from "vike-react/usePageContext";
@@ -31,6 +31,7 @@ import {
 export default function Page() {
     const pageContext = usePageContext();
     const {id} = pageContext.routeParams;
+
 
     const [userPlant, setUserPlant] = useState<UserPlantDTO | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -138,6 +139,12 @@ export default function Page() {
         );
     }
 
+    const nextWateringDate = userPlant?.lastWateredAt && userPlant?.wateringFrequencyDays
+        ? addDays(new Date(userPlant.lastWateredAt), userPlant.wateringFrequencyDays)
+        : null;
+
+    const isTooSoon = nextWateringDate ? new Date() < nextWateringDate : false;
+
     const displayName = userPlant.nickname || userPlant.plant.commonName;
 
     return (
@@ -154,6 +161,7 @@ export default function Page() {
                         onClick={markAsWatered}
                         userPlant={userPlant}
                         isWatering={isWatering}
+                        disabled={isTooSoon}
                     />
                     <ConfigButton userPlant={userPlant} onReload={() => getPlant(true)}/>
                 </div>

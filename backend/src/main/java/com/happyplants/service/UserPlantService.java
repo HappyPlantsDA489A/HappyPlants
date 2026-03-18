@@ -1,8 +1,8 @@
 package com.happyplants.service;
 
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
+import com.happyplants.dto.response.PlantResponse;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
 import com.happyplants.exception.InvalidWateringFrequencyException;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
@@ -10,6 +10,7 @@ import com.happyplants.model.*;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -35,7 +36,7 @@ public class UserPlantService {
         this.wateredPlantRepository = wateredPlantRepository;
     }
 
-    public UserPlantDTO convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
+    public UserPlantResponse convertToDto(UsersPlant usersPlant, OffsetDateTime lastWateredAt, int timesWatered) {
         Plant plant = usersPlant.getPlant();
 
         // Perenual fresh image (cache, TTL 6h, Wikipedia fallback) takes priority over stored Wikipedia URL
@@ -48,7 +49,7 @@ public class UserPlantService {
                 ? perenualImageUrl
                 : plant.getWikipediaImageUrl();
 
-        PlantDTO plantDto = new PlantDTO(
+        PlantResponse plantDto = new PlantResponse(
                 plant.getId(),
                 plant.getPerenualId(),
                 plant.getCommonName(),
@@ -63,7 +64,7 @@ public class UserPlantService {
                 resolvedPlantImageUrl
         );
 
-        return new UserPlantDTO(
+        return new UserPlantResponse(
                 usersPlant.getId(),
                 usersPlant.getNickname(),
                 usersPlant.getImageUrl(),
@@ -91,8 +92,13 @@ public class UserPlantService {
         return usersPlantRepository.save(usersPlant);
     }
 
-    public List<UserPlantDTO> getPlantsForUser(UUID userId) {
-        List<Object[]> results = usersPlantRepository.findAllWithLastWateredByUserId(userId);
+    public List<UserPlantResponse> getPlantsForUser(UUID userId, String family, String sortBy, String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        List<Object[]> results = usersPlantRepository.findAllWithLastWateredByUserId(userId, family, sort);
 
         return results.stream().map(result -> {
             UsersPlant up = (UsersPlant) result[0];
@@ -103,7 +109,7 @@ public class UserPlantService {
         }).toList();
     }
 
-    public UserPlantDTO getPlantForUser(UUID plantId, UUID userId) {
+    public UserPlantResponse getPlantForUser(UUID plantId, UUID userId) {
         return usersPlantRepository.findWithLastWateredByPlantId(plantId, userId)
                 .stream()
                 .findFirst()
@@ -162,7 +168,7 @@ public class UserPlantService {
         usersPlantRepository.save(plant);
     }
 
-    public WateredPlantDTO waterPlant(UUID userId, UUID userPlantId) {
+    public WateredPlantResponse waterPlant(UUID userId, UUID userPlantId) {
         UsersPlant plant = usersPlantRepository.findById(userPlantId)
                 .orElseThrow(UserPlantNotFoundException::new);
 
@@ -170,7 +176,24 @@ public class UserPlantService {
             throw new UnauthorizedUserPlantAccessException();
         }
 
+        Integer interval = plant.getWateringFrequencyDays();
         OffsetDateTime now = OffsetDateTime.now();
+
+        if (interval != null && interval > 0) {
+
+            List<WateredPlant> history = wateredPlantRepository.findHistory(userPlantId);
+
+            if (!history.isEmpty()) {
+                OffsetDateTime lastWatered = history.get(0).getId().getOccuredAt();
+
+                if (now.isBefore(lastWatered.plusDays(interval))) {
+                    throw new org.springframework.web.server.ResponseStatusException(
+                            org.springframework.http.HttpStatus.BAD_REQUEST,
+                            "Plantan är fortfarande mätt! Vänta tills intervallet har passerat."
+                    );
+                }
+            }
+        }
 
         WateredPlantId id = new WateredPlantId();
         id.setUsersPlantsId(userPlantId);
@@ -182,10 +205,10 @@ public class UserPlantService {
 
         wateredPlantRepository.save(watered);
 
-        return new WateredPlantDTO(now);
+        return new WateredPlantResponse(now);
     }
 
-    public List<WateredPlantDTO> getWateringHistory(UUID userId, UUID userPlantId) {
+    public List<WateredPlantResponse> getWateringHistory(UUID userId, UUID userPlantId) {
         UsersPlant plant = usersPlantRepository.findById(userPlantId)
                 .orElseThrow(UserPlantNotFoundException::new);
 
@@ -195,7 +218,7 @@ public class UserPlantService {
 
         return wateredPlantRepository.findHistory(userPlantId)
                 .stream()
-                .map(w -> new WateredPlantDTO(w.getId().getOccuredAt()))
+                .map(w -> new WateredPlantResponse(w.getId().getOccuredAt()))
                         .toList();
     }
 
@@ -229,6 +252,21 @@ public class UserPlantService {
 
         plant.setImageUrl(imageUrl);
         usersPlantRepository.save(plant);
+    }
+
+    public void deleteWatering(UUID userId, UUID userPlantId, OffsetDateTime occuredAt) {
+        UsersPlant plant = usersPlantRepository.findById(userPlantId)
+                .orElseThrow(UserPlantNotFoundException::new);
+
+        if (!plant.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserPlantAccessException();
+        }
+
+        WateredPlantId id = new WateredPlantId();
+        id.setUsersPlantsId(userPlantId);
+        id.setOccuredAt(occuredAt);
+
+        wateredPlantRepository.findById(id).ifPresent(wateredPlantRepository::delete);
     }
 
 

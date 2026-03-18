@@ -6,6 +6,12 @@ import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.Plant;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
+<<<<<<< updateWateringDateTest
+=======
+import com.happyplants.dto.response.PlantResponse;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
+>>>>>>> dev
 import com.happyplants.service.UserPlantService;
 import com.happyplants.service.UserService;
 import com.happyplants.service.PerenualCacheService;
@@ -63,7 +69,7 @@ public class UserPlantControllerTest {
     private User mockUser;
     private Plant mockPlant;
     private UsersPlant mockUsersPlant;
-    private UserPlantDTO mockUserPlantDTO;
+    private UserPlantResponse mockUserPlantDTO;
     private UsernamePasswordAuthenticationToken authToken;
 
     @BeforeEach
@@ -81,12 +87,12 @@ public class UserPlantControllerTest {
         mockUsersPlant.setUser(mockUser);
         mockUsersPlant.setPlant(mockPlant);
 
-        PlantDTO plantDto = new PlantDTO(
+        PlantResponse plantDto = new PlantResponse(
                 UUID.randomUUID(), 1, "Snake Plant", "Sansevieria",
                 null, null, null, null, null, null, null, null
         );
 
-        mockUserPlantDTO = new UserPlantDTO(
+        mockUserPlantDTO = new UserPlantResponse(
                 UUID.randomUUID(), null, null, null, null,
                 null, null, 0, plantDto
         );
@@ -131,8 +137,8 @@ public class UserPlantControllerTest {
         @Test
         @DisplayName("HPF-COLL-01: Verify that added plants appear in the personal collection")
         public void shouldReturnListWhenUserHasPlants() throws Exception {
-            List<UserPlantDTO> userPlantsList = List.of(mockUserPlantDTO);
-            when(usersPlantService.getPlantsForUser(mockUser.getId())).thenReturn(userPlantsList);
+            List<UserPlantResponse> userPlantsList = List.of(mockUserPlantDTO);
+            when(usersPlantService.getPlantsForUser(eq(mockUser.getId()), any(), anyString(), anyString())).thenReturn(userPlantsList);
 
             mockMvc.perform(get("/api/user/plants")
                             .contentType(MediaType.APPLICATION_JSON))
@@ -145,7 +151,7 @@ public class UserPlantControllerTest {
         @Test
         @DisplayName("HPF-COLL-01: Verify that an empty list is returned when the user's collection has no plants")
         public void shouldReturnEmptyListWhenCollectionIsEmpty() throws Exception {
-            when(usersPlantService.getPlantsForUser(mockUser.getId())).thenReturn(Collections.emptyList());
+            when(usersPlantService.getPlantsForUser(eq(mockUser.getId()), any(), anyString(), anyString())).thenReturn(Collections.emptyList());
 
             mockMvc.perform(get("/api/user/plants"))
                     .andExpect(status().isOk())
@@ -270,14 +276,14 @@ public class UserPlantControllerTest {
         @DisplayName("HPF-CARE-03: Verify that watering a plant returns 201 Created with the correct response body")
         public void shouldReturn201WithWateredPlantDTOWhenWateringIsSuccessful() throws Exception {
             UUID userPlantId = UUID.randomUUID();
-            WateredPlantDTO dto = new WateredPlantDTO(OffsetDateTime.now());
+            WateredPlantResponse dto = new WateredPlantResponse(OffsetDateTime.now());
 
             when(usersPlantService.waterPlant(any(UUID.class), any(UUID.class))).thenReturn(dto);
 
             mockMvc.perform(post("/api/user/plants/{userPlantId}/water", userPlantId)
                             .with(authentication(authToken)))
                     .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.occuredAt").isNotEmpty());
+                    .andExpect(jsonPath("$.wateredAt").isNotEmpty());
         }
 
         @Test
@@ -315,9 +321,9 @@ public class UserPlantControllerTest {
         @DisplayName("HPF-CARE-03: Verify that retrieving watering history returns 200 OK with the correct response body")
         public void shouldReturn200WithWateringHistory() throws Exception {
             UUID userPlantId = UUID.randomUUID();
-            List<WateredPlantDTO> history = List.of(
-                    new WateredPlantDTO(OffsetDateTime.now().minusDays(1)),
-                    new WateredPlantDTO(OffsetDateTime.now().minusDays(3))
+            List<WateredPlantResponse> history = List.of(
+                    new WateredPlantResponse(OffsetDateTime.now().minusDays(1)),
+                    new WateredPlantResponse(OffsetDateTime.now().minusDays(3))
             );
 
             when(usersPlantService.getWateringHistory(any(UUID.class), any(UUID.class))).thenReturn(history);
@@ -326,8 +332,8 @@ public class UserPlantControllerTest {
                             .with(authentication(authToken)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(2))
-                    .andExpect(jsonPath("$[0].occuredAt").isNotEmpty())
-                    .andExpect(jsonPath("$[1].occuredAt").isNotEmpty());
+                    .andExpect(jsonPath("$[0].wateredAt").isNotEmpty())
+                    .andExpect(jsonPath("$[1].wateredAt").isNotEmpty());
         }
 
         @Test

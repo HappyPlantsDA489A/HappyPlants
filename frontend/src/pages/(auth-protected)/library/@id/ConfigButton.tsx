@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { WateringHistoryDialog } from "./WateringHistoryDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +29,7 @@ export default function ConfigButton({
   userPlant: UserPlantDTO;
   onReload: () => void;
 }) {
-  type DialogType = "nickname" | "image" | "watering" | "delete" | null;
+  type DialogType = "nickname" | "image" | "watering" | "delete" | "history" | null;
   const [activeDialog, setActiveDialog] = useState<DialogType>(null);
   const [isClearing, setIsClearing] = useState<boolean>(false);
 
@@ -146,7 +147,9 @@ export default function ConfigButton({
                   >
                     Modify interval
                   </DropdownMenuItem>
-                  <DropdownMenuItem disabled>View history</DropdownMenuItem>
+                  <DropdownMenuItem
+                  onSelect={() => setActiveDialog("history")}
+                  >View history</DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -189,6 +192,13 @@ export default function ConfigButton({
         onClose={() => setActiveDialog(null)}
         userPlant={userPlant}
         onSuccess={onReload}
+      />
+
+      <WateringHistoryDialog
+          isOpen={activeDialog === "history"}
+          onClose={() => setActiveDialog(null)}
+          userPlant={userPlant}
+          onUpdate={onReload}
       />
     </>
   );

@@ -8,6 +8,10 @@ export interface ChangePasswordPayload {
   newPassword: string;
 }
 
+export interface ChangeDisplayNamePayload {
+  displayName: string;
+}
+
 export interface ApiProblem {
   detail?: string;
   message?: string;

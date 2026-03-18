@@ -1,10 +1,9 @@
-package com.happyplants.dto;
+package com.happyplants.dto.response;
 
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-public record UserPlantDTO(
+public record UserPlantResponse(
         UUID id,
         String nickname,
         String imageUrl,
@@ -13,6 +12,6 @@ public record UserPlantDTO(
         OffsetDateTime diedAt,
         OffsetDateTime lastWateredAt,
         int timesWatered,
-        PlantDTO plant
-) implements Serializable {
+        PlantResponse plant
+) {
 }

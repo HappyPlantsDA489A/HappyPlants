@@ -7,8 +7,8 @@ import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
 import com.happyplants.model.WateredPlant;
 import com.happyplants.model.WateredPlantId;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
 import com.happyplants.repository.UsersPlantRepository;
 import com.happyplants.repository.WateredPlantRepository;
 import com.happyplants.service.PerenualCacheService;
@@ -21,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -120,9 +121,9 @@ public class UserPlantServiceTest {
         @Test
         @DisplayName("TC-COLL-01: Verify that an empty list is returned when the user has no plants")
         public void shouldReturnEmptyListWhenUserHasNoPlants() {
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.of());
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), any(), any())).thenReturn(List.of());
 
-            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId, null ,"createdAT", "desc");
 
             assertNotNull(result);
             assertTrue(result.isEmpty(), "Result should be an empty list when user has no plants");
@@ -144,7 +145,7 @@ public class UserPlantServiceTest {
             OffsetDateTime lastWatered = OffsetDateTime.now();
             int timesWatered = 5;
 
-            UserPlantDTO result = usersPlantService.convertToDto(usersPlant, lastWatered, timesWatered);
+            UserPlantResponse result = usersPlantService.convertToDto(usersPlant, lastWatered, timesWatered);
 
             assertNotNull(result);
             assertEquals("My Snake Plant", result.nickname());
@@ -159,18 +160,20 @@ public class UserPlantServiceTest {
         @DisplayName("TC-COLL-07: Verify that multiple data fields are correctly mapped from Object array")
         public void shouldMapDatabaseResultsToDtoList(){
             plant.setPlant(new Plant());
+            plant.getPlant().setPerenualId(1);
             plant.getPlant().setCommonName("Snake Plant");
 
             OffsetDateTime lastWatered = OffsetDateTime.now();
             Long timesWatered = 5L;
 
             Object[] row = new Object[]{plant, lastWatered, timesWatered };
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), eq(null), any()))
+                    .thenReturn(List.<Object[]>of(row));
 
-            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId, null, "createdAt", "desc");
 
             assertEquals(1, result.size(), "Should return a list with one DTO");
-            UserPlantDTO dto = result.get(0);
+            UserPlantResponse dto = result.get(0);
 
             assertEquals(5, dto.timesWatered(), "Times watered should be correctly mapped");
             assertEquals("Snake Plant", dto.plant().commonName(), "Plant common name should be correctly mapped");
@@ -182,14 +185,16 @@ public class UserPlantServiceTest {
         public void shouldSetTimesWateredToZeroWhenCountIsNull(){
             Plant basePlant = new Plant();
             basePlant.setId(UUID.randomUUID());
+            basePlant.setPerenualId(1);
             basePlant.setCommonName("Snake Plant");
 
             plant.setPlant(basePlant);
 
             Object[] row = new Object[]{plant, null, null };
-            when(usersPlantRepository.findAllWithLastWateredByUserId(userId)).thenReturn(List.<Object[]>of(row));
+            when(usersPlantRepository.findAllWithLastWateredByUserId(eq(userId), eq(null), any()))
+                    .thenReturn(List.<Object[]>of(row));
 
-            List<UserPlantDTO> result = usersPlantService.getPlantsForUser(userId);
+            List<UserPlantResponse> result = usersPlantService.getPlantsForUser(userId, null, "createdAt", "desc");
 
             assertEquals(1,result.size());
             assertEquals(0, result.get(0).timesWatered(),"Times watered should be set to 0 when count is null");
@@ -203,9 +208,10 @@ public class UserPlantServiceTest {
     class GetSinglePlantTests {
 
         @Test
-        @DisplayName("TC-PLANT-02: Should return UserPlantDTO when plant is found")
-        public void shouldReturnUserPlantDTOWhenPlantIsFound() {
+        @DisplayName("TC-PLANT-02: Should return UserPlantResponse when plant is found")
+        public void shouldReturnUserPlantResponseWhenPlantIsFound() {
             plant.setPlant(new Plant());
+            plant.getPlant().setPerenualId(1);
             plant.getPlant().setCommonName("Monstera");
 
             OffsetDateTime lastWatered = OffsetDateTime.now();
@@ -215,7 +221,7 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.<Object[]>of(mockRow));
 
-            UserPlantDTO result = usersPlantService.getPlantForUser(userPlantId, userId);
+            UserPlantResponse result = usersPlantService.getPlantForUser(userPlantId, userId);
 
             assertNotNull(result);
             assertEquals("Monstera", result.plant().commonName(), "Common name should match");
@@ -227,11 +233,12 @@ public class UserPlantServiceTest {
         @DisplayName("TC-CARE-03: Should handle null count and set timeWatered to 0")
         public void shouldHandleNullCountAndSetTimesWateredToZero() {
             plant.setPlant(new Plant());
+            plant.getPlant().setPerenualId(1);
             Object[] mockRow = new Object[]{plant, null, null};
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.<Object[]>of(mockRow));
 
-            UserPlantDTO result = usersPlantService.getPlantForUser(userPlantId, userId);
+            UserPlantResponse result = usersPlantService.getPlantForUser(userPlantId, userId);
 
             assertEquals(0, result.timesWatered(), "Times watered should be set to 0 when count is null");
             assertNull(result.lastWateredAt());
@@ -296,7 +303,7 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
             when(wateredPlantRepository.save(any(WateredPlant.class))).thenAnswer(i -> i.getArgument(0));
 
-            WateredPlantDTO result = usersPlantService.waterPlant(userId, userPlantId);
+            WateredPlantResponse result = usersPlantService.waterPlant(userId, userPlantId);
 
             ArgumentCaptor<WateredPlant> captor = ArgumentCaptor.forClass(WateredPlant.class);
             verify(wateredPlantRepository).save(captor.capture());
@@ -304,7 +311,7 @@ public class UserPlantServiceTest {
             WateredPlant saved = captor.getValue();
             assertNotNull(saved.getId(), "WateredPlantId should not be null");
             assertEquals(userPlantId, saved.getId().getUsersPlantsId(), "Saved watering should reference the correct plant");
-            assertNotNull(result.occuredAt(), "Returned DTO should have a non-null timestamp");
+            assertNotNull(result.wateredAt(), "Returned DTO should have a non-null timestamp");
         }
 
         @Test
@@ -354,11 +361,11 @@ public class UserPlantServiceTest {
             when(usersPlantRepository.findById(userPlantId)).thenReturn(Optional.of(plant));
             when(wateredPlantRepository.findHistory(userPlantId)).thenReturn(List.of(w1, w2));
 
-            List<WateredPlantDTO> result = usersPlantService.getWateringHistory(userId, userPlantId);
+            List<WateredPlantResponse> result = usersPlantService.getWateringHistory(userId, userPlantId);
 
             assertEquals(2, result.size());
-            assertEquals(id1.getOccuredAt(), result.get(0).occuredAt());
-            assertEquals(id2.getOccuredAt(), result.get(1).occuredAt());
+            assertEquals(id1.getOccuredAt(), result.get(0).wateredAt());
+            assertEquals(id2.getOccuredAt(), result.get(1).wateredAt());
         }
 
         @Test

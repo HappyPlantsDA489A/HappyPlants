@@ -2,7 +2,7 @@ package com.happyplants.service;
 
 import com.happyplants.exception.WeakPasswordException;
 import com.happyplants.model.User;
-import com.happyplants.dto.RegisterRequest;
+import com.happyplants.dto.requests.RegisterRequest;
 import com.happyplants.repository.UserRepository;
 import com.happyplants.util.PasswordValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.happyplants.exception.EmailAlreadyExistsException;
 import com.happyplants.exception.InvalidLoginCredentialsException;
-import com.happyplants.dto.LoginRequest;
+import com.happyplants.dto.requests.LoginRequest;
 
 import java.util.Collections;
 import java.util.List;
