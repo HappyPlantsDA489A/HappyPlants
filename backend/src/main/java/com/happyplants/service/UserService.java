@@ -1,6 +1,7 @@
 package com.happyplants.service;
 
-import com.happyplants.dto.ChangePasswordRequest;
+import com.happyplants.dto.requests.ChangePasswordRequest;
+import com.happyplants.dto.requests.UpdateDisplayNameRequest;
 import com.happyplants.exception.InvalidLoginCredentialsException;
 import com.happyplants.exception.UserNotFoundException;
 import com.happyplants.exception.WeakPasswordException;
@@ -37,10 +38,13 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    public User updateDisplayName(User user, UpdateDisplayNameRequest request) {
+        String normalizedDisplayName = request.displayName().trim();
+        user.setDisplayName(normalizedDisplayName);
+        return userRepository.save(user);
+    }
+
     public void changePassword(User user, ChangePasswordRequest request) {
-
-
-
         if(!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
             throw new InvalidLoginCredentialsException();
         }

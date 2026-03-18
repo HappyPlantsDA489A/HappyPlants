@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/config";
-import type { ApiProblem, ChangePasswordPayload, UserInfo } from "./types";
+import type { ApiProblem, ChangePasswordPayload, ChangeDisplayNamePayload, UserInfo } from "./types";
 
 async function readErrorMessage(response: Response): Promise<string> {
   try {
@@ -24,6 +24,23 @@ export async function getUserInfo(): Promise<UserInfo> {
     },
   });
 
+  if (!response.ok) {
+    throw new Error(await readErrorMessage(response));
+  }
+
+  return (await response.json()) as UserInfo;
+}
+
+export async function changeDisplayName(payload: ChangeDisplayNamePayload): Promise<UserInfo> {
+  const response = await fetch(`${API_BASE_URL}/user/display-name`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  
   if (!response.ok) {
     throw new Error(await readErrorMessage(response));
   }

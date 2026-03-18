@@ -1,8 +1,8 @@
 package com.happyplants.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.happyplants.dto.LoginRequest;
-import com.happyplants.dto.RegisterRequest;
+import com.happyplants.dto.requests.LoginRequest;
+import com.happyplants.dto.requests.RegisterRequest;
 import com.happyplants.exception.InvalidLoginCredentialsException;
 import com.happyplants.model.User;
 import com.happyplants.service.AuthService;

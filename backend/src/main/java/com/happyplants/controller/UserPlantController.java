@@ -1,6 +1,10 @@
 package com.happyplants.controller;
 
-import com.happyplants.dto.*;
+import com.happyplants.dto.requests.UpdateImageUrlRequest;
+import com.happyplants.dto.requests.UpdateNicknameRequest;
+import com.happyplants.dto.requests.UpdateWateringFrequencyRequest;
+import com.happyplants.dto.response.UserPlantResponse;
+import com.happyplants.dto.response.WateredPlantResponse;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
 import com.happyplants.service.UserService;
@@ -35,22 +39,21 @@ public class UserPlantController {
     @PostMapping("/{perenualId}")
     @Operation(summary = "Add plant to user library")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserPlantDTO> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
+    public ResponseEntity<UserPlantResponse> addPlantToLibrary(@PathVariable int perenualId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         UsersPlant newUserPlant = usersPlantService.addPlantToUser(user, perenualId);
 
         if (newUserPlant == null) {
             return ResponseEntity.notFound().build();
         }
-        UserPlantDTO plantDto = usersPlantService.convertToDto(newUserPlant, null, 0);
+        UserPlantResponse plantDto = usersPlantService.convertToDto(newUserPlant, null, 0);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDto);
     }
-
 
     @GetMapping("/{plantId}")
     @Operation(summary = "Get a specific plant from the user's library")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserPlantDTO> getUserPlant(
+    public ResponseEntity<UserPlantResponse> getUserPlant(
             @PathVariable UUID plantId,
             Authentication auth
     ) {
@@ -59,7 +62,7 @@ public class UserPlantController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        UserPlantDTO plant = usersPlantService.getPlantForUser(plantId, user.getId());
+        UserPlantResponse plant = usersPlantService.getPlantForUser(plantId, user.getId());
         if (plant == null) {
             return ResponseEntity.notFound().build();
         }
@@ -93,7 +96,7 @@ public class UserPlantController {
     @PatchMapping("/{userPlantId}/watering-frequency")
     @Operation(summary = "Update watering frequency for a user's plant")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> updateWateringFrequency(@PathVariable UUID userPlantId, @RequestBody UpdateWateringFrequencyDTO wateringDTO, Authentication auth) {
+    public ResponseEntity<Void> updateWateringFrequency(@PathVariable UUID userPlantId, @RequestBody UpdateWateringFrequencyRequest wateringDTO, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         usersPlantService.updateWateringFrequency(user.getId(), userPlantId, wateringDTO.wateringFrequencyDays());
         return ResponseEntity.noContent().build();
@@ -102,16 +105,16 @@ public class UserPlantController {
     @PostMapping("/{userPlantId}/water")
     @Operation(summary = "Water a user's plant")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<WateredPlantDTO> waterPlant(@PathVariable UUID userPlantId, Authentication auth) {
+    public ResponseEntity<WateredPlantResponse> waterPlant(@PathVariable UUID userPlantId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
-        WateredPlantDTO plantDTO = usersPlantService.waterPlant(user.getId(), userPlantId);
+        WateredPlantResponse plantDTO = usersPlantService.waterPlant(user.getId(), userPlantId);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantDTO);
     }
 
     @GetMapping("/{userPlantId}/waterings")
     @Operation(summary = "Get watering history for a user's plant")
     @PreAuthorize("isAuthenticated()")
-    public List<WateredPlantDTO> getWateringHistory(@PathVariable UUID userPlantId, Authentication auth) {
+    public List<WateredPlantResponse> getWateringHistory(@PathVariable UUID userPlantId, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         return usersPlantService.getWateringHistory(user.getId(), userPlantId);
     }
@@ -119,7 +122,7 @@ public class UserPlantController {
     @PatchMapping("/{userPlantId}/nickname")
     @Operation(summary = "Update nickname for a user's plant")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> updateNickname(@PathVariable UUID userPlantId, @RequestBody UpdateNicknameDTO updateNicknameDTO, Authentication auth
+    public ResponseEntity<Void> updateNickname(@PathVariable UUID userPlantId, @RequestBody UpdateNicknameRequest updateNicknameDTO, Authentication auth
     ) {
         User user = userService.getCurrentUser(auth);
         usersPlantService.updateNickname(user.getId(), userPlantId, updateNicknameDTO.nickname());
@@ -129,7 +132,7 @@ public class UserPlantController {
     @PatchMapping("/{userPlantId}/image-url")
     @Operation(summary = "Update image URL for a user's plant")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> updateImageUrl(@PathVariable UUID userPlantId, @RequestBody UpdateImageUrlDTO updateImageUrlDTO, Authentication auth) {
+    public ResponseEntity<Void> updateImageUrl(@PathVariable UUID userPlantId, @RequestBody UpdateImageUrlRequest updateImageUrlDTO, Authentication auth) {
         User user = userService.getCurrentUser(auth);
         usersPlantService.updateImageUrl(user.getId(), userPlantId, updateImageUrlDTO.imageUrl());
         return ResponseEntity.noContent().build();
@@ -138,7 +141,7 @@ public class UserPlantController {
     @GetMapping
     @Operation(summary = "Get all plants in a user's library with filtering and sorting")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<UserPlantDTO>> getUserPlants(
+    public ResponseEntity<List<UserPlantResponse>> getUserPlants(
             @RequestParam(required = false) String family,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String direction,
@@ -149,7 +152,7 @@ public class UserPlantController {
             return ResponseEntity.notFound().build();
         }
 
-        List<UserPlantDTO> userPlants = usersPlantService.getPlantsForUser(user.getId(), family, sortBy, direction);
+        List<UserPlantResponse> userPlants = usersPlantService.getPlantsForUser(user.getId(), family, sortBy, direction);
         return ResponseEntity.ok(userPlants);
     }
 }
