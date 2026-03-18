@@ -1,13 +1,11 @@
 package com.happyplants.controller;
 
+import com.happyplants.dto.*;
 import com.happyplants.exception.UnauthorizedUserPlantAccessException;
 import com.happyplants.exception.UserPlantNotFoundException;
 import com.happyplants.model.Plant;
 import com.happyplants.model.User;
 import com.happyplants.model.UsersPlant;
-import com.happyplants.dto.PlantDTO;
-import com.happyplants.dto.UserPlantDTO;
-import com.happyplants.dto.WateredPlantDTO;
 import com.happyplants.service.UserPlantService;
 import com.happyplants.service.UserService;
 import com.happyplants.service.PerenualCacheService;
@@ -37,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
 @WebMvcTest(UserPlantController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -342,6 +341,70 @@ public class UserPlantControllerTest {
             mockMvc.perform(get("/api/user/plants/{userPlantId}/waterings", userPlantId)
                             .with(authentication(authToken)))
                     .andExpect(status().isNotFound());
+        }
+    }
+    @Nested
+    @DisplayName("Update Metadata Tests")
+    class UpdateMetadataTests {
+
+        @Test
+        @DisplayName("HPF-COLL-02: Verify that nickname update returns 204 No Content")
+        public void shouldReturn204WhenNicknameIsUpdated() throws Exception {
+            UUID userPlantId = UUID.randomUUID();
+            UpdateNicknameDTO dto = new UpdateNicknameDTO("New Nickname");
+
+            // Vi behöver inte 'when(...).thenReturn(...)' eftersom metoden returnerar void
+            doNothing().when(usersPlantService).updateNickname(any(), eq(userPlantId), anyString());
+
+            mockMvc.perform(patch("/api/user/plants/{userPlantId}/nickname", userPlantId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto))
+                            .with(authentication(authToken)))
+                    .andExpect(status().isNoContent());
+
+            verify(usersPlantService).updateNickname(eq(mockUser.getId()), eq(userPlantId), eq("New Nickname"));
+        }
+
+        @Test
+        @DisplayName("HPF-PLANT-02.1: Verify that image URL update returns 204 No Content")
+        public void shouldReturn204WhenImageUrlIsUpdated() throws Exception {
+            UUID userPlantId = UUID.randomUUID();
+            UpdateImageUrlDTO dto = new UpdateImageUrlDTO("https://example.com/plant.jpg");
+
+            mockMvc.perform(patch("/api/user/plants/{userPlantId}/image-url", userPlantId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto))
+                            .with(authentication(authToken)))
+                    .andExpect(status().isNoContent());
+
+            verify(usersPlantService).updateImageUrl(eq(mockUser.getId()), eq(userPlantId), eq("https://example.com/plant.jpg"));
+        }
+
+        @Test
+        @DisplayName("HPF-CARE-04: Verify that watering frequency update returns 204 No Content")
+        public void shouldReturn204WhenWateringFrequencyIsUpdated() throws Exception {
+            UUID userPlantId = UUID.randomUUID();
+            UpdateWateringFrequencyDTO dto = new UpdateWateringFrequencyDTO(7);
+
+            mockMvc.perform(patch("/api/user/plants/{userPlantId}/watering-frequency", userPlantId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto))
+                            .with(authentication(authToken)))
+                    .andExpect(status().isNoContent());
+
+            verify(usersPlantService).updateWateringFrequency(eq(mockUser.getId()), eq(userPlantId), eq(7));
+        }
+
+        @Test
+        @DisplayName("HPF-COLL-05: Verify that marking plant as dead returns 204 No Content")
+        public void shouldReturn204WhenMarkingAsDead() throws Exception {
+            UUID userPlantId = UUID.randomUUID();
+
+            mockMvc.perform(patch("/api/user/plants/{userPlantId}/dead", userPlantId)
+                            .with(authentication(authToken)))
+                    .andExpect(status().isNoContent());
+
+            verify(usersPlantService).markPlantAsDead(eq(mockUser.getId()), eq(userPlantId));
         }
     }
 }
