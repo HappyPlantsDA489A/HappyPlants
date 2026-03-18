@@ -278,7 +278,7 @@ public class UserPlantControllerTest {
             mockMvc.perform(post("/api/user/plants/{userPlantId}/water", userPlantId)
                             .with(authentication(authToken)))
                     .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.occuredAt").isNotEmpty());
+                    .andExpect(jsonPath("$.wateredAt").isNotEmpty());
         }
 
         @Test
@@ -327,8 +327,8 @@ public class UserPlantControllerTest {
                             .with(authentication(authToken)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(2))
-                    .andExpect(jsonPath("$[0].occuredAt").isNotEmpty())
-                    .andExpect(jsonPath("$[1].occuredAt").isNotEmpty());
+                    .andExpect(jsonPath("$[0].wateredAt").isNotEmpty())
+                    .andExpect(jsonPath("$[1].wateredAt").isNotEmpty());
         }
 
         @Test

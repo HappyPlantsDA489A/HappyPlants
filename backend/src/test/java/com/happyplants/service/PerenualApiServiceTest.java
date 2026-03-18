@@ -79,6 +79,7 @@ public class PerenualApiServiceTest {
 
             when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
             when(mockResponse.body()).thenReturn(json);
+            when(mockResponse.statusCode()).thenReturn(200);
             List<PerenualSearchPlantResponse> result = service.search("orchid");
             assertEquals(1, result.size());
             assertEquals("orchid", result.get(0).commonName());

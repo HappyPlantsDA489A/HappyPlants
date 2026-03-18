@@ -159,6 +159,7 @@ public class UserPlantServiceTest {
         @DisplayName("TC-COLL-07: Verify that multiple data fields are correctly mapped from Object array")
         public void shouldMapDatabaseResultsToDtoList(){
             plant.setPlant(new Plant());
+            plant.getPlant().setPerenualId(1);
             plant.getPlant().setCommonName("Snake Plant");
 
             OffsetDateTime lastWatered = OffsetDateTime.now();
@@ -182,6 +183,7 @@ public class UserPlantServiceTest {
         public void shouldSetTimesWateredToZeroWhenCountIsNull(){
             Plant basePlant = new Plant();
             basePlant.setId(UUID.randomUUID());
+            basePlant.setPerenualId(1);
             basePlant.setCommonName("Snake Plant");
 
             plant.setPlant(basePlant);
@@ -206,6 +208,7 @@ public class UserPlantServiceTest {
         @DisplayName("TC-PLANT-02: Should return UserPlantResponse when plant is found")
         public void shouldReturnUserPlantResponseWhenPlantIsFound() {
             plant.setPlant(new Plant());
+            plant.getPlant().setPerenualId(1);
             plant.getPlant().setCommonName("Monstera");
 
             OffsetDateTime lastWatered = OffsetDateTime.now();
@@ -227,6 +230,7 @@ public class UserPlantServiceTest {
         @DisplayName("TC-CARE-03: Should handle null count and set timeWatered to 0")
         public void shouldHandleNullCountAndSetTimesWateredToZero() {
             plant.setPlant(new Plant());
+            plant.getPlant().setPerenualId(1);
             Object[] mockRow = new Object[]{plant, null, null};
             when(usersPlantRepository.findWithLastWateredByPlantId(userPlantId, userId))
                     .thenReturn(List.<Object[]>of(mockRow));
