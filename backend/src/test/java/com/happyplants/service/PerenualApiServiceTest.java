@@ -277,4 +277,107 @@ public class PerenualApiServiceTest {
             assertNull(result);
         }
     }
+    @Nested
+    @DisplayName("HPF-CARE-01: Care Guidelines Robustness")
+    class CareGuidelineRobustnessTests {
+
+        @Test
+        @DisplayName("HPF-CARE-01.1: Verifies that only 'watering' type is extracted from sections")
+        void shouldSkipNonWateringSections() throws IOException, InterruptedException {
+            String json = """
+        {
+          "data": [
+            {
+              "section": [
+                { "type": "sunlight", "description": "Full sun" },
+                { "type": "watering", "description": "Water daily" }
+              ]
+            }
+          ]
+        }
+        """;
+
+            when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
+            when(mockResponse.body()).thenReturn(json);
+
+            String result = service.getWateringDescription(123);
+            assertEquals("Water daily", result, "Should ignore sunlight and pick watering");
+        }
+
+        @Test
+        @DisplayName("HPF-CARE-01: Verifies return null when watering section is missing (for placeholder handling)")
+        void shouldReturnNullWhenWateringSectionIsMissing() throws IOException, InterruptedException {
+            String json = """
+        {
+          "data": [
+            {
+              "section": [
+                { "type": "pest-control", "description": "Watch for aphids" }
+              ]
+            }
+          ]
+        }
+        """;
+
+            when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
+            when(mockResponse.body()).thenReturn(json);
+
+            String result = service.getWateringDescription(123);
+            assertNull(result, "Should return null so service layer can provide placeholder text");
+        }
+    }
+    @Nested
+    @DisplayName("Branch Coverage: Image and Cache Tests")
+    class BranchCoverageTests {
+
+        @Test
+        @DisplayName("Verify fallback logic for images in getPlantResults")
+        void shouldFallbackThroughAllImageUrls() {
+            String json = """
+        {
+          "data": [
+            {
+              "id": 5,
+              "default_image": {
+                "original_url": null,
+                "regular_url": "",
+                "thumbnail": "http://thumbnail.jpg"
+              }
+            }
+          ]
+        }
+        """;
+            when(mockResponse.body()).thenReturn(json);
+
+            List<PerenualSearchPlantResponse> result = service.getPlantResults(mockResponse);
+
+            assertEquals("http://thumbnail.jpg", result.get(0).imageUrl(),
+                    "Should have fallen back to thumbnail when others were null/blank");
+        }
+
+        @Test
+        @DisplayName("Verify that searchCache is populated after search")
+        void shouldPopulateCacheAfterSearch() throws IOException, InterruptedException {
+            String json = "{ \"data\": [ { \"id\": 10, \"common_name\": \"Test\" } ] }";
+
+            when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
+                    .thenReturn(mockResponse);
+            when(mockResponse.body()).thenReturn(json);
+            when(mockResponse.statusCode()).thenReturn(200);
+
+            service.search("test");
+
+            assertTrue(service.getSearchCache().containsKey(10), "Cache should contain the searched plant");
+            assertEquals("Test", service.getSearchCache().get(10).commonName());
+        }
+
+        @Test
+        @DisplayName("Verify exception handling when HttpClient fails")
+        void shouldThrowRuntimeExceptionOnClientError() throws IOException, InterruptedException {
+            when(mockClient.send(any(), any())).thenThrow(new IOException("Connection reset"));
+
+            assertThrows(RuntimeException.class, () -> service.getPlantById(1),
+                    "Service should wrap IOExceptions in RuntimeExceptions");
+        }
+    }
 }
