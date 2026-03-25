@@ -39,9 +39,7 @@ public class PerenualApiService {
         this.mapper = mapper;
     }
 
-    public PerenualApiService() {
-        this(HttpClient.newHttpClient(), new ObjectMapper());
-    }
+
 
     public List<PerenualSearchPlantResponse> search(String name) {
 
