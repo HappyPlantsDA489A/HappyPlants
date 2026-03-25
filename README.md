@@ -37,16 +37,18 @@ HappyPlants is a personal online plant caregiver application that allows users t
 - **Spring Boot 3.4.2**: Framework for building the REST API
   - `spring-boot-starter-web`: Web application support
   - `spring-boot-starter-test`: Testing support
+- **PostgreSQL**: Relational database for storing user and plant data
 - **Maven**: Build and dependency management
 - **dotenv-java 3.0.0**: Environment variable management
 - **Jackson**: JSON serialization/deserialization
 
 ### Frontend
 - **React 19.2.4**: UI library
+- **Vike**: Server-Side Rendering (SSR) and routing framework
 - **Vite 7.3.1**: Build tool and development server
 - **ESLint**: Code linting
-- **Font Awesome 4.7.0**: Icon library
-- **CSS3**: Styling
+- **Lucide React**: Icon library
+- **Tailwind CSS 4**: Styling
 
 ## 🏗 Architecture
 
@@ -84,7 +86,7 @@ Before installing and running HappyPlants, ensure you have the following install
      ```bash
      # macOS
      brew install maven
-     
+
      # Windows (using Chocolatey)
      choco install maven
      ```
@@ -99,7 +101,7 @@ Before installing and running HappyPlants, ensure you have the following install
      ```bash
      # macOS
      brew install node
-     
+
      # Windows (using Chocolatey)
      choco install nodejs
      ```
@@ -170,20 +172,26 @@ This will:
    touch .env
    ```
 
-2. **Add API Key**
+2. **Add API Key and Database Credentials**
 
-   Edit the `.env` file and add your Perenual API key:
+  Edit the `.env` file and add your Perenual API key along with the PostgreSQL database configuration:
 
-   ```env
-   PERENUAL_KEY=your_api_key_here
-   ```
+  ```env
+  PERENUAL_KEY=your_api_key_here
+  DB_URL=jdbc:postgresql://localhost:5432/happyplants
+  DB_USERNAME=your_db_username
+  DB_PASSWORD=your_db_password
+  ```
 
-   **Example:**
-   ```env
-   PERENUAL_KEY=sk-q4a7697ccedf51ef314587
-   ```
+  **Example:**
+  ```env
+  PERENUAL_KEY=sk-q4a7697ccedf51ef314587
+  DB_URL=jdbc:postgresql://localhost:5432/happyplants
+  DB_USERNAME=postgres
+  DB_PASSWORD=secret
+  ```
 
-   **⚠️ Security Note**: Never commit the `.env` file to version control. It's already included in `.gitignore`.
+  **⚠️ Security Note**: Never commit the `.env` file to version control. It's already included in `.gitignore`.
 
 3. **Application Properties** (Optional)
 
@@ -196,7 +204,7 @@ This will:
    ```properties
    # Server port (default: 8080)
    server.port=8080
-   
+
    # Logging level
    logging.level.com.happyplants=DEBUG
    ```
@@ -298,17 +306,18 @@ HappyPlants/
 │
 └── frontend/
     ├── package.json                 # npm dependencies
-    ├── vite.config.js              # Vite configuration
+    ├── vite.config.ts              # Vite configuration
     ├── eslint.config.js            # ESLint configuration
     ├── index.html                  # HTML entry point
     ├── .gitignore
     ├── public/
     │   └── vite.svg                # Public assets
     └── src/
-        ├── main.jsx                # React entry point
-        ├── App.jsx                 # Main React component
+        ├── config.ts               # API base URL configuration
+        ├── components/             # Reusable React components
         ├── index.css               # Global styles
         ├── style.css               # Component styles
+        ├── pages/                  # Vike route files (+Page.tsx, +guard.ts)
         └── assets/                 # Images and static assets
             ├── happy-plant-background.jpg
             ├── pexels-background.jpg
@@ -339,12 +348,12 @@ curl http://localhost:8080/api/test
 
 #### 2. Search Plants
 
-**Endpoint:** `GET /api/search`
+**Endpoint:** `GET /api/plants/search`
 
 **Description:** Search for plants by name
 
 **Query Parameters:**
-- `plantName` (required): The plant name to search for
+- `name` (required): The plant name to search for
 
 **Response:**
 ```json
@@ -361,8 +370,45 @@ curl http://localhost:8080/api/test
 
 **cURL Example:**
 ```bash
-curl "http://localhost:8080/api/search?plantName=Philodendron"
+curl "http://localhost:8080/api/plants/search?name=Philodendron"
 ```
+
+#### 3. Plant Details
+
+**Endpoint:** `GET /api/plants/{id}`
+
+**Description:** Get detailed information for a specific plant.
+
+**Path Parameters:**
+- `id` (required): The Perenual plant ID.
+
+#### 4. Authentication Endpoints
+
+- `POST /api/auth/log-in`: Authenticate user and setup session cookie (`HAPPY_COOKIE`).
+- `POST /api/auth/register`: Register a new user account.
+- `DELETE /api/auth/log-out`: Invalidate session and log user out.
+- `GET /api/auth/check-auth`: Verify current session status.
+
+#### 5. User Profile Endpoints
+
+- `GET /api/user/user-info`: Get current user details.
+- `PATCH /api/user/display-name`: Update user display name.
+- `PATCH /api/user/change-password`: Update user password.
+- `DELETE /api/user`: Delete user account.
+
+#### 6. User Plant Library Endpoints
+
+- `POST /api/user/plants/{perenualId}`: Add a plant to the library.
+- `GET /api/user/plants`: Retrieve library plants (supports sorting and filtering).
+- `GET /api/user/plants/{plantId}`: Retrieve a specific library plant.
+- `DELETE /api/user/plants/{userPlantId}`: Remove a plant from the library.
+- `PATCH /api/user/plants/{userPlantId}/dead`: Mark plant as dead.
+- `PATCH /api/user/plants/{userPlantId}/watering-frequency`: Update watering interval.
+- `POST /api/user/plants/{userPlantId}/water`: Log a watering event.
+- `GET /api/user/plants/{userPlantId}/waterings`: History of watering events.
+- `DELETE /api/user/plants/{userPlantId}/waterings`: Undo a specific watering event.
+- `PATCH /api/user/plants/{userPlantId}/nickname`: Set a custom nickname.
+- `PATCH /api/user/plants/{userPlantId}/image-url`: Update plant picture.
 
 ### External API Integration
 
@@ -493,10 +539,16 @@ mvn test
 
 ### Frontend Tests
 
-Run React tests:
+Run React test:
 ```bash
 cd frontend
 npm run test
+```
+
+Run React linting:
+```bash
+cd frontend
+npm run lint
 ```
 
 ### Manual Testing
@@ -508,7 +560,7 @@ npm run test
 
 2. **Test plant search:**
    ```bash
-   curl "http://localhost:8080/api/search?plantName=rose"
+   curl "http://localhost:8080/api/plants/search?name=rose"
    ```
 
 3. **Test frontend:** Open `http://localhost:5173` and search for a plant
