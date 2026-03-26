@@ -43,7 +43,7 @@ HappyPlants is a personal online plant caregiver application that allows users t
 - **Jackson**: JSON serialization/deserialization
 
 ### Frontend
-- **React 19.2.4**: UI library
+- **React 19.2.0**: UI library
 - **Vike**: Server-Side Rendering (SSR) and routing framework
 - **Vite 7.3.1**: Build tool and development server
 - **ESLint**: Code linting
@@ -56,7 +56,7 @@ HappyPlants is a personal online plant caregiver application that allows users t
 ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
 │   Browser   │────────▶│  Vite Dev   │────────▶│   Spring    │
 │  (React)    │         │   Server    │         │    Boot     │
-│             │◀────────│  :5173      │◀────────│   :8080     │
+│             │◀────────│  :3000      │◀────────│   :8080     │
 └─────────────┘         └─────────────┘         └─────────────┘
                               │                        │
                               │                        │
@@ -191,7 +191,7 @@ This will:
   DB_PASSWORD=secret
   ```
 
-  **⚠️ Security Note**: Never commit the `.env` file to version control. It's already included in `.gitignore`.
+  **⚠️ Security Note**: Never commit the `.env` file to version control. It's already included in `.gitignore`. Database credentials are managed by the development team and are not publicly available.
 
 3. **Application Properties** (Optional)
 
@@ -211,7 +211,7 @@ This will:
 
 ### Frontend Configuration
 
-The Vite configuration (`frontend/vite.config.js`) is already set up with a proxy:
+The Vite configuration (`frontend/vite.config.ts`) is already set up with a proxy:
 
 ```javascript
 export default defineConfig({
@@ -251,13 +251,13 @@ cd frontend
 npm run dev
 ```
 
-The frontend development server will start on `http://localhost:5173`
+The frontend development server will start on `http://localhost:3000`
 
 You should see:
 ```
   VITE v7.3.1  ready in XXX ms
 
-  ➜  Local:   http://localhost:5173/
+  ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
 ```
 
@@ -275,53 +275,7 @@ cd frontend && npm run dev &
 
 Open your browser and navigate to:
 ```
-http://localhost:5173
-```
-
-## 📁 Project Structure
-
-```
-HappyPlants/
-├── README.md
-├── .gitignore
-│
-├── backend/
-│   ├── pom.xml                      # Maven configuration
-│   ├── package.json                 # Backend metadata
-│   ├── .env                         # Environment variables (not in Git)
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/
-│   │       │   └── com/
-│   │       │       └── happyplants/
-│   │       │           ├── Application.java              # Main Spring Boot application
-│   │       │           ├── controller/
-│   │       │           │   ├── APIConnection.java        # REST controller
-│   │       │           │   └── ApiResponse.java          # API response wrapper
-│   │       │           └── model/
-│   │       │               └── PlantDTO.java             # Plant data transfer object
-│   │       └── resources/
-│   │           └── application.properties                # Spring configuration
-│   └── target/                      # Compiled classes (generated)
-│
-└── frontend/
-    ├── package.json                 # npm dependencies
-    ├── vite.config.ts              # Vite configuration
-    ├── eslint.config.js            # ESLint configuration
-    ├── index.html                  # HTML entry point
-    ├── .gitignore
-    ├── public/
-    │   └── vite.svg                # Public assets
-    └── src/
-        ├── config.ts               # API base URL configuration
-        ├── components/             # Reusable React components
-        ├── index.css               # Global styles
-        ├── style.css               # Component styles
-        ├── pages/                  # Vike route files (+Page.tsx, +guard.ts)
-        └── assets/                 # Images and static assets
-            ├── happy-plant-background.jpg
-            ├── pexels-background.jpg
-            └── react.svg
+http://localhost:3000
 ```
 
 ## 🔌 API Endpoints
@@ -459,7 +413,7 @@ server.port=8081
 
 **Solution:**
 - Verify backend is running on port 8080
-- Check proxy configuration in `vite.config.js`
+- Check proxy configuration in `vite.config.ts`
 - Clear browser cache and restart frontend
 
 **Problem:** `npm install` fails
@@ -487,7 +441,7 @@ npm install
 
 **Solution:**
 - The Vite proxy should handle CORS
-- Ensure you're accessing the app through `http://localhost:5173` (not directly through port 8080)
+- Ensure you're accessing the app through `http://localhost:3000` (not directly through port 8080)
 
 #### 4. Maven Issues
 
@@ -563,7 +517,7 @@ npm run lint
    curl "http://localhost:8080/api/plants/search?name=rose"
    ```
 
-3. **Test frontend:** Open `http://localhost:5173` and search for a plant
+3. **Test frontend:** Open `http://localhost:3000` and search for a plant
 
 ## 📝 Development
 
@@ -616,7 +570,7 @@ This project is part of the Sys2 DA489A course. All rights reserved.
 - [Spring Boot](https://spring.io/projects/spring-boot) for the backend framework
 - [React](https://react.dev/) for the frontend library
 - [Vite](https://vite.dev/) for the amazing build tool
-- [Font Awesome](https://fontawesome.com/) for icons
+- [Shadcn](https://ui.shadcn.com/) for the components
 
 ## 📞 Support
 
